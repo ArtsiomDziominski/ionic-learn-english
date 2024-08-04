@@ -1,0 +1,8 @@
+{
+  "name": "learn english",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite",
+  "id": "284deb4a"
+}
