@@ -1,8 +1,13 @@
 <template>
   <ion-page class="page">
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>Tab 1</ion-title>
+    <ion-header class="header">
+      <ion-toolbar class="header__toolbar">
+        <div class="toolbar">
+          <ion-button icon @click="toBack">
+            <ion-icon :icon="chevronBackOutline" size="large"></ion-icon>
+          </ion-button>
+          <ion-title>Tab 1</ion-title>
+        </div>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding page__content" :fullscreen="true">
@@ -22,8 +27,11 @@
 import {onMounted, Ref, ref, UnwrapRef} from "vue";
 import {storeToRefs} from "pinia";
 import {wordsStore} from "@/store/words";
-import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/vue';
+import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon} from '@ionic/vue';
+import {chevronBackOutline} from "ionicons/icons";
+import {useRouter} from "vue-router";
 
+const router = useRouter();
 const storeWords = wordsStore();
 const {cards, randomWord, viewCardSelectWord} = storeToRefs(storeWords);
 
@@ -59,6 +67,10 @@ const setDefault = (): void => {
   colorCards.value = cards.value.map(() => ('medium'));
   wordSelected.value = '';
 }
+
+const toBack = (): void => {
+  router.back();
+}
 </script>
 
 <style scoped lang="scss">
@@ -66,6 +78,15 @@ const setDefault = (): void => {
   height: 100%;
   display: flex;
   flex-direction: column;
+
+  .header {
+    &__toolbar {
+      .toolbar {
+        display: flex;
+        flex-direction: row;
+      }
+    }
+  }
 
   .content {
     height: 100%;
