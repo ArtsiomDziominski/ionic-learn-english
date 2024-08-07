@@ -34,6 +34,13 @@ export const wordsStore = defineStore('wordsStore', () => {
 	const setNextWord = (): void => {
 		wordNumber.value = (Math.floor(Math.random() * cardsLength.value));
 		setRandomCards();
+		setRandomViewCardWordsValue();
+	}
+
+	const setRandomViewCardWordsValue = (): void => {
+		const viewCardWordsNumber = (Math.floor(Math.random() * Object.values(ViewCardWords).length));
+		const viewCardWordsValue = Object.values(ViewCardWords)[viewCardWordsNumber];
+		viewCardSelectWord.value = VIEW_CARD_WORDS[ViewCardWords[viewCardWordsValue]];
 	}
 
 	const setWordsList = (flow: FlowWords): void => {

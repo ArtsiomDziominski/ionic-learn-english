@@ -37,31 +37,11 @@ const {cards, randomWord, viewCardSelectWord} = storeToRefs(storeWords);
 
 const wordSelected = ref('');
 const colorCards: Ref<UnwrapRef<string[]>> = ref([]);
-const colorError: Ref<UnwrapRef<string>> = ref('danger');
-const colorSuccess: Ref<UnwrapRef<string>> = ref('success');
 
 onMounted(() => {
   storeWords.setNextWord();
   setDefault();
 })
-
-const chooseWord = (word: COMMON.Word, index: number): void => {
-  if (wordSelected.value) return;
-  let timeout = 2000;
-  wordSelected.value = word.word;
-
-  const indexRandomWord = cards.value.findIndex((card: COMMON.Word) => (card.word === randomWord.value.word));
-  colorCards.value[indexRandomWord] = colorSuccess.value;
-  if (randomWord.value.word !== word.word) {
-    timeout = 3000;
-    colorCards.value[index] = colorError.value;
-  }
-
-  setTimeout(() => {
-    storeWords.setNextWord();
-    setDefault();
-  }, timeout);
-}
 
 const setDefault = (): void => {
   colorCards.value = cards.value.map(() => ('medium'));
