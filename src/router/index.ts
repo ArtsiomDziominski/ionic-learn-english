@@ -5,7 +5,7 @@ import TabsPage from '../views/TabsPage.vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/tabs/tab1'
+    redirect: '/tabs/words'
   },
   {
     path: '/tabs/',
@@ -13,11 +13,21 @@ const routes: Array<RouteRecordRaw> = [
     children: [
       {
         path: '',
-        redirect: '/tabs/tab1'
+        redirect: '/tabs/words'
       },
       {
-        path: 'tab1',
-        component: () => import('@/views/Tab1Page.vue')
+        path: 'words',
+        component: () => import('@/views/Tab1Page.vue'),
+        children: [
+          {
+            path: '',
+            component: () => import('@/components/words/WordsSelectFlowCards.vue'),
+          }
+        ]
+      },
+      {
+        path: 'words/progress',
+        component: () => import('@/components/words/WordsProgress.vue'),
       },
       {
         path: 'tab2',

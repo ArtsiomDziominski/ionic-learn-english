@@ -20,6 +20,9 @@ import '@ionic/vue/css/text-transformation.css';
 import '@ionic/vue/css/flex-utils.css';
 import '@ionic/vue/css/display.css';
 
+//store
+import {createPinia} from 'pinia';
+
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------
@@ -35,8 +38,9 @@ import '@ionic/vue/css/palettes/dark.system.css';
 import './theme/variables.css';
 
 const app = createApp(App)
-  .use(IonicVue)
-  .use(router);
+    .use(IonicVue)
+    .use(router)
+    .use(createPinia());
 
 router.isReady().then(() => {
   app.mount('#app');
