@@ -4,15 +4,12 @@ import {ActiveFlowWords, FlowWords, VIEW_CARD_WORDS, ViewCardWords} from "@/cons
 import {words} from "@/content/words_level";
 
 export const wordsStore = defineStore('wordsStore', () => {
-
-
-
 	const wordsList: Ref<UnwrapRef<COMMON.Word[]>> = ref([]);
 	const wordNumber: Ref<UnwrapRef<number>> = ref(0);
 	const cards: Ref<UnwrapRef<COMMON.Word[]>> = ref([]);
 
 	const activeFlowWords: Ref<UnwrapRef<ActiveFlowWords>> = ref(ActiveFlowWords.Card);
-	const viewCardSelectWord = ref(VIEW_CARD_WORDS[ViewCardWords.List]);
+	const activeCardSelectWord = ref(ViewCardWords.Words);
 
 	const randomWord = computed((): UnwrapRef<COMMON.Word> => {
 		return cards.value[wordNumber.value];
@@ -20,6 +17,10 @@ export const wordsStore = defineStore('wordsStore', () => {
 
 	const cardsLength = computed((): UnwrapRef<number> => {
 		return cards.value.length;
+	});
+
+	const viewCardSelectWord = computed((): UnwrapRef<any> => {
+		return VIEW_CARD_WORDS[activeCardSelectWord.value];
 	});
 
 	const setRandomCards = (): void => {
@@ -40,7 +41,7 @@ export const wordsStore = defineStore('wordsStore', () => {
 	const setRandomViewCardWordsValue = (): void => {
 		const viewCardWordsNumber = (Math.floor(Math.random() * Object.values(ViewCardWords).length));
 		const viewCardWordsValue = Object.values(ViewCardWords)[viewCardWordsNumber];
-		viewCardSelectWord.value = VIEW_CARD_WORDS[ViewCardWords[viewCardWordsValue]];
+		activeCardSelectWord.value = ViewCardWords[viewCardWordsValue];
 	}
 
 	const setWordsList = (flow: FlowWords): void => {
@@ -53,6 +54,7 @@ export const wordsStore = defineStore('wordsStore', () => {
 		randomWord,
 		activeFlowWords,
 		viewCardSelectWord,
+		activeCardSelectWord,
 		setNextWord,
 		setRandomCards,
 		setWordsList

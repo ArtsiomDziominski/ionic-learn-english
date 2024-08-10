@@ -13,7 +13,7 @@
     <ion-content class="ion-padding page__content" :fullscreen="true">
       <div class="content">
         <ion-text class="content__title">
-          <h1>{{ randomWord?.word }}</h1>
+          <h1>{{ titleRandomWord }}</h1>
         </ion-text>
         <div class="content__card">
           <component :is="viewCardSelectWord" />
@@ -24,16 +24,17 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, Ref, ref, UnwrapRef} from "vue";
+import {computed, onMounted, Ref, ref, UnwrapRef} from "vue";
 import {storeToRefs} from "pinia";
 import {wordsStore} from "@/store/words";
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon} from '@ionic/vue';
 import {chevronBackOutline} from "ionicons/icons";
 import {useRouter} from "vue-router";
+import {VIEW_WORDS_TRANSLATION} from "@/const/flow";
 
 const router = useRouter();
 const storeWords = wordsStore();
-const {cards, randomWord, viewCardSelectWord} = storeToRefs(storeWords);
+const {cards, randomWord, activeCardSelectWord, viewCardSelectWord} = storeToRefs(storeWords);
 
 const wordSelected = ref('');
 const colorCards: Ref<UnwrapRef<string[]>> = ref([]);
@@ -41,6 +42,12 @@ const colorCards: Ref<UnwrapRef<string[]>> = ref([]);
 onMounted(() => {
   storeWords.setNextWord();
   setDefault();
+})
+
+const titleRandomWord = computed((): string => {
+  return VIEW_WORDS_TRANSLATION.includes(activeCardSelectWord.value)
+      ? randomWord.value?.translation
+      : randomWord.value?.word;
 })
 
 const setDefault = (): void => {
