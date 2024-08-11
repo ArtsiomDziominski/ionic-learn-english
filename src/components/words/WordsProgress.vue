@@ -12,7 +12,7 @@
     </ion-header>
     <ion-content class="ion-padding page__content" :fullscreen="true">
       <div class="content">
-        <ion-text class="content__title">
+        <ion-text v-if="activeCardSelectWord !== ViewCardWords.Match" class="content__title">
           <h1>{{ titleRandomWord }}</h1>
         </ion-text>
         <div class="content__card">
@@ -30,7 +30,7 @@ import {wordsStore} from "@/store/words";
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon} from '@ionic/vue';
 import {chevronBackOutline} from "ionicons/icons";
 import {useRouter} from "vue-router";
-import {VIEW_WORDS_TRANSLATION} from "@/const/flow";
+import {VIEW_WORDS_TRANSLATION, ViewCardWords} from "@/const/flow";
 
 const router = useRouter();
 const storeWords = wordsStore();

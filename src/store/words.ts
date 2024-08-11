@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import {computed, Ref, ref, UnwrapRef} from "vue";
 import {ActiveFlowWords, FlowWords, VIEW_CARD_WORDS, ViewCardWords} from "@/const/flow";
 import {words} from "@/content/words_level";
@@ -9,7 +9,7 @@ export const wordsStore = defineStore('wordsStore', () => {
 	const cards: Ref<UnwrapRef<COMMON.Word[]>> = ref([]);
 
 	const activeFlowWords: Ref<UnwrapRef<ActiveFlowWords>> = ref(ActiveFlowWords.Card);
-	const activeCardSelectWord = ref(ViewCardWords.Words);
+	const activeCardSelectWord = ref(ViewCardWords.Match);
 
 	const randomWord = computed((): UnwrapRef<COMMON.Word> => {
 		return cards.value[wordNumber.value];
@@ -23,10 +23,10 @@ export const wordsStore = defineStore('wordsStore', () => {
 		return VIEW_CARD_WORDS[activeCardSelectWord.value];
 	});
 
-	const setRandomCards = (): void => {
+	const setRandomCards = (randomLength: number = 4): void => {
 		const wordsListLength = wordsList.value.length;
 		const randomNumbers = [];
-		for (let i = 0; i < 4; i++) {
+		for (let i = 0; i < randomLength; i++) {
 			randomNumbers.push(Math.floor(Math.random() * wordsListLength));
 		}
 		cards.value = randomNumbers.map((number: number) => (wordsList.value[number]));

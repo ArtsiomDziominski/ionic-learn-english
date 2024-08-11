@@ -1,6 +1,7 @@
 import WordsCardSelect from "@/components/words/card/WordsCardSelect.vue";
 import WordsListSelect from "@/components/words/list/WordsListSelect.vue";
 import WordsLetterSelect from "@/components/words/letter/WordsLetterSelect.vue";
+import WordsMatchSelect from "@/components/words/match/WordsMatchSelect.vue";
 
 export enum ActiveFlowWords {
     Random = 'Random',
@@ -12,13 +13,15 @@ export enum ActiveFlowWords {
 export enum ViewCardWords {
     Card = 'Card',
     List = 'List',
-    Words = 'Words'
+    Words = 'Words',
+    Match = 'Match'
 }
 
 export const VIEW_CARD_WORDS = {
-    Card: WordsCardSelect,
-    List: WordsListSelect,
-    Words: WordsLetterSelect
+    [ViewCardWords.Card]: WordsCardSelect,
+    [ViewCardWords.List]: WordsListSelect,
+    [ViewCardWords.Words]: WordsLetterSelect,
+    [ViewCardWords.Match]: WordsMatchSelect
 }
 
 export enum FlowWords {
