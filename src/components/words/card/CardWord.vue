@@ -2,7 +2,7 @@
   <ion-card color="primary">
     <ion-card-content class="content">
       <ion-text>
-        {{ word.translation }}
+        {{ word }}
       </ion-text>
     </ion-card-content>
   </ion-card>
@@ -10,11 +10,10 @@
 
 <script setup lang="ts">
 import { IonCard, IonCardContent } from '@ionic/vue';
-import {PropType} from "vue";
 
 defineProps({
   word: {
-    type: Object as PropType<COMMON.Word>,
+    type: String,
     required: true
   },
 });

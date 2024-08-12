@@ -6,7 +6,7 @@
         :color="colorCards[index]"
         v-for="(word, index) in cards"
         :key="word.word"
-        :word="word"
+        :word="word.word"
         @click="chooseWord(word, index)"
     />
   </div>
