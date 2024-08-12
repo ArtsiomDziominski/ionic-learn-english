@@ -1,9 +1,7 @@
 <template>
   <ion-page>
     <ion-header>
-      <ion-toolbar>
-        <ion-title>Tab 1</ion-title>
-      </ion-toolbar>
+      <HeaderToolbarMainPages title="Learn words" />
     </ion-header>
     <ion-content class="ion-padding" :fullscreen="true">
       <ion-header collapse="condense">
@@ -12,7 +10,7 @@
         </ion-toolbar>
       </ion-header>
 
-      <ChooseFlowCards />
+      <ChooseFlowCards/>
     </ion-content>
   </ion-page>
 </template>
@@ -23,7 +21,8 @@ import {
   IonHeader,
   IonToolbar,
   IonTitle,
-  IonContent
+  IonContent,
 } from '@ionic/vue';
 import ChooseFlowCards from "@/components/words/WordsSelectFlowCards.vue";
+import HeaderToolbarMainPages from "@/components/header/HeaderToolbarMainPages.vue";
 </script>
