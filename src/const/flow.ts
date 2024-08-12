@@ -31,4 +31,4 @@ export enum FlowWords {
     C2 = 'C2',
 }
 
-export const VIEW_WORDS_TRANSLATION = [ViewCardWords.Words];
+export const VIEW_WORDS_TRANSLATION = [ViewCardWords.Words, ViewCardWords.List];
