@@ -20,7 +20,7 @@ const toSettings = (): void => {
   <ion-toolbar>
     <div class="toolbar">
       <ion-title>{{ title }}</ion-title>
-      <ion-button fill="clear" color="dark" @click="toSettings">
+      <ion-button fill="clear" color="light" @click="toSettings">
         <ion-icon :icon="settingsOutline" size="large"></ion-icon>
       </ion-button>
     </div>

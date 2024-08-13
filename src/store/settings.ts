@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia';
 import {ref} from "vue";
-import {ThemeType} from "@/const/const";
+import {STORAGE_KEY_THEME, ThemeType} from "@/const/const";
 
 export const settingsStore = defineStore('settingsStore', () => {
 	const isDarkMode = ref(true);
@@ -16,9 +16,10 @@ export const settingsStore = defineStore('settingsStore', () => {
 	};
 
 	const setClassMode = () => {
-		console.log('se');
 		document.documentElement.classList.toggle('ion-palette-dark', isDarkMode.value);
 		document.documentElement.classList.toggle('ion-palette-light', !isDarkMode.value);
+		const theme = isDarkMode.value ? ThemeType.Dark : ThemeType.Light;
+		localStorage.setItem(STORAGE_KEY_THEME, theme);
 	};
 
 
