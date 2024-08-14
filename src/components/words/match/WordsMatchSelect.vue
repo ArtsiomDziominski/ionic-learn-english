@@ -3,9 +3,12 @@ import WordsMatchCard from "@/components/words/match/WordsMatchCard.vue";
 import {wordsStore} from "@/store/words";
 import {storeToRefs} from "pinia";
 import {computed, Ref, ref, UnwrapRef} from "vue";
+import {settingsStore} from "@/store/settings";
 
 const storeWords = wordsStore();
 const {cards} = storeToRefs(storeWords);
+
+const storeSettings = settingsStore();
 
 const selected: Ref<UnwrapRef<string[][]>> = ref([]);
 const selectedErrorWord: Ref<UnwrapRef<string>> = ref('');
@@ -15,6 +18,7 @@ const wordsList = computed(() => cards.value.map((w) => w.word).sort(() => Math.
 const translationsList = computed(() => cards.value.map((t) => t.translation).sort(() => Math.random() - 0.5));
 
 const selectWord = (word: string): void => {
+  storeSettings.speakText(word);
   setWordList(word);
 }
 
