@@ -12,8 +12,9 @@
     </ion-header>
     <ion-content class="ion-padding page__content" :fullscreen="true">
       <div class="content">
-        <ion-text v-if="activeCardSelectWord !== ViewCardWords.Match" class="content__title">
-          <h1>{{ titleRandomWord }}</h1>
+        <ion-text v-if="activeCardSelectWord !== ViewCardWords.Match" class="content__title" @click="speck">
+          {{ titleRandomWord }}
+          <ion-icon :icon="volumeMediumOutline" size="large" color="medium"></ion-icon>
         </ion-text>
         <div class="content__card">
           <component :is="viewCardSelectWord" />
@@ -28,13 +29,16 @@ import {computed, onMounted, Ref, ref, UnwrapRef} from "vue";
 import {storeToRefs} from "pinia";
 import {wordsStore} from "@/store/words";
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon} from '@ionic/vue';
-import {chevronBackOutline} from "ionicons/icons";
+import {chevronBackOutline, volumeMediumOutline} from "ionicons/icons";
 import {useRouter} from "vue-router";
 import {VIEW_WORDS_TRANSLATION, ViewCardWords} from "@/const/flow";
+import {settingsStore} from "@/store/settings";
 
 const router = useRouter();
 const storeWords = wordsStore();
 const {cards, randomWord, activeCardSelectWord, viewCardSelectWord} = storeToRefs(storeWords);
+
+const storeSettings = settingsStore();
 
 const wordSelected = ref('');
 const colorCards: Ref<UnwrapRef<string[]>> = ref([]);
@@ -57,6 +61,10 @@ const setDefault = (): void => {
 
 const toBack = (): void => {
   router.back();
+}
+
+const speck = (): void => {
+  storeSettings.speakText(randomWord.value.word);
 }
 </script>
 
@@ -85,6 +93,13 @@ const toBack = (): void => {
       grid-area: 1/1/2/2;
       justify-self: center;
       align-self: center;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      font-size: 36px;
+      word-break: break-all;
     }
 
     &__card {

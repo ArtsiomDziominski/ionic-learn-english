@@ -13,13 +13,15 @@
 </template>
 
 <script setup lang="ts">
-import {onMounted, Ref, ref, UnwrapRef} from "vue";
+import {onMounted, Ref, ref, UnwrapRef, watch} from "vue";
 import CardWord from "@/components/words/card/CardWord.vue";
 import {storeToRefs} from "pinia";
 import {wordsStore} from "@/store/words";
+import {settingsStore} from "@/store/settings";
 
 const storeWords = wordsStore();
 const {cards, randomWord} = storeToRefs(storeWords);
+const storeSettings = settingsStore();
 
 const wordSelected = ref('');
 const colorCards: Ref<UnwrapRef<string[]>> = ref([]);
@@ -30,6 +32,8 @@ onMounted(() => {
   storeWords.setNextWord();
   setDefault();
 })
+
+watch(randomWord, (value) => storeSettings.speakText(value.word))
 
 const chooseWord = (word: COMMON.Word, index: number): void => {
   if (wordSelected.value) return;

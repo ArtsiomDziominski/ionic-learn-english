@@ -17,9 +17,12 @@ import CardWord from "@/components/words/card/CardWord.vue";
 import {onMounted, ref, Ref, UnwrapRef} from "vue";
 import {wordsStore} from "@/store/words";
 import {storeToRefs} from "pinia";
+import {settingsStore} from "@/store/settings";
 
 const storeWords = wordsStore();
 const {cards, randomWord} = storeToRefs(storeWords);
+
+const storeSettings = settingsStore();
 
 const wordSelected = ref('');
 const colorCards: Ref<UnwrapRef<string[]>> = ref([]);
@@ -42,6 +45,8 @@ const chooseWord = (word: COMMON.Word, index: number): void => {
     timeout = 3000;
     colorCards.value[index] = colorError.value;
   }
+
+  storeSettings.speakText(randomWord.value?.word || '');
 
   setTimeout(() => {
     storeWords.setNextWord();

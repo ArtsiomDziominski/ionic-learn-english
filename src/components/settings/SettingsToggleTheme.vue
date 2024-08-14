@@ -1,36 +1,43 @@
 <script setup lang="ts">
 import {settingsStore} from "@/store/settings";
 import {storeToRefs} from "pinia";
-import {personCircle, personCircleOutline, sunny, sunnyOutline} from "ionicons/icons";
-import { IonIcon } from '@ionic/vue';
+import {sunny, sunnyOutline} from "ionicons/icons";
+import {IonIcon} from '@ionic/vue';
+import AppSelect from "@/components/UI/AppSelect.vue";
+import {VoiceSpeech} from "@/const/const";
+import {computed} from "vue";
 
 const storeSettings = settingsStore();
-const {isDarkMode} = storeToRefs(storeSettings);
+const {isDarkMode, voiceSpeech} = storeToRefs(storeSettings);
 
 const toggleMode = () => {
   storeSettings.toggleMode();
 };
+
+const valueVoiceSpeech = computed((): string => {
+  const keys = Object.keys(VoiceSpeech) as Array<keyof typeof VoiceSpeech>;
+  return keys.find(key => VoiceSpeech[key] === voiceSpeech.value) || '';
+});
+
+const speechList = computed((): string[] => {
+  return Object.keys(VoiceSpeech);
+});
+
+const changeSpeech = (event: any) => {
+  const speech = event?.detail?.value as keyof typeof VoiceSpeech;
+  if (speech) storeSettings.setVoiceSpeech(VoiceSpeech[speech]);
+};
+
 </script>
 
 <template>
-  <ion-header class="ion-no-border">
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-back-button default-href="#"></ion-back-button>
-      </ion-buttons>
-      <ion-title>Display</ion-title>
-      <ion-buttons slot="end">
-        <ion-button color="dark">
-          <ion-icon slot="icon-only" :ios="personCircleOutline" :md="personCircle"></ion-icon>
-        </ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
-
   <ion-content>
     <ion-list-header>Appearance</ion-list-header>
     <ion-list :inset="true">
-      <ion-item :button="true">Text Size</ion-item>
+      <ion-item :button="true" class="speech">
+        <AppSelect label="Speech" :value="valueVoiceSpeech" :options="speechList" @ionChange="changeSpeech"/>
+      </ion-item>
+
       <ion-item>
         <ion-toggle :checked="isDarkMode" @ion-change="toggleMode" justify="space-between">Dark mode</ion-toggle>
       </ion-item>
@@ -59,5 +66,7 @@ const toggleMode = () => {
 </template>
 
 <style scoped lang="scss">
-
+.speech {
+  padding: 0 12px;
+}
 </style>

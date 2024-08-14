@@ -42,9 +42,12 @@ import {storeToRefs} from "pinia";
 import LetterCard from "@/components/words/letter/LetterCard.vue";
 import {backspaceOutline, radioButtonOffOutline} from "ionicons/icons";
 import {IonIcon} from "@ionic/vue";
+import {settingsStore} from "@/store/settings";
 
 const storeWords = wordsStore();
 const {randomWord} = storeToRefs(storeWords);
+
+const storeSettings = settingsStore();
 
 const lettersRandom: Ref<UnwrapRef<{ letter: string; selected: number; counter: number }[]>> = ref([]);
 const lettersSelected: Ref<UnwrapRef<string[]>> = ref([]);
@@ -80,7 +83,6 @@ watch(randomWord, () => {
     return acc;
   }, []);
 
-  console.log(lettersSelected);
 })
 
 const textFormWord = computed((): string => {
@@ -97,6 +99,7 @@ const selectLetter = (letter: string): void => {
   if (randomWord.value?.word.length === lettersSelected.value.length) {
     const checkingWord = lettersSelected.value.join('');
     isCorrectWord.value = true;
+    storeSettings.speakText(randomWord.value?.word || '')
 
     if (randomWord.value.word === checkingWord) {
       isCardLetters.value = false;
