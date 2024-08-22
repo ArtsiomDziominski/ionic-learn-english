@@ -54,7 +54,7 @@ const cards = [
 ];
 
 const redirectToLearnWords = (flow: FlowWords): void => {
-  storeWords.setWordsList(flow);
+  storeWords.initializeWordsList(flow);
   ionRouter.push('/tabs/words/progress');
 }
 </script>

@@ -9,23 +9,29 @@
           <ion-title>Tab 1</ion-title>
         </div>
       </ion-toolbar>
+      <ion-progress-bar :buffer="0" :value="progressBarStudyCount"></ion-progress-bar>
     </ion-header>
-    <ion-content class="ion-padding page__content" :fullscreen="true">
+    <ion-content v-if="!isCompleted" class="ion-padding page__content" :fullscreen="true">
+      {{ flowWords }}
       <div class="content">
-        <ion-text v-if="activeCardSelectWord !== ViewCardWords.Match" class="content__title" @click="speck">
+        {{ studyWords }}
+        <ion-text v-if="selectedCardView !== ViewCardWords.Match" class="content__title" @click="speck">
           {{ titleRandomWord }}
           <ion-icon :icon="volumeMediumOutline" size="large" color="medium"></ion-icon>
         </ion-text>
         <div class="content__card">
-          <component :is="viewCardSelectWord" />
+          <component :is="selectedCardViewWord" />
         </div>
       </div>
+    </ion-content>
+    <ion-content v-else>
+      <WordsStudyCompeted />
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, Ref, ref, UnwrapRef} from "vue";
+import {computed, onMounted, onUnmounted, Ref, ref, UnwrapRef} from "vue";
 import {storeToRefs} from "pinia";
 import {wordsStore} from "@/store/words";
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon} from '@ionic/vue';
@@ -33,10 +39,11 @@ import {chevronBackOutline, volumeMediumOutline} from "ionicons/icons";
 import {useRouter} from "vue-router";
 import {VIEW_WORDS_TRANSLATION, ViewCardWords} from "@/const/flow";
 import {settingsStore} from "@/store/settings";
+import WordsStudyCompeted from "@/components/words/WordsStudyCompeted.vue";
 
 const router = useRouter();
 const storeWords = wordsStore();
-const {cards, randomWord, activeCardSelectWord, viewCardSelectWord} = storeToRefs(storeWords);
+const {cards, currentWord, selectedCardView, selectedCardViewWord, isCompleted, progressBarStudyCount, flowWords, studyWords} = storeToRefs(storeWords);
 
 const storeSettings = settingsStore();
 
@@ -44,14 +51,17 @@ const wordSelected = ref('');
 const colorCards: Ref<UnwrapRef<string[]>> = ref([]);
 
 onMounted(() => {
-  storeWords.setNextWord();
   setDefault();
 })
 
+onUnmounted(() => {
+  storeWords.resetFlow();
+})
+
 const titleRandomWord = computed((): string => {
-  return VIEW_WORDS_TRANSLATION.includes(activeCardSelectWord.value)
-      ? randomWord.value?.translation
-      : randomWord.value?.word;
+  return VIEW_WORDS_TRANSLATION.includes(selectedCardView.value)
+      ? currentWord.value?.translation
+      : currentWord.value?.word;
 })
 
 const setDefault = (): void => {
@@ -64,7 +74,7 @@ const toBack = (): void => {
 }
 
 const speck = (): void => {
-  storeSettings.speakText(randomWord.value.word);
+  storeSettings.speakText(currentWord.value.word);
 }
 </script>
 

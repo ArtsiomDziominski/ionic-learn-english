@@ -20,7 +20,7 @@ import {storeToRefs} from "pinia";
 import {settingsStore} from "@/store/settings";
 
 const storeWords = wordsStore();
-const {cards, randomWord} = storeToRefs(storeWords);
+const {cards, currentWord} = storeToRefs(storeWords);
 
 const storeSettings = settingsStore();
 
@@ -30,7 +30,6 @@ const colorError: Ref<UnwrapRef<string>> = ref('danger');
 const colorSuccess: Ref<UnwrapRef<string>> = ref('success');
 
 onMounted(() => {
-  storeWords.setNextWord();
   setDefault();
 })
 
@@ -39,15 +38,17 @@ const chooseWord = (word: COMMON.Word, index: number): void => {
   let timeout = 2000;
   wordSelected.value = word.word;
 
-  const indexRandomWord = cards.value.findIndex((card: COMMON.Word) => (card.word === randomWord.value.word));
+  const indexRandomWord = cards.value.findIndex((card: COMMON.Word) => (card.word === currentWord.value.word));
   colorCards.value[indexRandomWord] = colorSuccess.value;
-  if (randomWord.value.word !== word.word) {
+  if (currentWord.value.word !== word.word) {
     timeout = 3000;
     colorCards.value[index] = colorError.value;
   }
 
-  storeSettings.speakText(randomWord.value?.word || '');
+  storeSettings.speakText(currentWord.value?.word || '');
 
+  const isCorrectWord = currentWord.value.word === word.word;
+  storeWords.setAnswer(currentWord.value, isCorrectWord);
   setTimeout(() => {
     storeWords.setNextWord();
     setDefault();

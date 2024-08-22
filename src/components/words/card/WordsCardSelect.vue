@@ -7,7 +7,7 @@
         v-for="(word, index) in cards"
         :key="word.word"
         :word="word.translation"
-        @click="chooseWord(word, index)"
+        @click="selectWord(word, index)"
     />
   </div>
 </template>
@@ -20,7 +20,7 @@ import {wordsStore} from "@/store/words";
 import {settingsStore} from "@/store/settings";
 
 const storeWords = wordsStore();
-const {cards, randomWord} = storeToRefs(storeWords);
+const {cards, currentWord} = storeToRefs(storeWords);
 const storeSettings = settingsStore();
 
 const wordSelected = ref('');
@@ -29,23 +29,25 @@ const colorError: Ref<UnwrapRef<string>> = ref('danger');
 const colorSuccess: Ref<UnwrapRef<string>> = ref('success');
 
 onMounted(() => {
-  storeWords.setNextWord();
   setDefault();
 })
 
-watch(randomWord, (value) => storeSettings.speakText(value.word))
+watch(currentWord, (value) => storeSettings.speakText(value?.word || ''))
 
-const chooseWord = (word: COMMON.Word, index: number): void => {
+const selectWord = (word: COMMON.Word, index: number): void => {
   if (wordSelected.value) return;
   let timeout = 2000;
   wordSelected.value = word.word;
 
-  const indexRandomWord = cards.value.findIndex((card: COMMON.Word) => (card.word === randomWord.value.word));
+  const indexRandomWord = cards.value.findIndex((card: COMMON.Word) => (card.word === currentWord.value.word));
   colorCards.value[indexRandomWord] = colorSuccess.value;
-  if (randomWord.value.word !== word.word) {
+  if (currentWord.value.word !== word.word) {
     timeout = 3000;
     colorCards.value[index] = colorError.value;
   }
+
+  const isCorrect = currentWord.value.word === word.word;
+  storeWords.setAnswer(word, isCorrect);
 
   setTimeout(() => {
     storeWords.setNextWord();

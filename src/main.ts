@@ -48,6 +48,8 @@ const app = createApp(App)
     .use(router)
     .use(createPinia());
 
+app.config.warnHandler = () => {};
+
 router.isReady().then(() => {
   app.mount('#app');
 });
