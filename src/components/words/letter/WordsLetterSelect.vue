@@ -23,7 +23,7 @@
     <div class="letter-select__result result">
       <Transition name="bounce">
         <ion-text v-show="isCorrectWord" class="result__translation">
-          {{ randomWord?.word }}
+          {{ currentWord?.word }}
         </ion-text>
       </Transition>
       <Transition name="slide-fade">
@@ -45,7 +45,7 @@ import {IonIcon} from "@ionic/vue";
 import {settingsStore} from "@/store/settings";
 
 const storeWords = wordsStore();
-const {randomWord} = storeToRefs(storeWords);
+const {currentWord} = storeToRefs(storeWords);
 
 const storeSettings = settingsStore();
 
@@ -57,12 +57,27 @@ const isCorrectTranslation: Ref<UnwrapRef<boolean>> = ref(false);
 const isCardLetters: Ref<UnwrapRef<boolean>> = ref(true);
 
 onMounted(() => {
-  storeWords.setNextWord();
+  setLettersRandom();
   setDefault();
+});
+
+watch(currentWord, () => {
+  setLettersRandom();
+
+});
+
+watch(isCorrectTranslation, () => {
+  if (!isCorrectTranslation.value) setLettersRandom();
+
+});
+
+const textFormWord = computed((): string => {
+  const repeatForm = currentWord.value?.word ? currentWord.value.word.length - lettersSelected.value.length : 0;
+  return lettersSelected.value.join('') + ' _ '.repeat(repeatForm);
 })
 
-watch(randomWord, () => {
-  const randomLettersList = randomWord.value?.word
+const setLettersRandom = (): void => {
+  const randomLettersList = currentWord.value?.word
       .split('')
       .sort(() => Math.random() - 0.5)
 
@@ -82,13 +97,7 @@ watch(randomWord, () => {
 
     return acc;
   }, []);
-
-})
-
-const textFormWord = computed((): string => {
-  const repeatForm = randomWord.value?.word ? randomWord.value.word.length - lettersSelected.value.length : 0;
-  return lettersSelected.value.join('') + ' _ '.repeat(repeatForm);
-})
+}
 
 const selectLetter = (letter: string): void => {
   lettersSelected.value.push(letter);
@@ -96,13 +105,14 @@ const selectLetter = (letter: string): void => {
     if (l.letter === letter) l.selected++;
   });
 
-  if (randomWord.value?.word.length === lettersSelected.value.length) {
+  if (currentWord.value?.word.length === lettersSelected.value.length) {
     const checkingWord = lettersSelected.value.join('');
     isCorrectWord.value = true;
-    storeSettings.speakText(randomWord.value?.word || '')
+    storeSettings.speakText(currentWord.value?.word || '');
 
-    if (randomWord.value.word === checkingWord) {
+    if (currentWord.value.word === checkingWord) {
       isCardLetters.value = false;
+      storeWords.setAnswer(currentWord.value, true);
       setTimeout(() => {
         storeWords.setNextWord();
         setDefault();

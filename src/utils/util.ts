@@ -7,5 +7,4 @@ export const speak = (text: string, speech: VoiceSpeech = VoiceSpeech.Male) => {
     utterance.voice = speechSynthesis.getVoices()[speech]; // Голос
     utterance.rate = 1; // Скорость речи (по умолчанию 1)
     speechSynthesis.speak(utterance);
-    console.log(speechSynthesis.getVoices());
 }

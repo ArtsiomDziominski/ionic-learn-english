@@ -7,7 +7,7 @@ const {notifications} = storeToRefs(storeNotification);
 </script>
 
 <template>
-  <div class="notifications">
+  <div v-if="notifications.length" class="notifications">
     <transition-group name="slide-fade" tag="div">
       <div v-for="notification in notifications" :key="notification.id" class="notification">
         <p>{{ notification.message }}</p>

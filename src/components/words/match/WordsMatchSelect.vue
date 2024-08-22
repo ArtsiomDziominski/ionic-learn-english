@@ -69,8 +69,10 @@ const getColorCard = (word: string): string => {
 }
 
 const nextWord = (): void => {
-  if (selected.value.length === 4 && selected.value.at(-1)?.length === 2)
+  if (selected.value.length === 4 && selected.value.at(-1)?.length === 2) {
     setTimeout(() => storeWords.setNextWord(), 3000);
+    storeWords.setAnswer(null, true);
+  }
 }
 </script>
 
