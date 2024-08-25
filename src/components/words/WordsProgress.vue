@@ -1,49 +1,65 @@
 <template>
   <ion-page class="page">
     <ion-header class="header">
-      <ion-toolbar class="header__toolbar">
-        <div class="toolbar">
-          <ion-button icon @click="toBack">
-            <ion-icon :icon="chevronBackOutline" size="large"></ion-icon>
-          </ion-button>
-          <ion-title>Tab 1</ion-title>
-        </div>
-      </ion-toolbar>
+      <HeaderToolbarPages title="Обучение"/>
       <ion-progress-bar :buffer="0" :value="progressBarStudyCount"></ion-progress-bar>
     </ion-header>
     <ion-content v-if="!isCompleted" class="ion-padding page__content" :fullscreen="true">
       <div class="content">
         <ion-text v-if="selectedCardView !== ViewCardWords.Match" class="content__title" @click="speck">
           {{ titleRandomWord }}
-          <ion-icon :icon="volumeMediumOutline" size="large" color="medium"></ion-icon>
+          <ion-icon :icon="volumeMediumOutline" size="large" color="medium"/>
         </ion-text>
+        <ion-button
+            v-if="selectedCardView !== ViewCardWords.Match"
+            class="content__button-favorite"
+            fill="clear"
+            size="large"
+            @click="setFavorite"
+        >
+          <ion-icon
+              class="icon"
+              :icon="bookmarkOutline"
+              :color="isFavorite ? 'warning' : 'medium'"
+          />
+        </ion-button>
         <div class="content__card">
-          <component :is="selectedCardViewWord" />
+          <component :is="selectedCardViewWord"/>
         </div>
       </div>
     </ion-content>
     <ion-content v-else>
-      <WordsStudyCompeted />
+      <WordsStudyCompeted/>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, Ref, ref, UnwrapRef} from "vue";
+import {computed, onMounted, onUnmounted, Ref, ref, UnwrapRef, watch} from "vue";
 import {storeToRefs} from "pinia";
 import {wordsStore} from "@/store/words";
-import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon} from '@ionic/vue';
-import {chevronBackOutline, volumeMediumOutline} from "ionicons/icons";
-import {useRouter} from "vue-router";
+import {IonContent, IonHeader, IonPage, IonIcon} from '@ionic/vue';
+import {bookmarkOutline, volumeMediumOutline} from "ionicons/icons";
 import {VIEW_WORDS_TRANSLATION, ViewCardWords} from "@/const/flow";
 import {settingsStore} from "@/store/settings";
 import WordsStudyCompeted from "@/components/words/WordsStudyCompeted.vue";
+import HeaderToolbarPages from "@/components/header/HeaderToolbarPages.vue";
+import {vocabularyStore} from "@/store/vocabulary";
 
-const router = useRouter();
 const storeWords = wordsStore();
-const {cards, currentWord, selectedCardView, selectedCardViewWord, isCompleted, progressBarStudyCount} = storeToRefs(storeWords);
+const {
+  cards,
+  currentWord,
+  selectedCardView,
+  selectedCardViewWord,
+  studyWords,
+  isCompleted,
+  progressBarStudyCount
+} = storeToRefs(storeWords);
 
 const storeSettings = settingsStore();
+const storeVocabulary = vocabularyStore();
+const {favoritesWords} = storeToRefs(storeVocabulary);
 
 const wordSelected = ref('');
 const colorCards: Ref<UnwrapRef<string[]>> = ref([]);
@@ -56,10 +72,18 @@ onUnmounted(() => {
   storeWords.resetFlow();
 })
 
+watch(isCompleted, (value) => {
+  if (value) storeVocabulary.updateStudiedList(studyWords.value);
+})
+
 const titleRandomWord = computed((): string => {
   return VIEW_WORDS_TRANSLATION.includes(selectedCardView.value)
       ? currentWord.value?.translation
       : currentWord.value?.word;
+})
+
+const isFavorite = computed((): boolean => {
+  return !!favoritesWords.value.find((item) => item.word === currentWord.value.word);
 })
 
 const setDefault = (): void => {
@@ -67,12 +91,13 @@ const setDefault = (): void => {
   wordSelected.value = '';
 }
 
-const toBack = (): void => {
-  router.back();
-}
-
 const speck = (): void => {
   storeSettings.speakText(currentWord.value.word);
+}
+
+const setFavorite = (): void => {
+  if (isFavorite.value) storeVocabulary.deleteFavoritesWord(currentWord.value);
+  else storeVocabulary.updateFavoritesWord(currentWord.value);
 }
 </script>
 
@@ -84,12 +109,6 @@ const speck = (): void => {
   align-items: center;
 
   .header {
-    &__toolbar {
-      .toolbar {
-        display: flex;
-        flex-direction: row;
-      }
-    }
   }
 
   &__content {
@@ -116,6 +135,12 @@ const speck = (): void => {
 
       &__card {
         grid-area: 2/1/3/2;
+      }
+
+      &__button-favorite {
+        position: absolute;
+        top: 70px;
+        right: 0;
       }
     }
   }

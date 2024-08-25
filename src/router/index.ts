@@ -35,8 +35,12 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/views/Tab2Page.vue')
       },
       {
-        path: 'tab3',
-        component: () => import('@/views/Tab3Page.vue')
+        path: 'vocabulary',
+        component: () => import('@/views/vocabulary/VocabularyView.vue')
+      },
+      {
+        path: 'vocabulary/list',
+        component: () => import('@/views/vocabulary/VocabularyListView.vue')
       }
     ]
   },
