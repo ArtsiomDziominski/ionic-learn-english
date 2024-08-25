@@ -8,6 +8,7 @@ export const wordsStore = defineStore('wordsStore', () => {
     const currentWordIndex: Ref<UnwrapRef<number>> = ref(0);
     const randomCards: Ref<UnwrapRef<COMMON.Word[]>> = ref([]);
     const flowWords: Ref<UnwrapRef<WORDS.FlowWords[]>> = ref([]);
+    const currentFlow: Ref<UnwrapRef<FlowWords>> = ref(FlowWords.Random);
     const isRepeatingFlowWords: Ref<UnwrapRef<boolean>> = ref(false);
     const studyWords: Ref<UnwrapRef<COMMON.Word[]>> = ref([]);
 
@@ -31,11 +32,13 @@ export const wordsStore = defineStore('wordsStore', () => {
     });
 
     const isCompleted = computed((): UnwrapRef<boolean> => {
-        return flowWords.value.length >= studyWords.value.length && flowWords.value.every((item) => item.isCorrect.length >= studyWords.value.length);
+        return !!flowWords.value.length && !!studyWords.value
+            && flowWords.value.length >= studyWords.value.length
+            && flowWords.value.every((item) => item.isCorrect.length >= studyWords.value.length);
     });
 
     const progressBarStudyCount = computed((): UnwrapRef<number> => {
-        return flowWords.value.reduce((acc, flow) => acc + flow.isCorrect.length, 0) * 6.15 / 100;
+        return flowWords.value.reduce((acc, flow) => acc + flow.isCorrect.length, 0) * 6.3 / 100;
     });
 
     const setRandomCards = (randomLength: number = 3): void => {
@@ -129,6 +132,7 @@ export const wordsStore = defineStore('wordsStore', () => {
     }
 
     const resetFlow = () => {
+        console.log('resetFlow');
         currentWordIndex.value = 0;
         flowWords.value = [];
         isRepeatingFlowWords.value = false;
@@ -140,6 +144,7 @@ export const wordsStore = defineStore('wordsStore', () => {
     return {
         cards: randomCards,
         currentWord,
+        currentFlow,
         activeFlowWords,
         selectedCardViewWord,
         selectedCardView,

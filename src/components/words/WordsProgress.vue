@@ -12,9 +12,7 @@
       <ion-progress-bar :buffer="0" :value="progressBarStudyCount"></ion-progress-bar>
     </ion-header>
     <ion-content v-if="!isCompleted" class="ion-padding page__content" :fullscreen="true">
-      {{ flowWords }}
       <div class="content">
-        {{ studyWords }}
         <ion-text v-if="selectedCardView !== ViewCardWords.Match" class="content__title" @click="speck">
           {{ titleRandomWord }}
           <ion-icon :icon="volumeMediumOutline" size="large" color="medium"></ion-icon>
@@ -43,7 +41,7 @@ import WordsStudyCompeted from "@/components/words/WordsStudyCompeted.vue";
 
 const router = useRouter();
 const storeWords = wordsStore();
-const {cards, currentWord, selectedCardView, selectedCardViewWord, isCompleted, progressBarStudyCount, flowWords, studyWords} = storeToRefs(storeWords);
+const {cards, currentWord, selectedCardView, selectedCardViewWord, isCompleted, progressBarStudyCount} = storeToRefs(storeWords);
 
 const storeSettings = settingsStore();
 
@@ -83,6 +81,7 @@ const speck = (): void => {
   height: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
 
   .header {
     &__toolbar {
@@ -93,27 +92,31 @@ const speck = (): void => {
     }
   }
 
-  .content {
-    height: 100%;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 2fr;
+  &__content {
+    max-width: 600px;
 
-    &__title {
-      grid-area: 1/1/2/2;
-      justify-self: center;
-      align-self: center;
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      gap: 14px;
-      font-size: 36px;
-      word-break: break-all;
-    }
+    .content {
+      height: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 2fr;
 
-    &__card {
-      grid-area: 2/1/3/2;
+      &__title {
+        grid-area: 1/1/2/2;
+        justify-self: center;
+        align-self: center;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 14px;
+        font-size: 36px;
+        word-break: break-all;
+      }
+
+      &__card {
+        grid-area: 2/1/3/2;
+      }
     }
   }
 }

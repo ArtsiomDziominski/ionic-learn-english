@@ -28,7 +28,7 @@
       </Transition>
       <Transition name="slide-fade">
         <ion-button v-show="isCorrectTranslation" class="result__translation" @click="clickNext">
-          Next
+          Понял
         </ion-button>
       </Transition>
     </div>
