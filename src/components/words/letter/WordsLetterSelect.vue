@@ -63,7 +63,6 @@ onMounted(() => {
 
 watch(currentWord, () => {
   setLettersRandom();
-
 });
 
 watch(isCorrectTranslation, () => {

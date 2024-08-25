@@ -1,9 +1,7 @@
 <template>
   <ion-page>
     <ion-header>
-      <ion-toolbar>
-        <ion-title>Tab 3</ion-title>
-      </ion-toolbar>
+      <HeaderToolbarMainPages title="Vocabulary words" />
     </ion-header>
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
@@ -12,12 +10,13 @@
         </ion-toolbar>
       </ion-header>
 
-      <ExploreContainer name="Tab 3 page" />
+      <VocabularyList />
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/vue';
-import ExploreContainer from '@/components/ExploreContainer.vue';
+import VocabularyList from "@/components/vocabulary/VocabularyList.vue";
+import HeaderToolbarMainPages from "@/components/header/HeaderToolbarMainPages.vue";
 </script>

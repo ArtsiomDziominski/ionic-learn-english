@@ -13,7 +13,7 @@
           <ion-label>Tab 2</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab3" href="/tabs/tab3">
+        <ion-tab-button tab="tab3" href="/tabs/vocabulary">
           <ion-icon aria-hidden="true" :icon="fileTrayFullOutline" />
           <ion-label>Словарь</ion-label>
         </ion-tab-button>

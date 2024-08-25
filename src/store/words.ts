@@ -2,6 +2,7 @@ import {defineStore} from 'pinia';
 import {computed, Ref, ref, UnwrapRef} from "vue";
 import {ActiveFlowWords, FlowWords, VIEW_CARD_WORDS, ViewCardWords} from "@/const/flow";
 import {words} from "@/content/words_level";
+import {STORAGE_KEY_STUDIED_WORDS} from "@/const/const";
 
 export const wordsStore = defineStore('wordsStore', () => {
     const wordsList: Ref<UnwrapRef<COMMON.Word[]>> = ref([]);
@@ -41,16 +42,26 @@ export const wordsStore = defineStore('wordsStore', () => {
         return flowWords.value.reduce((acc, flow) => acc + flow.isCorrect.length, 0) * 6.3 / 100;
     });
 
+    const countAllWords = computed((): UnwrapRef<number> => {
+        return words.length;
+    });
+
     const setRandomCards = (randomLength: number = 3): void => {
         if (selectedCardView.value === ViewCardWords.Match) {
             randomCards.value = studyWords.value;
         } else {
-            const wordsListLength = wordsList.value.length;
+            const studiedWords = JSON.parse(localStorage.getItem(STORAGE_KEY_STUDIED_WORDS) || '[]');
+            const wordsListFilter = studiedWords.length ?
+                wordsList.value
+                    .filter((w) => studiedWords
+                        .find((s: COMMON.Word) => w.word === s.word))
+                : wordsList.value;
+            const wordsListLength = wordsListFilter.length;
             const randomNumbers = [];
             for (let i = 0; i < randomLength; i++) {
                 randomNumbers.push(Math.floor(Math.random() * wordsListLength));
             }
-            randomCards.value = randomNumbers.map((number: number) => (wordsList.value[number]));
+            randomCards.value = randomNumbers.map((number: number) => (wordsListFilter[number]));
 
             const randomIndex = Math.floor(Math.random() * (randomCards.value.length + 1));
             randomCards.value.splice(randomIndex, 0, currentWord.value);
@@ -152,6 +163,7 @@ export const wordsStore = defineStore('wordsStore', () => {
         progressBarStudyCount,
         flowWords,
         studyWords,
+        countAllWords,
         setNextWord,
         setRandomCards,
         initializeWordsList,
