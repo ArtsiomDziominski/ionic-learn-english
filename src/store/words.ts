@@ -125,6 +125,7 @@ export const wordsStore = defineStore('wordsStore', () => {
     }
 
     const initializeWordsList = (flow: FlowWords): void => {
+        currentFlow.value = flow;
         if (FlowWords.Random === flow) wordsList.value = words;
         else wordsList.value = words.filter((word) => (word.levels.includes(flow)));
         setStudyCards();
@@ -132,7 +133,6 @@ export const wordsStore = defineStore('wordsStore', () => {
     }
 
     const resetFlow = () => {
-        console.log('resetFlow');
         currentWordIndex.value = 0;
         flowWords.value = [];
         isRepeatingFlowWords.value = false;

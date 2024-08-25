@@ -93,13 +93,13 @@ const speck = (): void => {
   }
 
   &__content {
-    max-width: 600px;
-
     .content {
+      max-width: 600px;
       height: 100%;
       display: grid;
       grid-template-columns: 1fr;
       grid-template-rows: 1fr 2fr;
+      margin: 0 auto;
 
       &__title {
         grid-area: 1/1/2/2;

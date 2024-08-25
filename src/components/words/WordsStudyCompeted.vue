@@ -2,13 +2,13 @@
 import {checkmarkCircleOutline} from "ionicons/icons";
 import {IonIcon, useIonRouter} from '@ionic/vue';
 import AppConfetti from "@/components/AppConfetti.vue";
-import {computed, onUnmounted} from "vue";
+import {computed} from "vue";
 import {wordsStore} from "@/store/words";
 import {storeToRefs} from "pinia";
 
 const ionRouter = useIonRouter();
 const storeWords = wordsStore();
-const {currentFlow, studyWords} = storeToRefs(storeWords);
+const {currentFlow} = storeToRefs(storeWords);
 
 const praiseArray = [
   "Отлично!",
@@ -26,18 +26,14 @@ const praiseArray = [
   "Великолепно!"
 ];
 
-onUnmounted(() => storeWords.resetFlow());
-
 const randomTitle = computed(() => praiseArray[Math.floor(Math.random() * (praiseArray.length + 0.5))])
 
 const toSetFlow = (): void => {
-  studyWords.value = [];
   storeWords.resetFlow();
   storeWords.initializeWordsList(currentFlow.value);
   ionRouter.push('/tabs/words/progress');
 }
 const toHome = (): void => {
-  studyWords.value = [];
   storeWords.resetFlow();
   ionRouter.push('/tabs/words');
 }

@@ -116,7 +116,7 @@ const selectLetter = (letter: string): void => {
       setTimeout(() => {
         storeWords.setNextWord();
         setDefault();
-      }, 5000);
+      }, 3000);
     } else {
       isCorrectTranslation.value = true;
     }
