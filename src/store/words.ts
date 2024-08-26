@@ -53,7 +53,7 @@ export const wordsStore = defineStore('wordsStore', () => {
             const studiedWords = JSON.parse(localStorage.getItem(STORAGE_KEY_STUDIED_WORDS) || '[]');
             const wordsListFilter = studiedWords.length ?
                 wordsList.value
-                    .filter((w) => studiedWords
+                    .filter((w) => !studiedWords
                         .find((s: COMMON.Word) => w.word === s.word))
                 : wordsList.value;
             const wordsListLength = wordsListFilter.length;
@@ -137,8 +137,10 @@ export const wordsStore = defineStore('wordsStore', () => {
 
     const initializeWordsList = (flow: FlowWords): void => {
         currentFlow.value = flow;
+        console.log(flow);
         if (FlowWords.Random === flow) wordsList.value = words;
         else wordsList.value = words.filter((word) => (word.levels.includes(flow)));
+        console.log(wordsList.value);
         setStudyCards();
         setRandom();
     }
