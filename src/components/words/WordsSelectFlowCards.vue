@@ -50,6 +50,11 @@ const cards = [
     title: FlowWords.C2,
     description: 'Level C2',
     bg: 'dark'
+  },
+  {
+    title: FlowWords.Pronoun,
+    description: 'Pronoun',
+    bg: 'light'
   }
 ];
 
