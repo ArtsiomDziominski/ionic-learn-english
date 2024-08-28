@@ -33,6 +33,8 @@ export enum FlowWords {
     C1 = 'C1',
     C2 = 'C2',
     Pronoun = 'pronoun',
+    Number = 'number',
+    Auto = 'auto',
 }
 
 export const VIEW_WORDS_TRANSLATION = [ViewCardWords.Words, ViewCardWords.List];
