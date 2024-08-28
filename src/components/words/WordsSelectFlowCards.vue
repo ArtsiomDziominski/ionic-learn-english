@@ -1,7 +1,14 @@
 <template>
   <div class="wrapper-flow">
     <ion-button shape="round" @click="redirectToLearnWords(FlowWords.Random)">Random</ion-button>
-    <ion-card class="card" :color="card.bg" v-for="card in cards" :key="card.title" @click="redirectToLearnWords(card.title)">
+    <ion-card
+        class="card"
+        :color="card.bg"
+        :style="{'--ion-color-base': card.bg}"
+        v-for="card in cards"
+        :key="card.title"
+        @click="redirectToLearnWords(card.title)"
+    >
       <ion-card-header class="header">
         <ion-card-title>{{ card.title }}</ion-card-title>
         <ion-icon :icon="caretForwardOutline" size="large"></ion-icon>
@@ -55,6 +62,16 @@ const cards = [
     title: FlowWords.Pronoun,
     description: 'Pronoun',
     bg: 'light'
+  },
+  {
+    title: FlowWords.Number,
+    description: 'Числа',
+    bg: 'var(--ion-color-tertiary-shade)'
+  },
+  {
+    title: FlowWords.Auto,
+    description: 'Автомобильная тематика',
+    bg: 'var(--ion-color-danger-shade)'
   }
 ];
 
@@ -75,6 +92,7 @@ const redirectToLearnWords = (flow: FlowWords): void => {
     width: 100%;
     transition: transform 0.3s ease;
     cursor: pointer;
+
     &:active {
       transform: scale(0.99);
     }
