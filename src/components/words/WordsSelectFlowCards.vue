@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper-flow">
-    <ion-button shape="round" @click="redirectToLearnWords(FlowWords.Random)">Random</ion-button>
+    <ion-button shape="round" @click="redirectToLearnWords(FlowWords.Random)">Все слова</ion-button>
     <ion-card
         class="card"
         :color="card.bg"
@@ -71,6 +71,71 @@ const cards = [
   {
     title: FlowWords.Auto,
     description: 'Автомобильная тематика',
+    bg: 'var(--ion-color-danger-shade)'
+  },
+  {
+    title: FlowWords.Airport,
+    description: 'Ключевые слова в аэропорту',
+    bg: 'var(--ion-color-secondary-tint)'
+  },
+  {
+    title: FlowWords.Journey,
+    description: 'Путешествие',
+    bg: 'var(--ion-color-warning-shade)'
+  },
+  {
+    title: FlowWords.Government,
+    description: 'Государственное управление',
+    bg: 'var(--ion-color-success-shade)'
+  },
+  {
+    title: FlowWords.Health,
+    description: 'Здоровье и медицина',
+    bg: 'var(--ion-color-danger)'
+  },
+  {
+    title: FlowWords.Business,
+    description: 'Бизнес и экономика',
+    bg: 'primary'
+  },
+  {
+    title: FlowWords.Science,
+    description: 'Наука и технологии',
+    bg: 'secondary'
+  },
+  {
+    title: FlowWords.Food,
+    description: 'Еда и напитки',
+    bg: 'tertiary'
+  },
+  {
+    title: FlowWords.Culture,
+    description: 'Культура и искусство',
+    bg: 'warning'
+  },
+  {
+    title: FlowWords.Fitness,
+    description: 'Спорт и фитнес',
+    bg: 'medium'
+  },
+  {
+    title: FlowWords.Fashion,
+    description: 'Покупки и мода',
+    bg: 'dark'
+  },
+  {
+    title: FlowWords.Ecology,
+    description: 'Окружающая среда и экология',
+    bg: 'light'
+  },
+  {
+    title: FlowWords.Socialissues,
+    description: 'Социальные вопросы',
+    bg: 'var(--ion-color-tertiary-shade)'
+  },
+  {
+    title: FlowWords.Home,
+    description: 'Социальные вопросы',
     bg: 'var(--ion-color-danger-shade)'
   }
 ];
