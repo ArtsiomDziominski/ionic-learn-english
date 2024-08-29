@@ -35,6 +35,19 @@ export enum FlowWords {
     Pronoun = 'pronoun',
     Number = 'number',
     Auto = 'auto',
+    Airport = 'airport',
+    Journey = 'journey',
+    Government = 'government',
+    Health = 'health',
+    Business = 'business',
+    Science = 'science',
+    Food = 'food',
+    Culture = 'culture',
+    Fitness = 'fitness',
+    Fashion = 'fashion',
+    Ecology = 'ecology',
+    Socialissues = 'socialissues',
+    Home = 'home',
 }
 
 export const VIEW_WORDS_TRANSLATION = [ViewCardWords.Words, ViewCardWords.List];

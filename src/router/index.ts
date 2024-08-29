@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import TabsPage from '../views/TabsPage.vue'
 import SettingsPage from "@/views/SettingsPage.vue";
+import VocabularyListView from "@/views/vocabulary/VocabularyListView.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -40,7 +41,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: 'vocabulary/list',
-        component: () => import('@/views/vocabulary/VocabularyListView.vue')
+        component: VocabularyListView
       }
     ]
   },
