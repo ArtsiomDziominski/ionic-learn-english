@@ -21,3 +21,14 @@ export const speak = async (text: string): Promise<void> => {
         console.error('Error:', error);
     }
 };
+
+
+export const addUniqueElements = (array: any, newElements: any, key: string) => {
+    const uniqueArray = Array.from(new Map(array.map((item: any) => [item[key], item])).values());
+    newElements.forEach((item: any) => {
+        if (!uniqueArray.some(existingItem => (existingItem as any)[key] === item[key])) {
+            uniqueArray.push(item);
+        }
+    });
+    return uniqueArray;
+}

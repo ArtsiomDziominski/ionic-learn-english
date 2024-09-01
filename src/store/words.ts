@@ -4,6 +4,7 @@ import {ActiveFlowWords, FlowWords, VIEW_CARD_WORDS, ViewCardWords} from "@/cons
 import {words} from "@/content/words_level";
 import {STORAGE_KEY_STUDIED_WORDS} from "@/const/const";
 import {notificationStore} from "@/store/notification";
+import {addUniqueElements} from "@/utils/util";
 
 export const wordsStore = defineStore('wordsStore', () => {
     const storeNotification = notificationStore();
@@ -65,14 +66,17 @@ export const wordsStore = defineStore('wordsStore', () => {
                 randomNumbers.push(Math.floor(Math.random() * wordsListLength));
             }
 
-            if (wordsListFilter.length) randomCards.value = randomNumbers.map((number: number) => (wordsListFilter[number]));
+            const randomIndex = Math.floor(Math.random() * (randomCards.value.length + 1));
+            if (wordsListFilter.length)
+                randomCards.value = randomNumbers.map((number: number) => (wordsListFilter[number]));
             else {
                 randomCards.value = randomNumbers.map((number: number) => (wordsList.value[number]));
                 storeNotification.addNotification('Вы уже изучили слова из этой категории. Давайте повторим их!', 'success');
             }
-
-            const randomIndex = Math.floor(Math.random() * (randomCards.value.length + 1));
             randomCards.value.splice(randomIndex, 0, currentWord.value);
+
+            const replacementWords = wordsListFilter.length ? wordsListFilter : wordsList.value;
+            addUniqueElements(randomCards.value, replacementWords, 'word');
         }
     }
 
