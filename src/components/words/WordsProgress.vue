@@ -140,7 +140,7 @@ const setFavorite = (): void => {
       &__button-favorite {
         position: absolute;
         top: 70px;
-        right: 0;
+        right: 30px;
       }
     }
   }
