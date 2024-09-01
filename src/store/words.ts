@@ -61,7 +61,9 @@ export const wordsStore = defineStore('wordsStore', () => {
             for (let i = 0; i < randomLength; i++) {
                 randomNumbers.push(Math.floor(Math.random() * wordsListLength));
             }
-            randomCards.value = randomNumbers.map((number: number) => (wordsListFilter[number]));
+
+            if (wordsListFilter.length) randomCards.value = randomNumbers.map((number: number) => (wordsListFilter[number]));
+            else randomCards.value = randomNumbers.map((number: number) => (wordsList.value[number]));
 
             const randomIndex = Math.floor(Math.random() * (randomCards.value.length + 1));
             randomCards.value.splice(randomIndex, 0, currentWord.value);

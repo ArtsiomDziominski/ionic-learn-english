@@ -2,7 +2,7 @@
 import {settingsStore} from "@/store/settings";
 import {storeToRefs} from "pinia";
 import {sunny, sunnyOutline} from "ionicons/icons";
-import {IonIcon} from '@ionic/vue';
+import {IonIcon, IonToggle} from '@ionic/vue';
 import AppSelect from "@/components/UI/AppSelect.vue";
 import {VoiceSpeech} from "@/const/const";
 import {computed} from "vue";
@@ -32,41 +32,48 @@ const changeSpeech = (event: any) => {
 
 <template>
   <ion-content>
-    <ion-list-header>Appearance</ion-list-header>
-    <ion-list :inset="true">
-      <ion-item :button="true" class="speech">
-        <AppSelect label="Speech" :value="valueVoiceSpeech" :options="speechList" @ionChange="changeSpeech"/>
-      </ion-item>
+    <!--    <ion-list-header>Appearance</ion-list-header>-->
+    <div class="content">
 
-      <ion-item>
-        <ion-toggle :checked="isDarkMode" @ion-change="toggleMode" justify="space-between">Dark mode</ion-toggle>
-      </ion-item>
-    </ion-list>
+      <ion-list :inset="true">
+        <!--      <ion-item :button="true" class="speech">-->
+        <!--        <AppSelect label="Speech" :value="valueVoiceSpeech" :options="speechList" @ionChange="changeSpeech"/>-->
+        <!--      </ion-item>-->
 
-    <ion-list-header>Brightness</ion-list-header>
-    <ion-list :inset="true">
-      <ion-item>
-        <ion-range value="40">
-          <ion-icon :icon="sunnyOutline" slot="start"></ion-icon>
-          <ion-icon :icon="sunny" slot="end"></ion-icon>
-        </ion-range>
-      </ion-item>
-      <ion-item>
-        <ion-toggle justify="space-between" checked>True Tone</ion-toggle>
-      </ion-item>
-    </ion-list>
+        <ion-item>
+          <ion-toggle :checked="isDarkMode" @ion-change="toggleMode" justify="space-between">Dark mode</ion-toggle>
+        </ion-item>
+      </ion-list>
 
-    <ion-list :inset="true">
-      <ion-item :button="true">
-        <ion-label>Night Shift</ion-label>
-        <ion-text slot="end" color="medium">9:00 PM to 8:00 AM</ion-text>
-      </ion-item>
-    </ion-list>
+      <!--    <ion-list-header>Brightness</ion-list-header>-->
+      <!--    <ion-list :inset="true">-->
+      <!--      <ion-item>-->
+      <!--        <ion-range value="40">-->
+      <!--          <ion-icon :icon="sunnyOutline" slot="start"></ion-icon>-->
+      <!--          <ion-icon :icon="sunny" slot="end"></ion-icon>-->
+      <!--        </ion-range>-->
+      <!--      </ion-item>-->
+      <!--      <ion-item>-->
+      <!--        <ion-toggle justify="space-between" checked>True Tone</ion-toggle>-->
+      <!--      </ion-item>-->
+      <!--    </ion-list>-->
+
+      <!--    <ion-list :inset="true">-->
+      <!--      <ion-item :button="true">-->
+      <!--        <ion-label>Night Shift</ion-label>-->
+      <!--        <ion-text slot="end" color="medium">9:00 PM to 8:00 AM</ion-text>-->
+      <!--      </ion-item>-->
+      <!--    </ion-list>-->
+    </div>
   </ion-content>
 </template>
 
 <style scoped lang="scss">
 .speech {
   padding: 0 12px;
+}
+
+.content {
+  padding: 0 36px;
 }
 </style>
