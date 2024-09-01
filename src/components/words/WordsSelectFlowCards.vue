@@ -9,11 +9,17 @@
         :key="card.title"
         @click="redirectToLearnWords(card.title)"
     >
-      <ion-card-header class="header">
-        <ion-card-title>{{ card.title }}</ion-card-title>
-        <ion-icon :icon="caretForwardOutline" size="large"></ion-icon>
-      </ion-card-header>
-      <ion-card-content> {{ card.description }}</ion-card-content>
+      <!--      <ion-card-header class="header">-->
+      <!--        <ion-card-title>{{ card.title }}</ion-card-title>-->
+      <!--      </ion-card-header>-->
+      <ion-card-content>
+        <div class="card-content">
+          {{ card.description }}
+          <div class="img" :style="{'background-image': `url('/assets/svg/${card.title }.svg')`}"></div>
+          <ion-icon :icon="caretForwardOutline" size="large" />
+<!--          <ion-icon :icon="checkmarkCircle" class="check" />-->
+        </div>
+      </ion-card-content>
     </ion-card>
   </div>
 </template>
@@ -21,11 +27,14 @@
 <script setup lang="ts">
 import {IonIcon, useIonRouter} from "@ionic/vue";
 import {wordsStore} from "@/store/words";
-import {caretForwardOutline} from "ionicons/icons";
+import {caretForwardOutline, checkmarkCircle} from "ionicons/icons";
 import {FlowWords} from "@/const/flow";
+import {speak} from "@/utils/util";
+import {storeToRefs} from "pinia";
 
 const ionRouter = useIonRouter();
 const storeWords = wordsStore();
+const { currentWord } = storeToRefs(storeWords);
 
 const cards = [
   {
@@ -60,8 +69,8 @@ const cards = [
   },
   {
     title: FlowWords.Pronoun,
-    description: 'Pronoun',
-    bg: 'light'
+    description: 'Местоимения',
+    bg: 'secondary'
   },
   {
     title: FlowWords.Number,
@@ -126,7 +135,7 @@ const cards = [
   {
     title: FlowWords.Ecology,
     description: 'Окружающая среда и экология',
-    bg: 'light'
+    bg: 'secondary'
   },
   {
     title: FlowWords.Socialissues,
@@ -143,6 +152,7 @@ const cards = [
 const redirectToLearnWords = (flow: FlowWords): void => {
   storeWords.initializeWordsList(flow);
   ionRouter.push('/tabs/words/progress');
+  speak(currentWord.value.word);
 }
 </script>
 
@@ -157,6 +167,8 @@ const redirectToLearnWords = (flow: FlowWords): void => {
     width: 100%;
     transition: transform 0.3s ease;
     cursor: pointer;
+    padding: 16px;
+    color: white;
 
     &:active {
       transform: scale(0.99);
@@ -166,6 +178,28 @@ const redirectToLearnWords = (flow: FlowWords): void => {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+
+      .img {
+        position: absolute;
+        right: 0;
+        width: 300px;
+        height: 300px;
+        background-size: cover;
+      }
+
+      .check {
+        position: absolute;
+        top: 4px;
+        left: 4px;
+      }
     }
   }
 }

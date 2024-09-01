@@ -3,8 +3,11 @@ import {computed, Ref, ref, UnwrapRef} from "vue";
 import {ActiveFlowWords, FlowWords, VIEW_CARD_WORDS, ViewCardWords} from "@/const/flow";
 import {words} from "@/content/words_level";
 import {STORAGE_KEY_STUDIED_WORDS} from "@/const/const";
+import {notificationStore} from "@/store/notification";
 
 export const wordsStore = defineStore('wordsStore', () => {
+    const storeNotification = notificationStore();
+
     const wordsList: Ref<UnwrapRef<COMMON.Word[]>> = ref([]);
     const currentWordIndex: Ref<UnwrapRef<number>> = ref(0);
     const randomCards: Ref<UnwrapRef<COMMON.Word[]>> = ref([]);
@@ -63,7 +66,10 @@ export const wordsStore = defineStore('wordsStore', () => {
             }
 
             if (wordsListFilter.length) randomCards.value = randomNumbers.map((number: number) => (wordsListFilter[number]));
-            else randomCards.value = randomNumbers.map((number: number) => (wordsList.value[number]));
+            else {
+                randomCards.value = randomNumbers.map((number: number) => (wordsList.value[number]));
+                storeNotification.addNotification('Вы уже изучили слова из этой категории. Давайте повторим их!', 'success');
+            }
 
             const randomIndex = Math.floor(Math.random() * (randomCards.value.length + 1));
             randomCards.value.splice(randomIndex, 0, currentWord.value);

@@ -14,7 +14,7 @@ export const speak = async (text: string): Promise<void> => {
     try {
         await TextToSpeech.speak({
             text: text,
-            voice: 1,
+            voice: 2,
             rate: 0.9,
         });
     } catch (error) {

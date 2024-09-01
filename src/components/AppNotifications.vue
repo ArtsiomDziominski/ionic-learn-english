@@ -9,7 +9,12 @@ const {notifications} = storeToRefs(storeNotification);
 <template>
   <div v-if="notifications.length" class="notifications">
     <transition-group name="slide-fade" tag="div">
-      <div v-for="notification in notifications" :key="notification.id" class="notification">
+      <div
+          v-for="notification in notifications"
+          :key="notification.id"
+          class="notification"
+          :class="notification.type === 'success' ? 'notification-success' : 'notification-error'"
+      >
         <p>{{ notification.message }}</p>
         <button class="close-btn" @click="storeNotification.removeNotification(notification.id)">×</button>
       </div>
@@ -29,9 +34,17 @@ const {notifications} = storeToRefs(storeNotification);
   padding: 16px;
 }
 
-.notification {
+.notification-error {
   background-color: #f8d7da;
   color: #721c24;
+}
+
+.notification-success {
+  background-color: #e2f8d7;
+  color: #3c721c;
+}
+
+.notification {
   padding: 16px;
   margin-bottom: 20px;
   border-radius: 4px;
