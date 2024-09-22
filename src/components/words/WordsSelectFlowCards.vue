@@ -31,10 +31,13 @@ import {caretForwardOutline} from "ionicons/icons";
 import {FlowWords} from "@/const/flow";
 import {speak} from "@/utils/util";
 import {storeToRefs} from "pinia";
+import {settingsStore} from "@/store/settings";
 
 const ionRouter = useIonRouter();
 const storeWords = wordsStore();
 const { currentWord } = storeToRefs(storeWords);
+const storeSettings = settingsStore();
+const { voiceSpeech } = storeToRefs(storeSettings);
 
 const cards = [
   {
@@ -152,7 +155,7 @@ const cards = [
 const redirectToLearnWords = (flow: FlowWords): void => {
   storeWords.initializeWordsList(flow);
   ionRouter.push('/tabs/words/progress');
-  speak(currentWord.value.word);
+  speak(currentWord.value.word, voiceSpeech.value);
 }
 </script>
 
