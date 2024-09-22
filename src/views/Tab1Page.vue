@@ -3,7 +3,7 @@
     <ion-header>
       <HeaderToolbarMainPages title="Learn words" />
     </ion-header>
-    <ion-content class="ion-padding" :fullscreen="true">
+    <ion-content class="ion-padding" :fullscreen="true" :swipe="() => {}">
       <ion-header collapse="condense">
         <ion-toolbar>
           <ion-title size="large">Tab 1</ion-title>
