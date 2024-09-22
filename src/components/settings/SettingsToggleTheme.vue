@@ -1,32 +1,28 @@
 <script setup lang="ts">
 import {settingsStore} from "@/store/settings";
 import {storeToRefs} from "pinia";
-import {sunny, sunnyOutline} from "ionicons/icons";
-import {IonIcon, IonToggle} from '@ionic/vue';
-import AppSelect from "@/components/UI/AppSelect.vue";
-import {VoiceSpeech} from "@/const/const";
-import {computed} from "vue";
+import {IonToggle} from '@ionic/vue';
 
 const storeSettings = settingsStore();
-const {isDarkMode, voiceSpeech} = storeToRefs(storeSettings);
+const {isDarkMode} = storeToRefs(storeSettings);
 
 const toggleMode = () => {
   storeSettings.toggleMode();
 };
 
-const valueVoiceSpeech = computed((): string => {
-  const keys = Object.keys(VoiceSpeech) as Array<keyof typeof VoiceSpeech>;
-  return keys.find(key => VoiceSpeech[key] === voiceSpeech.value) || '';
-});
-
-const speechList = computed((): string[] => {
-  return Object.keys(VoiceSpeech);
-});
-
-const changeSpeech = (event: any) => {
-  const speech = event?.detail?.value as keyof typeof VoiceSpeech;
-  if (speech) storeSettings.setVoiceSpeech(VoiceSpeech[speech]);
-};
+// const valueVoiceSpeech = computed((): string => {
+//   const keys = Object.keys(VoiceSpeech) as Array<keyof typeof VoiceSpeech>;
+//   return keys.find(key => VoiceSpeech[key] === voiceSpeech.value) || '';
+// });
+//
+// const speechList = computed((): string[] => {
+//   return Object.keys(VoiceSpeech);
+// });
+//
+// const changeSpeech = (event: any) => {
+//   const speech = event?.detail?.value as keyof typeof VoiceSpeech;
+//   if (speech) storeSettings.setVoiceSpeech(VoiceSpeech[speech]);
+// };
 
 </script>
 

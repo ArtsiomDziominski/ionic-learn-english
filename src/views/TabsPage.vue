@@ -24,5 +24,5 @@
 
 <script setup lang="ts">
 import { IonTabBar, IonTabButton, IonTabs, IonLabel, IonIcon, IonPage, IonRouterOutlet } from '@ionic/vue';
-import {albumsOutline, ellipse, fileTrayFullOutline} from 'ionicons/icons';
+import {albumsOutline, fileTrayFullOutline} from 'ionicons/icons';
 </script>

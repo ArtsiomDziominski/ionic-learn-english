@@ -23,7 +23,7 @@ const titles = {
   allWords: 'Все слова',
   studiedWords: 'Изучены',
   favoritesWords: 'Избранное'
-};
+} as { [key: string]: string };
 
 const contents = computed((): {
   colorIcon: string;

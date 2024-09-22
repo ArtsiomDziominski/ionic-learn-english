@@ -27,7 +27,7 @@
 <script setup lang="ts">
 import {IonIcon, useIonRouter} from "@ionic/vue";
 import {wordsStore} from "@/store/words";
-import {caretForwardOutline, checkmarkCircle} from "ionicons/icons";
+import {caretForwardOutline} from "ionicons/icons";
 import {FlowWords} from "@/const/flow";
 import {speak} from "@/utils/util";
 import {storeToRefs} from "pinia";
