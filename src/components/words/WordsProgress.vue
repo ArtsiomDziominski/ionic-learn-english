@@ -4,7 +4,7 @@
       <HeaderToolbarPages title="Обучение"/>
       <ion-progress-bar :buffer="0" :value="progressBarStudyCount"></ion-progress-bar>
     </ion-header>
-    <ion-content v-if="!isCompleted" class="ion-padding page__content" :fullscreen="true" :swipe="() => {}">
+    <ion-content v-if="!isCompleted" class="ion-padding page__content" :fullscreen="true">
       <div class="content">
         <ion-text v-if="selectedCardView !== ViewCardWords.Match" class="content__title" @click="speck">
           {{ titleRandomWord }}
@@ -28,7 +28,7 @@
         </div>
       </div>
     </ion-content>
-    <ion-content v-else (swipe)="() => {}">
+    <ion-content v-else>
       <WordsStudyCompeted/>
     </ion-content>
   </ion-page>
