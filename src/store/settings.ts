@@ -38,7 +38,7 @@ export const settingsStore = defineStore('settingsStore', () => {
     }
 
     const speakText = (text: string) => {
-        speak(text, voiceSpeech.value);
+        speak(text);
     }
 
     return {
