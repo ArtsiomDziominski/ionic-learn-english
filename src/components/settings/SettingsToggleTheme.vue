@@ -14,7 +14,7 @@ const toggleMode = () => {
 };
 
 const valueVoiceSpeech = computed(() => {
-  return voiceSpeech.value?.voiceURI || null;
+  return voiceSpeech.value?.voiceURI || '';
 });
 
 const speechList = computed((): string[] => {
