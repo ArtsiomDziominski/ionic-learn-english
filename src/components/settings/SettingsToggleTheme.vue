@@ -2,27 +2,32 @@
 import {settingsStore} from "@/store/settings";
 import {storeToRefs} from "pinia";
 import {IonToggle} from '@ionic/vue';
+import AppSelect from "@/components/UI/AppSelect.vue";
+import {computed} from "vue";
+import {VoiceSpeech} from "@/const/const";
 
 const storeSettings = settingsStore();
-const {isDarkMode} = storeToRefs(storeSettings);
+const {isDarkMode, voiceSpeech} = storeToRefs(storeSettings);
 
 const toggleMode = () => {
   storeSettings.toggleMode();
 };
 
-// const valueVoiceSpeech = computed((): string => {
-//   const keys = Object.keys(VoiceSpeech) as Array<keyof typeof VoiceSpeech>;
-//   return keys.find(key => VoiceSpeech[key] === voiceSpeech.value) || '';
-// });
-//
-// const speechList = computed((): string[] => {
-//   return Object.keys(VoiceSpeech);
-// });
-//
-// const changeSpeech = (event: any) => {
-//   const speech = event?.detail?.value as keyof typeof VoiceSpeech;
-//   if (speech) storeSettings.setVoiceSpeech(VoiceSpeech[speech]);
-// };
+const valueVoiceSpeech = computed(() => {
+  return voiceSpeech.value?.voiceURI || null;
+});
+
+const speechList = computed((): string[] => {
+  const speechSynthesisVoices = window.speechSynthesis.getVoices();
+  const speechSynthesisVoicesEnglish = speechSynthesisVoices.filter((speech) => speech.lang.includes('en'));
+  return speechSynthesisVoicesEnglish.map((speech) => speech.voiceURI);
+});
+
+const changeSpeech = (event: any) => {
+  const speech = event?.detail?.value as keyof typeof VoiceSpeech;
+  const speechSynthesisVoices = window.speechSynthesis.getVoices();
+  if (speech) storeSettings.setVoiceSpeech(speechSynthesisVoices.find((item) => item.voiceURI === speech) || null);
+};
 
 </script>
 
@@ -32,9 +37,9 @@ const toggleMode = () => {
     <div class="content">
 
       <ion-list :inset="true">
-        <!--      <ion-item :button="true" class="speech">-->
-        <!--        <AppSelect label="Speech" :value="valueVoiceSpeech" :options="speechList" @ionChange="changeSpeech"/>-->
-        <!--      </ion-item>-->
+              <ion-item :button="true" class="speech">
+                <AppSelect label="Speech" :value="valueVoiceSpeech" :options="speechList" @ionChange="changeSpeech"/>
+              </ion-item>
 
         <ion-item>
           <ion-toggle :checked="isDarkMode" @ion-change="toggleMode" justify="space-between">Dark mode</ion-toggle>

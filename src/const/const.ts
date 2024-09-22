@@ -9,7 +9,7 @@ export enum ThemeType {
 }
 
 export enum VoiceSpeech {
-    Default = '0',
-    Female = '1',
-    Male = '2',
+    Default = 'Google US English',
+    Female = 'Google UK English Female',
+    Male = 'Google UK English Male',
 }
