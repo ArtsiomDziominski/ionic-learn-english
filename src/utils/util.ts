@@ -2,7 +2,8 @@ export const speak = (text: string, speech: SpeechSynthesisVoice | null) => {
     const speechSynthesis = window.speechSynthesis;
     speechSynthesis.cancel();  // Останавливаем текущее озвучивание
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.voice = speechSynthesis.getVoices()?.find((item) => item.voiceURI === speech?.voiceURI) || speechSynthesis.getVoices()[0]; // Голос
+    utterance.voice = speechSynthesis.getVoices()?.find((item) => item.voiceURI === speech?.voiceURI) ||
+        speechSynthesis.getVoices().find((item) => item.lang.includes('en')) || speechSynthesis.getVoices()[0];
     utterance.rate = 1; // Скорость речи (по умолчанию 1)
     speechSynthesis.speak(utterance);
 }
