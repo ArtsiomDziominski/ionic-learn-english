@@ -42,32 +42,32 @@ const { voiceSpeech } = storeToRefs(storeSettings);
 const cards = [
   {
     title: FlowWords.A1,
-    description: 'Level A1',
+    description: 'Beginner A1',
     bg: 'primary'
   },
   {
     title: FlowWords.A2,
-    description: 'Level A2',
+    description: 'Elementary A2',
     bg: 'secondary'
   },
   {
     title: FlowWords.B1,
-    description: 'Level B1',
+    description: 'Intermediate B1',
     bg: 'tertiary'
   },
   {
     title: FlowWords.B2,
-    description: 'Level B2',
+    description: 'Upper Intermediate B2',
     bg: 'warning'
   },
   {
     title: FlowWords.C1,
-    description: 'Level C1',
+    description: 'Advanced C1',
     bg: 'medium'
   },
   {
     title: FlowWords.C2,
-    description: 'Level C2',
+    description: 'Proficiency C2',
     bg: 'dark'
   },
   {
