@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-header>
-      <HeaderToolbarMainPages title="Learn words" />
+      <HeaderToolbarMainPages title="Учите слова легко и быстро" />
     </ion-header>
     <ion-content class="ion-padding" :fullscreen="true">
       <ion-header collapse="condense">
