@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper-flow">
-    <ion-button shape="round" @click="redirectToLearnWords(FlowWords.Random)">Все слова</ion-button>
+    <ion-button shape="round" class="all-words" @click="redirectToLearnWords(FlowWords.Random)">Все слова</ion-button>
     <ion-card
         class="card"
         :color="card.bg"
@@ -14,7 +14,7 @@
       <!--      </ion-card-header>-->
       <ion-card-content>
         <div class="card-content">
-          {{ card.description }}
+          <h2>{{ card.description }}</h2>
           <div class="img" :style="{'background-image': `url('/assets/svg/${card.title }.svg')`}"></div>
           <ion-icon :icon="caretForwardOutline" size="large" />
 <!--          <ion-icon :icon="checkmarkCircle" class="check" />-->
@@ -154,7 +154,7 @@ const cards = [
 
 const redirectToLearnWords = (flow: FlowWords): void => {
   storeWords.initializeWordsList(flow);
-  ionRouter.push('/tabs/words/progress');
+  ionRouter.push('/words/progress');
   speak(currentWord.value.word, voiceSpeech.value);
 }
 </script>
@@ -165,6 +165,13 @@ const redirectToLearnWords = (flow: FlowWords): void => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  .all-words {
+    background: var(--background);
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
 
   .card {
     width: 100%;
