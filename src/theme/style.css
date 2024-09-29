@@ -27,3 +27,7 @@ ion-toggle::part(track) {
 .ion-palette-light {
     --ion-color-light: black;
 }
+
+ion-button {
+    cursor: pointer;
+}

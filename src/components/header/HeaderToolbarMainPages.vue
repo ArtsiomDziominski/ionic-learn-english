@@ -33,6 +33,7 @@ const toSettings = (): void => {
   flex-direction: row;
   justify-content: space-between;
   padding-right: 20px;
+  align-items: center;
 }
 
 h1 {

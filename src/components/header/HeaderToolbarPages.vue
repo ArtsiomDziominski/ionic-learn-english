@@ -32,5 +32,6 @@ const toBack = (): void => {
 .toolbar {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 </style>
