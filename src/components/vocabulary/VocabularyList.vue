@@ -63,7 +63,7 @@ const contents = computed((): {
 
 const setVocabularyView = (view: VocabularyViews): void => {
   storeVocabulary.setVocabularyView(view);
-  ionRouter.push('/tabs/vocabulary/list');
+  ionRouter.push('/vocabulary/list');
 }
 </script>
 
@@ -78,7 +78,7 @@ const setVocabularyView = (view: VocabularyViews): void => {
       <ion-button :color="content.colorText" fill="clear">
         <ion-text class="title">
           <ion-icon :icon="content.icon" :color="content.colorIcon"></ion-icon>
-          {{ titles[content.title] }}
+          <h2>{{ titles[content.title] }}</h2>
         </ion-text>
         <ion-text class="count" color="medium">{{ content.count }}</ion-text>
       </ion-button>

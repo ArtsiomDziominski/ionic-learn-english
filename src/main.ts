@@ -1,6 +1,8 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router';
+import { createHead } from '@vueuse/head';
+import MetaPlugin from './plugins/meta'
 
 import { IonicVue } from '@ionic/vue';
 
@@ -43,10 +45,13 @@ import './theme/variables.css';
 
 import './theme/style.css';
 
+const head = createHead();
 const app = createApp(App)
     .use(IonicVue)
     .use(router)
-    .use(createPinia());
+    .use(createPinia())
+    .use(head)
+    .use(MetaPlugin);
 
 app.config.warnHandler = () => {};
 

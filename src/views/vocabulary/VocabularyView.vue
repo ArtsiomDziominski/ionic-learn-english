@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-header>
-      <HeaderToolbarMainPages title="Vocabulary words" />
+      <HeaderToolbarMainPages title="Словарь" />
     </ion-header>
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">

@@ -19,7 +19,7 @@ const toSettings = (): void => {
 <template>
   <ion-toolbar>
     <div class="toolbar">
-      <ion-title>{{ title }}</ion-title>
+      <h1>{{ title }}</h1>
       <ion-button fill="clear" color="light" @click="toSettings">
         <ion-icon :icon="settingsOutline" size="large"></ion-icon>
       </ion-button>
@@ -33,5 +33,10 @@ const toSettings = (): void => {
   flex-direction: row;
   justify-content: space-between;
   padding-right: 20px;
+}
+
+h1 {
+  font-size: 20px;
+  padding: 0 20px;
 }
 </style>

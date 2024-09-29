@@ -31,11 +31,11 @@ const randomTitle = computed(() => praiseArray[Math.floor(Math.random() * (prais
 const toSetFlow = (): void => {
   storeWords.resetFlow();
   storeWords.initializeWordsList(currentFlow.value);
-  ionRouter.push('/tabs/words/progress');
+  ionRouter.push('/words/progress');
 }
 const toHome = (): void => {
   storeWords.resetFlow();
-  ionRouter.push('/tabs/words');
+  ionRouter.push('/words');
 }
 
 </script>

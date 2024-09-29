@@ -3,19 +3,16 @@ import { RouteRecordRaw } from 'vue-router';
 import TabsPage from '../views/TabsPage.vue'
 import SettingsPage from "@/views/SettingsPage.vue";
 import VocabularyListView from "@/views/vocabulary/VocabularyListView.vue";
+import BlogPage from "@/views/Article/ArticlesPage.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/tabs/words'
-  },
-  {
-    path: '/tabs/',
     component: TabsPage,
     children: [
       {
         path: '',
-        redirect: '/tabs/words'
+        redirect: '/words'
       },
       {
         path: 'words',
@@ -32,17 +29,21 @@ const routes: Array<RouteRecordRaw> = [
         component: () => import('@/components/words/WordsProgress.vue'),
       },
       {
-        path: 'tab2',
-        component: () => import('@/views/Tab2Page.vue')
-      },
-      {
         path: 'vocabulary',
         component: () => import('@/views/vocabulary/VocabularyView.vue')
       },
       {
         path: 'vocabulary/list',
         component: VocabularyListView
-      }
+      },
+      {
+        path: '/article',
+        component: BlogPage,
+      },
+      {
+        path: '/article/:id',
+        component: () => import('@/views/Article/ArticlePage.vue')
+      },
     ]
   },
   {
