@@ -1,6 +1,8 @@
 <template>
   <div class="wrapper-flow">
-    <ion-button shape="round" class="all-words" @click="redirectToLearnWords(FlowWords.Random)">Все слова</ion-button>
+    <button class="all-words" @click="redirectToLearnWords(FlowWords.Random)">
+      Все слова
+    </button>
     <ion-card
         class="card"
         :color="card.bg"
@@ -167,10 +169,11 @@ const redirectToLearnWords = (flow: FlowWords): void => {
   align-items: center;
 
   .all-words {
-    background: var(--background);
+    background: var(--ion-color-tertiary-shade);
     padding: 10px 14px;
     border-radius: 10px;
     cursor: pointer;
+    font-size: 18px;
   }
 
   .card {
