@@ -33,48 +33,408 @@ const changeSpeech = (event: any) => {
 
 <template>
   <ion-content>
-    <!--    <ion-list-header>Appearance</ion-list-header>-->
-    <div class="content">
+    <div class="settings-container glass-fade-in">
+      <!-- Appearance Settings -->
+      <div class="settings-section glass-card">
+        <div class="section-header">
+          <h2 class="section-title">Внешний вид</h2>
+          <div class="section-accent"></div>
+        </div>
+        
+        <div class="settings-items">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-icon">
+                <ion-icon name="moon"></ion-icon>
+              </div>
+              <div class="setting-content">
+                <h3 class="setting-title">Темная тема</h3>
+                <p class="setting-description">Переключиться на темную тему интерфейса</p>
+              </div>
+            </div>
+            <ion-toggle 
+              :checked="isDarkMode" 
+              @ion-change="toggleMode" 
+              class="glass-toggle"
+            />
+          </div>
+        </div>
+      </div>
 
-      <ion-list :inset="true">
-              <ion-item :button="true" class="speech">
-                <AppSelect label="Speech" :value="valueVoiceSpeech" :options="speechList" @ionChange="changeSpeech"/>
-              </ion-item>
+      <!-- Audio Settings -->
+      <div class="settings-section glass-card">
+        <div class="section-header">
+          <h2 class="section-title">Аудио</h2>
+          <div class="section-accent"></div>
+        </div>
+        
+        <div class="settings-items">
+          <div class="setting-item">
+            <div class="setting-info">
+              <div class="setting-icon">
+                <ion-icon name="volume-high"></ion-icon>
+              </div>
+              <div class="setting-content">
+                <h3 class="setting-title">Голосовое воспроизведение</h3>
+                <p class="setting-description">Выберите голос для произношения слов</p>
+              </div>
+            </div>
+            <div class="setting-control">
+              <AppSelect 
+                label="Голос" 
+                :value="valueVoiceSpeech" 
+                :options="speechList" 
+                @ionChange="changeSpeech"
+                class="glass-select"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <ion-item>
-          <ion-toggle :checked="isDarkMode" @ion-change="toggleMode" justify="space-between">Dark mode</ion-toggle>
-        </ion-item>
-      </ion-list>
-
-      <!--    <ion-list-header>Brightness</ion-list-header>-->
-      <!--    <ion-list :inset="true">-->
-      <!--      <ion-item>-->
-      <!--        <ion-range value="40">-->
-      <!--          <ion-icon :icon="sunnyOutline" slot="start"></ion-icon>-->
-      <!--          <ion-icon :icon="sunny" slot="end"></ion-icon>-->
-      <!--        </ion-range>-->
-      <!--      </ion-item>-->
-      <!--      <ion-item>-->
-      <!--        <ion-toggle justify="space-between" checked>True Tone</ion-toggle>-->
-      <!--      </ion-item>-->
-      <!--    </ion-list>-->
-
-      <!--    <ion-list :inset="true">-->
-      <!--      <ion-item :button="true">-->
-      <!--        <ion-label>Night Shift</ion-label>-->
-      <!--        <ion-text slot="end" color="medium">9:00 PM to 8:00 AM</ion-text>-->
-      <!--      </ion-item>-->
-      <!--    </ion-list>-->
+      <!-- About Section -->
+      <div class="settings-section glass-card">
+        <div class="section-header">
+          <h2 class="section-title">О приложении</h2>
+          <div class="section-accent"></div>
+        </div>
+        
+        <div class="about-content">
+          <div class="app-info">
+            <div class="app-icon">
+              <ion-icon name="book"></ion-icon>
+            </div>
+            <div class="app-details">
+              <h3 class="app-name">Learn English</h3>
+              <p class="app-version">Версия 1.0.0</p>
+              <p class="app-description">Эффективное изучение английского языка с современным интерфейсом</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </ion-content>
 </template>
 
 <style scoped lang="scss">
-.speech {
-  padding: 0 12px;
+.settings-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
-.content {
-  padding: 0 36px;
+/* Settings Sections */
+.settings-section {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--glass-border-radius);
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.settings-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.section-header {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.section-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.section-accent {
+  width: 60px;
+  height: 3px;
+  background: var(--glass-gradient-primary);
+  border-radius: 2px;
+  opacity: 0.8;
+}
+
+.settings-items {
+  position: relative;
+  z-index: 1;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.setting-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.setting-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.setting-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--glass-border-radius-small);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.setting-icon ion-icon {
+  font-size: 24px;
+  color: #ffffff;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+.setting-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.setting-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+  line-height: 1.3;
+}
+
+.setting-description {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.setting-control {
+  flex-shrink: 0;
+}
+
+/* Glass Toggle */
+.glass-toggle {
+  --track-background: rgba(255, 255, 255, 0.2);
+  --track-background-checked: var(--glass-bg-primary);
+  --handle-background: #ffffff;
+  --handle-background-checked: #ffffff;
+  --handle-width: 28px;
+  --handle-height: 28px;
+  --handle-max-height: auto;
+  --handle-spacing: 4px;
+  --handle-border-radius: 50%;
+  --handle-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.glass-toggle::part(track) {
+  height: 12px;
+  width: 60px;
+  overflow: visible;
+  border-radius: 50px;
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+/* Glass Select */
+.glass-select {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--glass-border-radius-small);
+  color: #ffffff;
+  min-width: 200px;
+}
+
+/* About Section */
+.about-content {
+  position: relative;
+  z-index: 1;
+}
+
+.app-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--glass-border-radius-small);
+}
+
+.app-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: var(--glass-border-radius-small);
+  background: var(--glass-gradient-primary);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.app-icon ion-icon {
+  font-size: 32px;
+  color: #ffffff;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+}
+
+.app-details {
+  flex: 1;
+}
+
+.app-name {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 4px 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.app-version {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0 0 8px 0;
+}
+
+.app-description {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .settings-container {
+    padding: 16px;
+    gap: 20px;
+  }
+  
+  .settings-section {
+    padding: 20px;
+  }
+  
+  .section-title {
+    font-size: 1.2rem;
+  }
+  
+  .setting-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 0;
+  }
+  
+  .setting-info {
+    width: 100%;
+  }
+  
+  .setting-control {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .glass-select {
+    min-width: 150px;
+  }
+  
+  .app-info {
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+  }
+  
+  .app-icon {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .app-icon ion-icon {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-container {
+    padding: 12px;
+    gap: 16px;
+  }
+  
+  .settings-section {
+    padding: 16px;
+  }
+  
+  .section-title {
+    font-size: 1.1rem;
+  }
+  
+  .setting-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .setting-icon ion-icon {
+    font-size: 20px;
+  }
+  
+  .setting-title {
+    font-size: 1rem;
+  }
+  
+  .setting-description {
+    font-size: 0.85rem;
+  }
+  
+  .app-icon {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .app-icon ion-icon {
+    font-size: 24px;
+  }
+  
+  .app-name {
+    font-size: 1.1rem;
+  }
 }
 </style>

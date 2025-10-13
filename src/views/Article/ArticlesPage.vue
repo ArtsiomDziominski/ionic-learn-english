@@ -88,32 +88,124 @@ const setMeta = () => {
     <ion-content class="ion-padding" :fullscreen="true">
       <ion-header collapse="condense">
         <ion-toolbar>
-          <ion-title size="large">Tab 1</ion-title>
+          <ion-title size="large">Блог</ion-title>
         </ion-toolbar>
       </ion-header>
 
-      <div class="preview-wrapper">
-        <ArticleCardPreview v-for="article in articles" :key="article.title" :article="article" @click="setArticle(article)"/>
+      <div class="articles-container glass-fade-in">
+        <!-- Hero Section -->
+        <div class="articles-hero glass-card glass-card-large">
+          <div class="hero-content">
+            <h1 class="hero-title">Блог для изучения английского</h1>
+            <p class="hero-subtitle">Полезные статьи, советы и ресурсы для эффективного изучения языка</p>
+          </div>
+        </div>
+
+        <!-- Articles Grid -->
+        <div class="articles-grid">
+          <ArticleCardPreview 
+            v-for="(article, index) in articles" 
+            :key="article.title" 
+            :article="article" 
+            :index="index"
+            @click="setArticle(article)"
+          />
+        </div>
       </div>
 
     </ion-content>
   </ion-page>
 </template>
 
-<style>
-.preview-wrapper {
-  max-width: 1440px;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
+<style scoped lang="scss">
+.articles-container {
+  padding: 20px;
+  max-width: 1200px;
   margin: 0 auto;
+  min-height: 100vh;
+}
 
-  @media screen and (max-width: 1024px) {
-    grid-template-columns: repeat(2, 1fr);
+/* Hero Section */
+.articles-hero {
+  margin-bottom: 32px;
+  padding: 40px 32px;
+  background: var(--glass-gradient-accent);
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.articles-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(139, 92, 246, 0.3) 0%, transparent 50%),
+              radial-gradient(circle at 70% 80%, rgba(245, 158, 11, 0.2) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.hero-subtitle {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* Articles Grid */
+.articles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 24px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .articles-container {
+    padding: 16px;
   }
-
-  @media screen and (max-width: 768px) {
+  
+  .articles-hero {
+    padding: 24px 20px;
+    margin-bottom: 24px;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .articles-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.8rem;
   }
 }
 </style>
