@@ -14,7 +14,11 @@ defineProps({
 </script>
 
 <template>
-  <div class="article-card glass-card glass-scale-in" :style="`animation-delay: ${index * 0.1}s`">
+  <router-link
+    class="article-card glass-card glass-scale-in"
+    :style="`animation-delay: ${index * 0.1}s`"
+    :to="`/article/${article.id}`"
+  >
     <div class="card-image-container">
       <img :src="article.img" class="card-image" :alt="article.title">
       <div class="image-overlay"></div>
@@ -33,7 +37,7 @@ defineProps({
     </div>
     
     <div class="card-glow"></div>
-  </div>
+  </router-link>
 </template>
 
 <style scoped lang="scss">
@@ -187,10 +191,6 @@ defineProps({
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .article-card {
-    min-height: 350px;
-  }
-  
   .card-image-container {
     height: 180px;
   }

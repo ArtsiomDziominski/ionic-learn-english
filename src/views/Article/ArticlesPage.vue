@@ -1,30 +1,23 @@
 <script setup lang="ts">
 import HeaderToolbarMainPages from "@/components/header/HeaderToolbarMainPages.vue";
-import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonRouter} from "@ionic/vue";
+import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/vue";
 import {onMounted, Ref, ref, UnwrapRef} from "vue";
 import ArticleCardPreview from "@/components/blog/ArticleCardPreview.vue";
 import { useSEO } from '@/composables/useSEO';
 
-const ionRouter = useIonRouter();
-
 const articles: Ref<UnwrapRef<ARTICLE.Article[]>> = ref([])
-const articlesCount = 6;
 
 onMounted(async () => {
   setMeta();
   const response = await fetch('/articles/list.json');
   const articlesList = await response.json();
 
-  for (const title of articlesList.slice(0, articlesCount)) {
+  for (const title of articlesList) {
     const response = await fetch(`/articles/${title}.json`);
     const data = await response.json();
     articles.value.push(data);
   }
 })
-
-const setArticle = (article: ARTICLE.Article): void => {
-  ionRouter.push(`/article/${article.id}`);
-}
 
 const setMeta = () => {
   useSEO({
@@ -64,7 +57,6 @@ const setMeta = () => {
             :key="article.title" 
             :article="article" 
             :index="index"
-            @click="setArticle(article)"
           />
         </div>
       </div>
