@@ -1,33 +1,305 @@
+/* Liquid Glass Base Styles */
+ion-app {
+    background: var(--bg-gradient-primary);
+    min-height: 100vh;
+}
+
+/* Glass Background for all pages */
+ion-page {
+    background: transparent !important;
+}
+
+ion-content {
+    --background: transparent !important;
+    background: var(--bg-gradient-primary) !important;
+}
+
+/* Glass Cards and Surfaces */
+.glass-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--glass-border-radius);
+    box-shadow: var(--glass-shadow);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glass-shadow-hover);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.glass-card-small {
+    border-radius: var(--glass-border-radius-small);
+}
+
+.glass-card-large {
+    border-radius: var(--glass-border-radius-large);
+}
+
+/* Glass Buttons */
+ion-button {
+    cursor: pointer;
+    --border-radius: var(--glass-border-radius-small);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+ion-button.button-fill {
+    --background: var(--glass-bg-primary);
+    --background-hover: var(--glass-bg-secondary);
+    --color: #ffffff;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+}
+
+ion-button.button-fill:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--glass-shadow-hover);
+}
+
+ion-button.button-outline {
+    --border-color: var(--glass-border);
+    --color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+/* Glass Toggle */
 ion-toggle {
     padding: 12px;
-
-    --track-background: #ddd;
-    --track-background-checked: #ddd;
-
-    --handle-background: #eb7769;
-    --handle-background-checked: #95c34e;
-
+    --track-background: rgba(255, 255, 255, 0.2);
+    --track-background-checked: var(--glass-bg-primary);
+    --handle-background: #ffffff;
+    --handle-background-checked: #ffffff;
     --handle-width: 25px;
     --handle-height: 27px;
     --handle-max-height: auto;
     --handle-spacing: 6px;
-
-    --handle-border-radius: 4px;
-    --handle-box-shadow: none;
+    --handle-border-radius: 50%;
+    --handle-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 ion-toggle::part(track) {
     height: 10px;
     width: 65px;
-
-    /* Required for iOS handle to overflow the height of the track */
     overflow: visible;
+    border-radius: 50px;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
+/* Glass Lists */
+ion-list {
+    background: transparent;
+    border-radius: var(--glass-border-radius);
+}
+
+ion-item {
+    --background: rgba(255, 255, 255, 0.1);
+    --background-hover: rgba(255, 255, 255, 0.15);
+    --border-color: var(--glass-border);
+    --color: #ffffff;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: var(--glass-border-radius-small);
+    margin: 8px 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+ion-item:hover {
+    transform: translateX(4px);
+    --background: rgba(255, 255, 255, 0.15);
+}
+
+/* Glass Tab Bar */
+ion-tab-bar {
+    --background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-top: 1px solid var(--glass-border);
+    border-radius: var(--glass-border-radius) var(--glass-border-radius) 0 0;
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.3);
+}
+
+ion-tab-button {
+    --color: rgba(255, 255, 255, 0.7);
+    --color-selected: #ffffff;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+ion-tab-button:hover {
+    --color: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+}
+
+ion-tab-button.tab-selected {
+    background: var(--glass-bg-primary);
+    border-radius: var(--glass-border-radius-small);
+    margin: 4px;
+}
+
+/* Glass Headers */
+ion-header {
+    --background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-bottom: 1px solid var(--glass-border);
+}
+
+ion-toolbar {
+    --background: transparent;
+    --color: #ffffff;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+/* Glass Modal */
+ion-modal {
+    --background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+ion-modal ion-content {
+    --background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-radius: var(--glass-border-radius-large) var(--glass-border-radius-large) 0 0;
+    border-top: 1px solid var(--glass-border);
+}
+
+/* Glass Inputs */
+ion-input, ion-textarea, ion-select {
+    --background: rgba(255, 255, 255, 0.1);
+    --color: #ffffff;
+    --placeholder-color: rgba(255, 255, 255, 0.6);
+    --border-color: var(--glass-border);
+    border-radius: var(--glass-border-radius-small);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+/* Glass Progress */
+ion-progress-bar {
+    --background: rgba(255, 255, 255, 0.2);
+    --progress-background: var(--glass-gradient-primary);
+    border-radius: 50px;
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+}
+
+/* Glass Icons */
+ion-icon {
+    color: #ffffff;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+ion-icon:hover {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+}
+
+/* Glass Text */
+h1, h2, h3, h4, h5, h6 {
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+p, span, div {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Glass Loading */
+ion-loading {
+    --background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+ion-loading .loading-wrapper {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--glass-border-radius);
+    box-shadow: var(--glass-shadow);
+}
+
+/* Glass Alert */
+ion-alert {
+    --background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--glass-border-radius);
+    box-shadow: var(--glass-shadow);
+}
+
+/* Animation Classes */
+.glass-fade-in {
+    animation: glassFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-slide-up {
+    animation: glassSlideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-scale-in {
+    animation: glassScaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes glassFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes glassSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes glassScaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Dark theme specific adjustments */
 .ion-palette-light {
     --ion-color-light: black;
 }
 
-ion-button {
-    cursor: pointer;
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .glass-card {
+        border-radius: var(--glass-border-radius-small);
+    }
+    
+    ion-tab-bar {
+        border-radius: var(--glass-border-radius-small) var(--glass-border-radius-small) 0 0;
+    }
 }
