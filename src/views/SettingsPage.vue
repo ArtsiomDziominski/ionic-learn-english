@@ -21,14 +21,24 @@
 
 <script setup lang="ts">
 import {IonPage, IonToolbar, IonTitle, IonContent, IonHeader, IonIcon, useIonRouter} from '@ionic/vue';
+import { onMounted } from 'vue';
 import SettingsToggleTheme from "@/components/settings/SettingsToggleTheme.vue";
 import {chevronBackOutline} from "ionicons/icons";
+import { useSEO } from '@/composables/useSEO';
 
 const ionRouter = useIonRouter();
 
 const toBack = (): void => {
   ionRouter.back();
 }
+
+onMounted(() => {
+  useSEO({
+    title: 'Настройки | Learn English Easy',
+    description: 'Настройте приложение для изучения английского языка под себя. Выберите тему оформления и другие параметры для комфортного обучения.',
+    url: 'https://www.learnenglisheasy.ru/settings'
+  });
+});
 </script>
 
 <style scoped lang="scss">

@@ -3,7 +3,7 @@ import HeaderToolbarMainPages from "@/components/header/HeaderToolbarMainPages.v
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar, useIonRouter} from "@ionic/vue";
 import {onMounted, Ref, ref, UnwrapRef} from "vue";
 import ArticleCardPreview from "@/components/blog/ArticleCardPreview.vue";
-import {useHead} from "@vueuse/head";
+import { useSEO } from '@/composables/useSEO';
 
 const ionRouter = useIonRouter();
 
@@ -27,56 +27,12 @@ const setArticle = (article: ARTICLE.Article): void => {
 }
 
 const setMeta = () => {
-  useHead({
-    title: 'Статьи для изучения английского языка',
-    meta: [
-      {
-        name: 'description',
-        content: 'Узнайте лучшие статьи и ресурсы для изучения английского языка. Полезные советы, методы и рекомендации для всех уровней.'
-      },
-      {
-        property: 'og:title',
-        content: 'Статьи для изучения английского языка'
-      },
-      {
-        property: 'og:description',
-        content: 'Изучайте английский язык с помощью наших статей. Рекомендуем эффективные методы и ресурсы для достижения ваших целей.'
-      },
-      {
-        property: 'og:type',
-        content: 'article'
-      },
-      {
-        property: 'og:url',
-        content: window.location.href
-      },
-      {
-        property: 'og:image',
-        content: 'URL_изображения_для_статьи'
-      },
-      {
-        name: 'twitter:card',
-        content: 'summary_large_image'
-      },
-      {
-        name: 'twitter:title',
-        content: 'Статьи для изучения английского языка'
-      },
-      {
-        name: 'twitter:description',
-        content: 'Полезные статьи и советы по изучению английского языка для начинающих и продвинутых студентов.'
-      },
-      {
-        name: 'twitter:image',
-        content: 'URL_изображения_для_статьи'
-      },
-      {
-        name: 'keywords',
-        content: 'английский язык, изучение английского, статьи, ресурсы, советы по изучению английского'
-      }
-    ]
-  })
-
+  useSEO({
+    title: 'Статьи для изучения английского языка | Learn English Easy',
+    description: 'Узнайте лучшие статьи и ресурсы для изучения английского языка. Полезные советы, методы и рекомендации для всех уровней. Эффективные способы запоминания слов, грамматика и практические упражнения.',
+    keywords: 'английский язык, изучение английского, статьи, ресурсы, советы по изучению английского, методы изучения, как учить английский',
+    url: 'https://www.learnenglisheasy.ru/article'
+  });
 }
 </script>
 

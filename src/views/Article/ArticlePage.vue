@@ -3,7 +3,8 @@ import {onMounted, Ref, ref, UnwrapRef} from "vue";
 import {useRoute} from "vue-router";
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/vue";
 import HeaderToolbarPages from "@/components/header/HeaderToolbarPages.vue";
-import {useHead} from "@vueuse/head";
+import {useArticleSEO} from "@/composables/useSEO";
+import {useArticleSchema, useBreadcrumbSchema} from "@/composables/useStructuredData";
 
 const route = useRoute();
 
@@ -17,51 +18,34 @@ onMounted(async () => {
 })
 
 const setMeta = () => {
-  useHead({
-    title: article.value?.title || '',
-    meta: [
-      {
-        name: 'description',
-        content: article.value?.description || ''
-      },
-      {
-        property: 'og:title',
-        content: article.value?.title || ''
-      },
-      {
-        property: 'og:description',
-        content: article.value?.description || ''
-      },
-      {
-        property: 'og:type',
-        content: 'article'
-      },
-      {
-        property: 'og:url',
-        content: window.location.href
-      },
-      {
-        property: 'og:image',
-        content: article.value?.img || ''
-      },
-      {
-        name: 'twitter:card',
-        content: 'summary_large_image'
-      },
-      {
-        name: 'twitter:title',
-        content: article.value?.title || ''
-      },
-      {
-        name: 'twitter:description',
-        content: article.value?.description || ''
-      },
-      {
-        name: 'twitter:image',
-        content: article.value?.img || ''
-      }
-    ]
-  })
+  if (article.value) {
+    // SEO Meta Tags
+    useArticleSEO({
+      title: article.value.title,
+      description: article.value.description,
+      img: article.value.img,
+      publishedTime: article.value.publishedTime,
+      modifiedTime: article.value.modifiedTime,
+      author: article.value.author
+    });
+    
+    // Structured Data
+    useArticleSchema({
+      headline: article.value.title,
+      description: article.value.description,
+      image: article.value.img,
+      datePublished: article.value.publishedTime,
+      dateModified: article.value.modifiedTime,
+      author: article.value.author
+    });
+    
+    // Breadcrumb
+    useBreadcrumbSchema([
+      { name: 'Главная', url: 'https://www.learnenglisheasy.ru/' },
+      { name: 'Статьи', url: 'https://www.learnenglisheasy.ru/article' },
+      { name: article.value.title, url: window.location.href }
+    ]);
+  }
 }
 
 
