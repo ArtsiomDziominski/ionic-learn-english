@@ -8,7 +8,10 @@ export const settingsStore = defineStore('settingsStore', () => {
     const voiceSpeech: Ref<UnwrapRef<SpeechSynthesisVoice | null>> = ref(null);
 
     const initSettings = () => {
-        speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+        // Инициализируем speechSynthesis, если доступен
+        if (window.speechSynthesis) {
+            window.speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+        }
 
         const theme = (localStorage.getItem(STORAGE_KEY_THEME) as ThemeType);
         setMode(theme || ThemeType.Dark);
