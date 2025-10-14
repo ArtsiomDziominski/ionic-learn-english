@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+  
+  <!-- Main Pages -->
+  <url>
+    <loc>https://www.learnenglisheasy.ru/</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.learnenglisheasy.ru/words</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.learnenglisheasy.ru/vocabulary</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.learnenglisheasy.ru/vocabulary/list</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.learnenglisheasy.ru/settings</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- Article Pages -->
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/kak-nachat'-uchit'-angliyskiy-yazyk</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/kak-bystro-uchit'-slova</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/oshibki-v-izuchenii-angliyskogo-yazyka</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/40-frazy-dlya-besedy-na-angliyskom-yazyke</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/slova-i-frazy-dlya-puteshestviy</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/kak-vybrat-knigi-na-angliyskom-yazyke-po-svoemu-urovnyu</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/plan-izucheniya-angliyskogo-na-nedelyu</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/top-10-podcastov-dlya-izucheniya-angliyskogo</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/serialy-na-angliyskom-dlya-nachinayushchikh</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/kak-ne-poteryat-motivaciyu-v-izuchenii-angliyskogo</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/top-youtube-kanaly-dlya-izucheniya-angliyskogo</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/meetups-i-soobshchestva-dlya-praktiki-angliyskogo</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/angliyskie-knigi-dlya-urovnya-a2</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/10-igr-dlya-trenirovki-grammatiki</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/mobilnye-prilozheniya-dlya-izucheniya-angliyskogo</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://www.learnenglisheasy.ru/article/samorazvitie-na-angliyskom-dnevnik-i-planirovshchik</loc>
+    <lastmod>2025-10-13T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+</urlset>
