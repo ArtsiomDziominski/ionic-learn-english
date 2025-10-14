@@ -18,12 +18,19 @@ const valueVoiceSpeech = computed(() => {
 });
 
 const speechList = computed((): string[] => {
+  if (!window.speechSynthesis) {
+    return [];
+  }
   const speechSynthesisVoices = window.speechSynthesis.getVoices();
   const speechSynthesisVoicesEnglish = speechSynthesisVoices.filter((speech) => speech.lang.includes('en'));
   return speechSynthesisVoicesEnglish.map((speech) => speech.voiceURI);
 });
 
 const changeSpeech = (event: any) => {
+  if (!window.speechSynthesis) {
+    console.warn('Web Speech API is not available');
+    return;
+  }
   const speech = event?.detail?.value as keyof typeof VoiceSpeech;
   const speechSynthesisVoices = window.speechSynthesis.getVoices();
   if (speech) storeSettings.setVoiceSpeech(speechSynthesisVoices.find((item) => item.voiceURI === speech) || null);
