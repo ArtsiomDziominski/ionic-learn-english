@@ -1,5 +1,12 @@
 export const speak = (text: string, speech: SpeechSynthesisVoice | null) => {
     const speechSynthesis = window.speechSynthesis;
+    
+    // Проверяем доступность Web Speech API
+    if (!speechSynthesis) {
+        console.warn('Web Speech API is not available');
+        return;
+    }
+    
     speechSynthesis.cancel();  // Останавливаем текущее озвучивание
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.voice = speechSynthesis.getVoices()?.find((item) => item.voiceURI === speech?.voiceURI) ||
