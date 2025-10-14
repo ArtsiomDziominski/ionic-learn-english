@@ -1,0 +1,26 @@
+{
+  "name": "Learn English Easy - Изучение английских слов",
+  "short_name": "Learn English",
+  "description": "Изучайте английский язык легко и эффективно. Интерактивные уроки, карточки для запоминания слов и полезные статьи.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3880ff",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": [
+    "education",
+    "productivity"
+  ],
+  "lang": "ru",
+  "dir": "ltr",
+  "scope": "/"
+}
+
