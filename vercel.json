@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    {"source": "/(.*)", "destination": "/"}
+    {"source": "/((?!sitemap\\.xml|robots\\.txt|favicon\\.png|manifest\\.json|google.*\\.html|yandex.*\\.html|assets/.*|articles/.*).*)","destination": "/"}
   ],
   "headers": [
     {
