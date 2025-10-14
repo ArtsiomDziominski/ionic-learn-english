@@ -9,7 +9,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.2.1'
+        classpath 'com.android.tools.build:gradle:8.7.3'
     }
 }
 
@@ -24,7 +24,7 @@ android {
         versionCode 1
         versionName "1.0"
     }
-    lintOptions {
+    lint {
         abortOnError false
     }
     compileOptions {
