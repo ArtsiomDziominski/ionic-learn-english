@@ -28,7 +28,7 @@ const setMeta = () => {
       modifiedTime: article.value.modifiedTime,
       author: article.value.author
     });
-    
+
     // Structured Data
     useArticleSchema({
       headline: article.value.title,
@@ -38,7 +38,7 @@ const setMeta = () => {
       dateModified: article.value.modifiedTime,
       author: article.value.author
     });
-    
+
     // Breadcrumb
     useBreadcrumbSchema([
       { name: 'Главная', url: 'https://www.learnenglisheasy.ru/' },
@@ -57,12 +57,6 @@ const setMeta = () => {
       <HeaderToolbarPages :title="article?.title" />
     </ion-header>
     <ion-content class="ion-padding" :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Tab 1</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
       <div class="body-container" v-html="article?.body"></div>
 
     </ion-content>

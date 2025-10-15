@@ -67,7 +67,6 @@ import { albumsOutline, fileTrayFullOutline, bookOutline } from 'ionicons/icons'
 
 .glass-tab-button.tab-selected {
   background: var(--glass-bg-primary);
-  border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
   --color: #ffffff;
   transform: translateY(-4px);
@@ -136,18 +135,18 @@ import { albumsOutline, fileTrayFullOutline, bookOutline } from 'ionicons/icons'
     padding: 6px 12px 12px 12px;
     min-height: 70px;
   }
-  
+
   .glass-tab-button {
     padding: 6px 12px;
     min-height: 50px;
     margin: 0 2px;
   }
-  
+
   .tab-icon {
     font-size: 20px;
     margin-bottom: 2px;
   }
-  
+
   .tab-label {
     font-size: 0.75rem;
   }
@@ -158,16 +157,16 @@ import { albumsOutline, fileTrayFullOutline, bookOutline } from 'ionicons/icons'
     padding: 4px 8px 8px 8px;
     min-height: 65px;
   }
-  
+
   .glass-tab-button {
     padding: 4px 8px;
     min-height: 45px;
   }
-  
+
   .tab-icon {
     font-size: 18px;
   }
-  
+
   .tab-label {
     font-size: 0.7rem;
   }

@@ -5,9 +5,9 @@
       <div class="hero-content">
         <h1 class="hero-title">Выберите уровень изучения</h1>
         <p class="hero-subtitle">Начните с любого уровня и совершенствуйте свои знания</p>
-        <ion-button 
-          class="all-words-btn glass-button" 
-          fill="solid" 
+        <ion-button
+          class="all-words-btn glass-button"
+          fill="solid"
           @click="redirectToLearnWords(FlowWords.Random)"
         >
           <ion-icon :icon="caretForwardOutline" slot="start" />
@@ -217,7 +217,6 @@ const redirectToLearnWords = (flow: FlowWords): void => {
   margin-bottom: 32px;
   padding: 40px 32px;
   background: var(--glass-gradient-primary);
-  border: 1px solid var(--glass-border);
   position: relative;
   overflow: hidden;
 }
@@ -262,7 +261,7 @@ const redirectToLearnWords = (flow: FlowWords): void => {
   --background: var(--glass-bg-secondary);
   --background-hover: var(--glass-bg-tertiary);
   --color: #ffffff;
-  --border-radius: var(--glass-border-radius-small);
+  border-radius: var(--glass-border-radius-small);
   --padding-start: 24px;
   --padding-end: 24px;
   --padding-top: 16px;
@@ -271,7 +270,6 @@ const redirectToLearnWords = (flow: FlowWords): void => {
   font-weight: 600;
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -295,7 +293,6 @@ const redirectToLearnWords = (flow: FlowWords): void => {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   border-radius: var(--glass-border-radius);
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -335,7 +332,6 @@ const redirectToLearnWords = (flow: FlowWords): void => {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -411,34 +407,34 @@ const redirectToLearnWords = (flow: FlowWords): void => {
   .wrapper-flow {
     padding: 16px;
   }
-  
+
   .hero-section {
     padding: 24px 20px;
     margin-bottom: 24px;
   }
-  
+
   .hero-title {
     font-size: 2rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1rem;
   }
-  
+
   .cards-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
-  
+
   .level-card {
     padding: 20px;
     min-height: 160px;
   }
-  
+
   .level-title {
     font-size: 1.1rem;
   }
-  
+
   .level-subtitle {
     font-size: 0.9rem;
   }
@@ -448,17 +444,17 @@ const redirectToLearnWords = (flow: FlowWords): void => {
   .hero-title {
     font-size: 1.8rem;
   }
-  
+
   .level-card {
     padding: 16px;
     min-height: 140px;
   }
-  
+
   .level-icon {
     width: 50px;
     height: 50px;
   }
-  
+
   .icon-bg {
     width: 30px;
     height: 30px;

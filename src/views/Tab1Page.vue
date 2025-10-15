@@ -4,12 +4,6 @@
       <HeaderToolbarMainPages title="Изучать английские слова легко и быстро!" />
     </ion-header>
     <ion-content class="ion-padding" :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Tab 1</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
       <ChooseFlowCards/>
     </ion-content>
   </ion-page>
@@ -36,7 +30,7 @@ onMounted(() => {
     keywords: 'английские слова, изучение английского, тренажер слов, карточки английского, учить слова онлайн, vocabulary trainer, английский бесплатно',
     url: 'https://www.learnenglisheasy.ru/words'
   });
-  
+
   // Structured Data
   useWebApplicationSchema();
 });

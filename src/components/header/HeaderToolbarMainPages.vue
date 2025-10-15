@@ -23,9 +23,9 @@ const toSettings = (): void => {
         <h1 class="page-title">{{ title }}</h1>
         <div class="title-accent"></div>
       </div>
-      <ion-button 
-        class="settings-btn glass-button" 
-        fill="clear" 
+      <ion-button
+        class="settings-btn glass-button"
+        fill="clear"
         @click="toSettings"
       >
         <ion-icon :icon="settingsOutline" size="large"></ion-icon>
@@ -92,7 +92,6 @@ const toSettings = (): void => {
   --padding-bottom: 12px;
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -117,16 +116,16 @@ const toSettings = (): void => {
     padding: 0 16px;
     min-height: 56px;
   }
-  
+
   .page-title {
     font-size: 1.3rem;
   }
-  
+
   .title-accent {
     width: 50px;
     height: 2px;
   }
-  
+
   .settings-btn {
     --padding-start: 10px;
     --padding-end: 10px;
@@ -139,7 +138,7 @@ const toSettings = (): void => {
   .page-title {
     font-size: 1.2rem;
   }
-  
+
   .title-accent {
     width: 40px;
   }

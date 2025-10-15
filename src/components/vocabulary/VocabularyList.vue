@@ -77,35 +77,20 @@ const setVocabularyView = (view: VocabularyViews): void => {
       </div>
     </div>
 
-    <!-- Stats Overview -->
-    <div class="stats-grid">
-      <div class="stat-card glass-card" v-for="content in contents" :key="content.title">
-        <div class="stat-icon" :class="`stat-${content.title}`">
-          <ion-icon :icon="content.icon"></ion-icon>
-        </div>
-        <div class="stat-content">
-          <h3 class="stat-title">{{ titles[content.title] }}</h3>
-          <div class="stat-count">{{ content.count }}</div>
-        </div>
-        <div class="stat-action">
-          <ion-icon :icon="content.icon" class="action-icon"></ion-icon>
-        </div>
-      </div>
-    </div>
-
     <!-- Quick Actions -->
     <div class="quick-actions glass-card glass-card-large">
       <h2 class="actions-title">Быстрые действия</h2>
       <div class="actions-grid">
-        <button 
-          class="action-btn glass-button" 
-          v-for="content in contents" 
+        <button
+          class="action-btn glass-button"
+          v-for="content in contents"
           :key="`action-${content.title}`"
           @click="setVocabularyView(content.view)"
           :class="`action-${content.title}`"
         >
           <ion-icon :icon="content.icon" class="btn-icon"></ion-icon>
           <span class="btn-text">{{ titles[content.title] }}</span>
+          <div class="stat-count">{{ content.count }}</div>
           <div class="btn-glow"></div>
         </button>
       </div>
@@ -118,7 +103,6 @@ const setVocabularyView = (view: VocabularyViews): void => {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
-  min-height: 100vh;
 }
 
 /* Header Section */
@@ -126,7 +110,6 @@ const setVocabularyView = (view: VocabularyViews): void => {
   margin-bottom: 32px;
   padding: 40px 32px;
   background: var(--glass-gradient-secondary);
-  border: 1px solid var(--glass-border);
   position: relative;
   overflow: hidden;
 }
@@ -181,7 +164,6 @@ const setVocabularyView = (view: VocabularyViews): void => {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   border-radius: var(--glass-border-radius);
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -217,7 +199,6 @@ const setVocabularyView = (view: VocabularyViews): void => {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -260,7 +241,6 @@ const setVocabularyView = (view: VocabularyViews): void => {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -290,7 +270,6 @@ const setVocabularyView = (view: VocabularyViews): void => {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   border-radius: var(--glass-border-radius);
   position: relative;
   overflow: hidden;
@@ -331,7 +310,6 @@ const setVocabularyView = (view: VocabularyViews): void => {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   border-radius: var(--glass-border-radius-small);
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -417,44 +395,44 @@ const setVocabularyView = (view: VocabularyViews): void => {
   .vocabulary-container {
     padding: 16px;
   }
-  
+
   .vocabulary-header {
     padding: 24px 20px;
     margin-bottom: 24px;
   }
-  
+
   .header-title {
     font-size: 2rem;
   }
-  
+
   .header-subtitle {
     font-size: 1rem;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
     gap: 16px;
     margin-bottom: 24px;
   }
-  
+
   .stat-card {
     padding: 20px;
   }
-  
+
   .quick-actions {
     padding: 24px 20px;
   }
-  
+
   .actions-grid {
     grid-template-columns: 1fr;
     gap: 12px;
   }
-  
+
   .action-btn {
     padding: 16px;
     min-height: 100px;
   }
-  
+
   .btn-icon {
     font-size: 28px;
   }
@@ -464,36 +442,36 @@ const setVocabularyView = (view: VocabularyViews): void => {
   .header-title {
     font-size: 1.8rem;
   }
-  
+
   .stat-card {
     padding: 16px;
     flex-direction: column;
     text-align: center;
     gap: 16px;
   }
-  
+
   .stat-icon {
     width: 50px;
     height: 50px;
   }
-  
+
   .stat-icon ion-icon {
     font-size: 24px;
   }
-  
+
   .stat-count {
     font-size: 1.5rem;
   }
-  
+
   .action-btn {
     padding: 14px;
     min-height: 90px;
   }
-  
+
   .btn-icon {
     font-size: 24px;
   }
-  
+
   .btn-text {
     font-size: 0.9rem;
   }

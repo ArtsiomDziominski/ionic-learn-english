@@ -35,12 +35,6 @@ const setMeta = () => {
       <HeaderToolbarMainPages title="Полезные статьи для изучения английского языка" />
     </ion-header>
     <ion-content class="ion-padding" :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-title size="large">Блог</ion-title>
-        </ion-toolbar>
-      </ion-header>
-
       <div class="articles-container glass-fade-in">
         <!-- Hero Section -->
         <div class="articles-hero glass-card glass-card-large">
@@ -52,10 +46,10 @@ const setMeta = () => {
 
         <!-- Articles Grid -->
         <div class="articles-grid">
-          <ArticleCardPreview 
-            v-for="(article, index) in articles" 
-            :key="article.title" 
-            :article="article" 
+          <ArticleCardPreview
+            v-for="(article, index) in articles"
+            :key="article.title"
+            :article="article"
             :index="index"
           />
         </div>
@@ -78,7 +72,6 @@ const setMeta = () => {
   margin-bottom: 32px;
   padding: 40px 32px;
   background: var(--glass-gradient-accent);
-  border: 1px solid var(--glass-border);
   position: relative;
   overflow: hidden;
 }
@@ -131,20 +124,20 @@ const setMeta = () => {
   .articles-container {
     padding: 16px;
   }
-  
+
   .articles-hero {
     padding: 24px 20px;
     margin-bottom: 24px;
   }
-  
+
   .hero-title {
     font-size: 2rem;
   }
-  
+
   .hero-subtitle {
     font-size: 1rem;
   }
-  
+
   .articles-grid {
     grid-template-columns: 1fr;
     gap: 16px;
