@@ -22,13 +22,22 @@
     </div>
     <div class="letter-select__result result">
       <Transition name="bounce">
-        <ion-text v-show="isCorrectWord" class="result__translation">
+        <ion-text
+          v-if="isCorrectWord"
+          class="result__word"
+          key="word-display"
+        >
           {{ currentWord?.word }}
         </ion-text>
       </Transition>
       <Transition name="slide-fade">
-        <ion-button v-show="isCorrectTranslation" class="result__translation" @click="clickNext">
-          Понял
+        <ion-button
+          v-if="isCorrectTranslation"
+          class="result__next-button"
+          @click="clickNext"
+          key="next-button"
+        >
+          Запомнил
         </ion-button>
       </Transition>
     </div>
@@ -151,19 +160,35 @@ const clickNext = (): void => {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 
   &__header {
     display: flex;
     flex-direction: row;
-    gap: 4px;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
+    overflow: hidden;
 
     .header {
       &__text {
-        font-size: 20px;
+        font-size: 40px;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-right: 16px;
       }
 
       &__delete {
         cursor: pointer;
+        flex-shrink: 0;
+        min-width: auto;
       }
     }
   }
@@ -184,13 +209,26 @@ const clickNext = (): void => {
 
     &__word {
       font-size: 36px;
+      font-weight: 600;
+      color: var(--ion-color-primary);
     }
 
-    &__translation {
-      font-size: 48px;
+    &__next-button {
+      font-size: 18px;
+      font-weight: 500;
       padding: 15px 30px;
       border-radius: 50px;
-      background-color: #2dd55b;
+
+      &::part(native) {
+        color: white;
+        box-shadow: 0 4px 8px rgba(45, 213, 91, 0.3);
+        transition: all 0.2s ease;
+      }
+
+      &:hover::part(native) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(45, 213, 91, 0.4);
+      }
     }
   }
 }
@@ -213,6 +251,24 @@ const clickNext = (): void => {
   100% {
     transform: scale(1);
   }
+}
+
+.slide-fade-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+
+.slide-fade-enter-from {
+  transform: translateX(20px);
+  opacity: 0;
+}
+
+.slide-fade-leave-to {
+  transform: translateX(-20px);
+  opacity: 0;
 }
 
 </style>
