@@ -131,7 +131,7 @@ const setFavorite = (): void => {
         justify-content: center;
         align-items: center;
         gap: 14px;
-        font-size: 36px;
+        font-size: 26px;
         word-break: break-all;
       }
 

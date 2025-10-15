@@ -31,6 +31,9 @@ defineProps({
 <style scoped lang="scss">
 .wrapper-letter {
   position: relative;
+  width: 50px;
+  text-align: center;
+
   .letter {
     margin: 0;
     transition: transform 0.3s ease;
@@ -45,6 +48,10 @@ defineProps({
 
       .content {
         position: relative;
+
+        &__text {
+          font-size: 42px;
+        }
       }
     }
   }
