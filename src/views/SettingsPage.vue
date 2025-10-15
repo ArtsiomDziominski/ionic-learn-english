@@ -69,7 +69,6 @@ onMounted(() => {
   --padding-bottom: 12px;
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -125,16 +124,16 @@ onMounted(() => {
     min-height: 56px;
     gap: 12px;
   }
-  
+
   .page-title {
     font-size: 1.3rem;
   }
-  
+
   .title-accent {
     width: 50px;
     height: 2px;
   }
-  
+
   .back-btn {
     --padding-start: 10px;
     --padding-end: 10px;
@@ -147,7 +146,7 @@ onMounted(() => {
   .page-title {
     font-size: 1.2rem;
   }
-  
+
   .title-accent {
     width: 40px;
   }

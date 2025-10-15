@@ -19,7 +19,6 @@ ion-content {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
     border-radius: var(--glass-border-radius);
     box-shadow: var(--glass-shadow);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -52,7 +51,6 @@ ion-button.button-fill {
     --background: var(--glass-bg-primary);
     --background-hover: var(--glass-bg-secondary);
     --color: #ffffff;
-    border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
 }
 
@@ -227,7 +225,6 @@ ion-loading .loading-wrapper {
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
     border-radius: var(--glass-border-radius);
     box-shadow: var(--glass-shadow);
 }
@@ -237,7 +234,6 @@ ion-alert {
     --background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(var(--glass-blur));
     -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
     border-radius: var(--glass-border-radius);
     box-shadow: var(--glass-shadow);
 }
@@ -298,7 +294,7 @@ ion-alert {
     .glass-card {
         border-radius: var(--glass-border-radius-small);
     }
-    
+
     ion-tab-bar {
         border-radius: var(--glass-border-radius-small) var(--glass-border-radius-small) 0 0;
     }

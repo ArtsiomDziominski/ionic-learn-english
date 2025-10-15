@@ -23,11 +23,11 @@ defineProps({
       <img :src="article.img" class="card-image" :alt="article.title">
       <div class="image-overlay"></div>
     </div>
-    
+
     <div class="card-content">
       <h3 class="article-title">{{ article.title }}</h3>
       <p class="article-description">{{ article.description || 'Полезная статья для изучения английского языка' }}</p>
-      
+
       <div class="card-footer">
         <div class="read-more">
           <span class="read-text">Читать статью</span>
@@ -35,7 +35,7 @@ defineProps({
         </div>
       </div>
     </div>
-    
+
     <div class="card-glow"></div>
   </router-link>
 </template>
@@ -46,7 +46,6 @@ defineProps({
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   border-radius: var(--glass-border-radius);
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -145,7 +144,6 @@ defineProps({
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   border-radius: var(--glass-border-radius-small);
   transition: all 0.3s ease;
 }
@@ -194,23 +192,23 @@ defineProps({
   .card-image-container {
     height: 180px;
   }
-  
+
   .card-content {
     padding: 20px;
   }
-  
+
   .article-title {
     font-size: 1.2rem;
   }
-  
+
   .article-description {
     font-size: 0.9rem;
   }
-  
+
   .read-more {
     padding: 10px 14px;
   }
-  
+
   .read-text {
     font-size: 0.85rem;
   }
@@ -220,19 +218,19 @@ defineProps({
   .article-card {
     min-height: 320px;
   }
-  
+
   .card-image-container {
     height: 160px;
   }
-  
+
   .card-content {
     padding: 16px;
   }
-  
+
   .article-title {
     font-size: 1.1rem;
   }
-  
+
   .article-description {
     font-size: 0.85rem;
     -webkit-line-clamp: 2;

@@ -42,31 +42,31 @@ const changeSpeech = (event: any) => {
   <ion-content>
     <div class="settings-container glass-fade-in">
       <!-- Appearance Settings -->
-      <div class="settings-section glass-card">
-        <div class="section-header">
-          <h2 class="section-title">Внешний вид</h2>
-          <div class="section-accent"></div>
-        </div>
-        
-        <div class="settings-items">
-          <div class="setting-item">
-            <div class="setting-info">
-              <div class="setting-icon">
-                <ion-icon name="moon"></ion-icon>
-              </div>
-              <div class="setting-content">
-                <h3 class="setting-title">Темная тема</h3>
-                <p class="setting-description">Переключиться на темную тему интерфейса</p>
-              </div>
-            </div>
-            <ion-toggle 
-              :checked="isDarkMode" 
-              @ion-change="toggleMode" 
-              class="glass-toggle"
-            />
-          </div>
-        </div>
-      </div>
+<!--      <div class="settings-section glass-card">-->
+<!--        <div class="section-header">-->
+<!--          <h2 class="section-title">Внешний вид</h2>-->
+<!--          <div class="section-accent"></div>-->
+<!--        </div>-->
+<!--        -->
+<!--        <div class="settings-items">-->
+<!--          <div class="setting-item">-->
+<!--            <div class="setting-info">-->
+<!--              <div class="setting-icon">-->
+<!--                <ion-icon name="moon"></ion-icon>-->
+<!--              </div>-->
+<!--              <div class="setting-content">-->
+<!--                <h3 class="setting-title">Темная тема</h3>-->
+<!--                <p class="setting-description">Переключиться на темную тему интерфейса</p>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <ion-toggle -->
+<!--              :checked="isDarkMode" -->
+<!--              @ion-change="toggleMode" -->
+<!--              class="glass-toggle"-->
+<!--            />-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
       <!-- Audio Settings -->
       <div class="settings-section glass-card">
@@ -74,7 +74,7 @@ const changeSpeech = (event: any) => {
           <h2 class="section-title">Аудио</h2>
           <div class="section-accent"></div>
         </div>
-        
+
         <div class="settings-items">
           <div class="setting-item">
             <div class="setting-info">
@@ -87,10 +87,10 @@ const changeSpeech = (event: any) => {
               </div>
             </div>
             <div class="setting-control">
-              <AppSelect 
-                label="Голос" 
-                :value="valueVoiceSpeech" 
-                :options="speechList" 
+              <AppSelect
+                label="Голос"
+                :value="valueVoiceSpeech"
+                :options="speechList"
                 @ionChange="changeSpeech"
                 class="glass-select"
               />
@@ -105,7 +105,7 @@ const changeSpeech = (event: any) => {
           <h2 class="section-title">О приложении</h2>
           <div class="section-accent"></div>
         </div>
-        
+
         <div class="about-content">
           <div class="app-info">
             <div class="app-icon">
@@ -114,7 +114,7 @@ const changeSpeech = (event: any) => {
             <div class="app-details">
               <h3 class="app-name">Learn English</h3>
               <p class="app-version">Версия 1.0.0</p>
-              <p class="app-description">Эффективное изучение английского языка с современным интерфейсом</p>
+              <p class="app-description">Эффективное изучение английского языка</p>
             </div>
           </div>
         </div>
@@ -139,7 +139,6 @@ const changeSpeech = (event: any) => {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   border-radius: var(--glass-border-radius);
   padding: 24px;
   position: relative;
@@ -214,7 +213,6 @@ const changeSpeech = (event: any) => {
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -279,7 +277,6 @@ const changeSpeech = (event: any) => {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   border-radius: var(--glass-border-radius-small);
   color: #ffffff;
   min-width: 200px;
@@ -299,7 +296,6 @@ const changeSpeech = (event: any) => {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   border-radius: var(--glass-border-radius-small);
 }
 
@@ -310,7 +306,6 @@ const changeSpeech = (event: any) => {
   background: var(--glass-gradient-primary);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
-  border: 1px solid var(--glass-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -354,47 +349,47 @@ const changeSpeech = (event: any) => {
     padding: 16px;
     gap: 20px;
   }
-  
+
   .settings-section {
     padding: 20px;
   }
-  
+
   .section-title {
     font-size: 1.2rem;
   }
-  
+
   .setting-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
     padding: 16px 0;
   }
-  
+
   .setting-info {
     width: 100%;
   }
-  
+
   .setting-control {
     width: 100%;
     display: flex;
     justify-content: flex-end;
   }
-  
+
   .glass-select {
     min-width: 150px;
   }
-  
+
   .app-info {
     flex-direction: column;
     text-align: center;
     padding: 16px;
   }
-  
+
   .app-icon {
     width: 56px;
     height: 56px;
   }
-  
+
   .app-icon ion-icon {
     font-size: 28px;
   }
@@ -405,41 +400,41 @@ const changeSpeech = (event: any) => {
     padding: 12px;
     gap: 16px;
   }
-  
+
   .settings-section {
     padding: 16px;
   }
-  
+
   .section-title {
     font-size: 1.1rem;
   }
-  
+
   .setting-icon {
     width: 40px;
     height: 40px;
   }
-  
+
   .setting-icon ion-icon {
     font-size: 20px;
   }
-  
+
   .setting-title {
     font-size: 1rem;
   }
-  
+
   .setting-description {
     font-size: 0.85rem;
   }
-  
+
   .app-icon {
     width: 48px;
     height: 48px;
   }
-  
+
   .app-icon ion-icon {
     font-size: 24px;
   }
-  
+
   .app-name {
     font-size: 1.1rem;
   }
