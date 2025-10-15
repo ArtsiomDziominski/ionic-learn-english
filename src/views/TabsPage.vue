@@ -61,7 +61,6 @@ import { albumsOutline, fileTrayFullOutline, bookOutline } from 'ionicons/icons'
 
 .glass-tab-button:hover {
   --color: rgba(255, 255, 255, 0.9);
-  transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -69,7 +68,6 @@ import { albumsOutline, fileTrayFullOutline, bookOutline } from 'ionicons/icons'
   background: var(--glass-bg-primary);
   box-shadow: var(--glass-shadow);
   --color: #ffffff;
-  transform: translateY(-4px);
 }
 
 .glass-tab-button.tab-selected::before {
@@ -126,7 +124,7 @@ import { albumsOutline, fileTrayFullOutline, bookOutline } from 'ionicons/icons'
 }
 
 .glass-tab-button.tab-selected .tab-indicator {
-  width: 24px;
+  width: 100%;
 }
 
 /* Responsive Design */

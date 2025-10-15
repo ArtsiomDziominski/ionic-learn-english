@@ -25,14 +25,9 @@
         :key="card.title"
         @click="redirectToLearnWords(card.title)"
       >
-        <div class="card-header">
-          <div class="level-icon">
-            <div class="icon-bg" :style="{'background-image': `url('/assets/svg/${card.title}.svg')`}"></div>
-          </div>
-          <ion-icon :icon="caretForwardOutline" class="arrow-icon" />
-        </div>
         <div class="card-content">
           <h3 class="level-title">{{ card.description }}</h3>
+          <ion-icon :icon="caretForwardOutline" class="arrow-icon" />
           <p class="level-subtitle">{{ getLevelSubtitle(card.title) }}</p>
         </div>
         <div class="card-glow"></div>
@@ -352,6 +347,10 @@ const redirectToLearnWords = (flow: FlowWords): void => {
 .arrow-icon {
   color: rgba(255, 255, 255, 0.7);
   transition: all 0.3s ease;
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
 }
 
 .level-card:hover .arrow-icon {
@@ -361,14 +360,18 @@ const redirectToLearnWords = (flow: FlowWords): void => {
 
 .card-content {
   flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  align-items: center;
 }
 
 .level-title {
   font-size: 1.3rem;
   font-weight: 600;
   color: #ffffff;
-  margin-bottom: 8px;
   line-height: 1.3;
+  margin: 0;
 }
 
 .level-subtitle {
@@ -447,7 +450,7 @@ const redirectToLearnWords = (flow: FlowWords): void => {
 
   .level-card {
     padding: 16px;
-    min-height: 140px;
+    min-height: min-content;
   }
 
   .level-icon {
