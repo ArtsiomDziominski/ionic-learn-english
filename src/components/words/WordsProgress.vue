@@ -35,10 +35,10 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, onUnmounted, Ref, ref, UnwrapRef, watch} from "vue";
+import {computed, Ref, ref, UnwrapRef, watch} from "vue";
 import {storeToRefs} from "pinia";
 import {wordsStore} from "@/store/words";
-import {IonContent, IonHeader, IonPage, IonIcon, useIonRouter} from '@ionic/vue';
+import {IonContent, IonHeader, IonPage, IonIcon, useIonRouter, onIonViewDidEnter, onIonViewDidLeave} from '@ionic/vue';
 import {bookmarkOutline, volumeMediumOutline} from "ionicons/icons";
 import {VIEW_WORDS_TRANSLATION, ViewCardWords} from "@/const/flow";
 import {settingsStore} from "@/store/settings";
@@ -65,12 +65,12 @@ const ionRouter = useIonRouter();
 const wordSelected = ref('');
 const colorCards: Ref<UnwrapRef<string[]>> = ref([]);
 
-onMounted(() => {
+onIonViewDidEnter(() => {
   setDefault();
   if (!currentWord.value) ionRouter.push('/words');
 })
 
-onUnmounted(() => {
+onIonViewDidLeave(() => {
   storeWords.resetFlow();
 })
 
