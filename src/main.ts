@@ -47,7 +47,10 @@ import './theme/style.css';
 
 const head = createHead();
 const app = createApp(App)
-    .use(IonicVue)
+    .use(IonicVue, {
+      // Отключаем swipe back gesture для предотвращения конфликта с iOS native gesture
+      swipeBackEnabled: false
+    })
     .use(router)
     .use(createPinia())
     .use(head)

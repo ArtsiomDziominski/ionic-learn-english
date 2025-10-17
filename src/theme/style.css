@@ -1,3 +1,20 @@
+/* Disable iOS swipe back gesture to prevent conflicts with Ionic navigation */
+html, body {
+    overscroll-behavior-x: none;
+    -webkit-overscroll-behavior-x: none;
+    touch-action: pan-y pinch-zoom;
+}
+
+ion-app {
+    overscroll-behavior-x: none;
+    -webkit-overscroll-behavior-x: none;
+}
+
+ion-content {
+    overscroll-behavior-x: contain;
+    -webkit-overscroll-behavior-x: contain;
+}
+
 /* Liquid Glass Base Styles */
 ion-app {
     background: var(--bg-gradient-primary);

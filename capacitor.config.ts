@@ -5,9 +5,15 @@ const config: CapacitorConfig = {
   appName: 'Daily Easy English',
   webDir: 'dist',
   ios: {
-    // Настройки для корректной работы iOS swipe back gesture
-    contentInset: 'automatic',
+    // Отключаем нативный iOS swipe back gesture чтобы избежать конфликта с Ionic навигацией
+    contentInset: 'never',
     scrollEnabled: true
+  },
+  // Отключаем встроенный swipe-to-go-back в webView
+  plugins: {
+    CapacitorHttp: {
+      enabled: true
+    }
   }
 };
 
