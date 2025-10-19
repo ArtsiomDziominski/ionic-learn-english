@@ -68,7 +68,7 @@ export function useSEO(config: SEOConfig) {
       },
       {
         property: 'og:site_name',
-        content: 'Learn English Easy'
+        content: 'Слова.Day'
       },
       ...(type === 'article' && config.publishedTime ? [{
         property: 'article:published_time',
@@ -119,13 +119,13 @@ export function useArticleSEO(article: {
   author?: string;
 }) {
   useSEO({
-    title: `${article.title} | Learn English Easy`,
+    title: `${article.title} | Слова.Day`,
     description: article.description,
     image: article.img,
     type: 'article',
     publishedTime: article.publishedTime,
     modifiedTime: article.modifiedTime,
-    author: article.author || 'Learn English Easy'
+    author: article.author || 'Слова.Day'
   });
 }
 

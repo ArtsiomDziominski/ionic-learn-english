@@ -1,6 +1,6 @@
 {
 	"appId": "io.learn.english",
-	"appName": "Daily Easy English",
+	"appName": "Слова.Day",
 	"webDir": "dist",
 	"ios": {
 		"contentInset": "never",

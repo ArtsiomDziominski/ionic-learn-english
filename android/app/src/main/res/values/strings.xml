@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Daily Easy English</string>
-    <string name="title_activity_main">Daily Easy English</string>
+    <string name="app_name">Слова.Day</string>
+    <string name="title_activity_main">Слова.Day</string>
     <string name="package_name">io.learn.english</string>
     <string name="custom_url_scheme">io.learn.english</string>
 </resources>

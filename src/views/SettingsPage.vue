@@ -34,7 +34,7 @@ const toBack = (): void => {
 
 onMounted(() => {
   useSEO({
-    title: 'Настройки | Learn English Easy',
+    title: 'Настройки | Слова.Day',
     description: 'Настройте приложение для изучения английского языка под себя. Выберите тему оформления и другие параметры для комфортного обучения.',
     url: 'https://www.learnenglisheasy.ru/settings'
   });

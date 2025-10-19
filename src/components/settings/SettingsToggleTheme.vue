@@ -112,7 +112,7 @@ const changeSpeech = (event: any) => {
               <ion-icon name="book"></ion-icon>
             </div>
             <div class="app-details">
-              <h3 class="app-name">Learn English</h3>
+              <h3 class="app-name">Слова.Day</h3>
               <p class="app-version">Версия 1.0.0</p>
               <p class="app-description">Эффективное изучение английского языка</p>
             </div>

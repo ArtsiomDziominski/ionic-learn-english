@@ -1,6 +1,6 @@
 {
-  "name": "Learn English Easy - Изучение английских слов",
-  "short_name": "Learn English",
+  "name": "Слова.Day - Изучение английских слов",
+  "short_name": "Слова.Day",
   "description": "Изучайте английский язык легко и эффективно. Интерактивные уроки, карточки для запоминания слов и полезные статьи.",
   "start_url": "/",
   "display": "standalone",

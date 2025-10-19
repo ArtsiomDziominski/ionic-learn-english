@@ -18,7 +18,7 @@ import { useSEO } from '@/composables/useSEO';
 
 onMounted(() => {
   useSEO({
-    title: 'Мой словарь английских слов | Learn English Easy',
+    title: 'Мой словарь английских слов | Слова.Day',
     description: 'Ваш персональный словарь для изучения английского языка. Отслеживайте прогресс, повторяйте слова и расширяйте свой словарный запас эффективно.',
     keywords: 'словарь английского, мой словарь, изученные слова, английский словарь, vocabulary list',
     url: 'https://www.learnenglisheasy.ru/vocabulary'
