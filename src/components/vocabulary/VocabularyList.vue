@@ -308,8 +308,8 @@ const setVocabularyView = (view: VocabularyViews): void => {
   position: relative;
   padding: 20px;
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   border-radius: var(--glass-border-radius-small);
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);

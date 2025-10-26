@@ -263,8 +263,8 @@ const redirectToLearnWords = (flow: FlowWords): void => {
   --padding-bottom: 16px;
   font-size: 1.1rem;
   font-weight: 600;
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   box-shadow: var(--glass-shadow);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

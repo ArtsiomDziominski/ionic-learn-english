@@ -59,8 +59,8 @@ ion-content {
 ion-button {
     cursor: pointer;
     --border-radius: var(--glass-border-radius-small);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -80,8 +80,8 @@ ion-button.button-outline {
     --border-color: var(--glass-border);
     --color: #ffffff;
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 /* Glass Toggle */
@@ -191,7 +191,7 @@ ion-modal ion-content {
 
 /* Glass Inputs */
 ion-input, ion-textarea, ion-select {
-    --background: rgba(255, 255, 255, 0.1);
+    --background: rgba(255, 255, 255, 0);
     --color: #ffffff;
     --placeholder-color: rgba(255, 255, 255, 0.6);
     --border-color: var(--glass-border);

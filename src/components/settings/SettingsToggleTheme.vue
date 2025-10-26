@@ -5,6 +5,7 @@ import {IonToggle} from '@ionic/vue';
 import AppSelect from "@/components/UI/AppSelect.vue";
 import {computed} from "vue";
 import {VoiceSpeech} from "@/const/const";
+import { volumeHighOutline } from "ionicons/icons";
 
 const storeSettings = settingsStore();
 const {isDarkMode, voiceSpeech} = storeToRefs(storeSettings);
@@ -79,7 +80,7 @@ const changeSpeech = (event: any) => {
           <div class="setting-item">
             <div class="setting-info">
               <div class="setting-icon">
-                <ion-icon name="volume-high"></ion-icon>
+                <ion-icon :icon="volumeHighOutline"></ion-icon>
               </div>
               <div class="setting-content">
                 <h3 class="setting-title">Голосовое воспроизведение</h3>
@@ -109,11 +110,11 @@ const changeSpeech = (event: any) => {
         <div class="about-content">
           <div class="app-info">
             <div class="app-icon">
-              <ion-icon name="book"></ion-icon>
+              <img src="/assets/icons/icon-192.webp" alt="logo">
             </div>
             <div class="app-details">
               <h3 class="app-name">Слова.Day</h3>
-              <p class="app-version">Версия 1.0.0</p>
+              <p class="app-version">Версия 1.0.4</p>
               <p class="app-description">Эффективное изучение английского языка</p>
             </div>
           </div>
@@ -176,7 +177,6 @@ const changeSpeech = (event: any) => {
 .section-accent {
   width: 60px;
   height: 3px;
-  background: var(--glass-gradient-primary);
   border-radius: 2px;
   opacity: 0.8;
 }
@@ -280,6 +280,7 @@ const changeSpeech = (event: any) => {
   border-radius: var(--glass-border-radius-small);
   color: #ffffff;
   min-width: 200px;
+  padding: 0 10px;
 }
 
 /* About Section */
@@ -303,7 +304,6 @@ const changeSpeech = (event: any) => {
   width: 64px;
   height: 64px;
   border-radius: var(--glass-border-radius-small);
-  background: var(--glass-gradient-primary);
   backdrop-filter: blur(var(--glass-blur));
   -webkit-backdrop-filter: blur(var(--glass-blur));
   display: flex;

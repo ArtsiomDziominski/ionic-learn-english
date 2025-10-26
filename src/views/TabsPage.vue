@@ -55,8 +55,8 @@ import { albumsOutline, fileTrayFullOutline, bookOutline } from 'ionicons/icons'
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 .glass-tab-button:hover {

@@ -67,8 +67,8 @@ onMounted(() => {
   --padding-end: 12px;
   --padding-top: 12px;
   --padding-bottom: 12px;
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

@@ -142,8 +142,8 @@ defineProps({
   justify-content: space-between;
   padding: 12px 16px;
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
   border-radius: var(--glass-border-radius-small);
   transition: all 0.3s ease;
 }
