@@ -3,6 +3,7 @@ import {onMounted, Ref, ref, UnwrapRef} from "vue";
 import {useRoute} from "vue-router";
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/vue";
 import HeaderToolbarPages from "@/components/header/HeaderToolbarPages.vue";
+import AppFooter from "@/components/AppFooter.vue";
 import {useArticleSEO} from "@/composables/useSEO";
 import {useArticleSchema, useBreadcrumbSchema} from "@/composables/useStructuredData";
 
@@ -58,7 +59,7 @@ const setMeta = () => {
     </ion-header>
     <ion-content class="ion-padding" :fullscreen="true">
       <div class="body-container" v-html="article?.body"></div>
-
+      <AppFooter/>
     </ion-content>
   </ion-page>
 </template>

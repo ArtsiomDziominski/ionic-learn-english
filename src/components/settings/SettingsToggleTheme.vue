@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import {settingsStore} from "@/store/settings";
-import {storeToRefs} from "pinia";
-import {IonToggle} from '@ionic/vue';
+import { settingsStore } from "@/store/settings";
+import { storeToRefs } from "pinia";
+import AppFooter from "@/components/AppFooter.vue";
 import AppSelect from "@/components/UI/AppSelect.vue";
-import {computed} from "vue";
-import {VoiceSpeech} from "@/const/const";
+import { computed } from "vue";
+import { VoiceSpeech } from "@/const/const";
 import { volumeHighOutline } from "ionicons/icons";
+import { Browser } from '@capacitor/browser';
+import { Capacitor } from '@capacitor/core';
 
 const storeSettings = settingsStore();
-const {isDarkMode, voiceSpeech} = storeToRefs(storeSettings);
+const { voiceSpeech } = storeToRefs(storeSettings);
 
-const toggleMode = () => {
-  storeSettings.toggleMode();
-};
+// const toggleMode = () => {
+//   storeSettings.toggleMode();
+// };
 
 const valueVoiceSpeech = computed(() => {
   return voiceSpeech.value?.voiceURI || '';
@@ -37,37 +39,50 @@ const changeSpeech = (event: any) => {
   if (speech) storeSettings.setVoiceSpeech(speechSynthesisVoices.find((item) => item.voiceURI === speech) || null);
 };
 
+const openLink = async (url: string) => {
+  // В мобильном приложении открываем в системном браузере
+  if (Capacitor.isNativePlatform()) {
+    await Browser.open({ 
+      url,
+      presentationStyle: 'fullscreen'
+    });
+  } else {
+    // В веб-версии открываем в новой вкладке
+    window.open(url, '_blank');
+  }
+};
+
 </script>
 
 <template>
   <ion-content>
     <div class="settings-container glass-fade-in">
       <!-- Appearance Settings -->
-<!--      <div class="settings-section glass-card">-->
-<!--        <div class="section-header">-->
-<!--          <h2 class="section-title">Внешний вид</h2>-->
-<!--          <div class="section-accent"></div>-->
-<!--        </div>-->
-<!--        -->
-<!--        <div class="settings-items">-->
-<!--          <div class="setting-item">-->
-<!--            <div class="setting-info">-->
-<!--              <div class="setting-icon">-->
-<!--                <ion-icon name="moon"></ion-icon>-->
-<!--              </div>-->
-<!--              <div class="setting-content">-->
-<!--                <h3 class="setting-title">Темная тема</h3>-->
-<!--                <p class="setting-description">Переключиться на темную тему интерфейса</p>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <ion-toggle -->
-<!--              :checked="isDarkMode" -->
-<!--              @ion-change="toggleMode" -->
-<!--              class="glass-toggle"-->
-<!--            />-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!--      <div class="settings-section glass-card">-->
+      <!--        <div class="section-header">-->
+      <!--          <h2 class="section-title">Внешний вид</h2>-->
+      <!--          <div class="section-accent"></div>-->
+      <!--        </div>-->
+      <!--        -->
+      <!--        <div class="settings-items">-->
+      <!--          <div class="setting-item">-->
+      <!--            <div class="setting-info">-->
+      <!--              <div class="setting-icon">-->
+      <!--                <ion-icon name="moon"></ion-icon>-->
+      <!--              </div>-->
+      <!--              <div class="setting-content">-->
+      <!--                <h3 class="setting-title">Темная тема</h3>-->
+      <!--                <p class="setting-description">Переключиться на темную тему интерфейса</p>-->
+      <!--              </div>-->
+      <!--            </div>-->
+      <!--            <ion-toggle -->
+      <!--              :checked="isDarkMode" -->
+      <!--              @ion-change="toggleMode" -->
+      <!--              class="glass-toggle"-->
+      <!--            />-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
 
       <!-- Audio Settings -->
       <div class="settings-section glass-card">
@@ -89,11 +104,11 @@ const changeSpeech = (event: any) => {
             </div>
             <div class="setting-control">
               <AppSelect
-                label="Голос"
-                :value="valueVoiceSpeech"
-                :options="speechList"
-                @ionChange="changeSpeech"
-                class="glass-select"
+                  label="Голос"
+                  :value="valueVoiceSpeech"
+                  :options="speechList"
+                  @ionChange="changeSpeech"
+                  class="glass-select"
               />
             </div>
           </div>
@@ -114,13 +129,50 @@ const changeSpeech = (event: any) => {
             </div>
             <div class="app-details">
               <h3 class="app-name">Слова.Day</h3>
-              <p class="app-version">Версия 1.0.4</p>
+              <p class="app-version">Версия 1.0.5</p>
               <p class="app-description">Эффективное изучение английского языка</p>
             </div>
           </div>
         </div>
       </div>
+
+      <!-- Legal Section -->
+      <div class="settings-section glass-card">
+        <div class="section-header">
+          <h2 class="section-title">Правовая информация</h2>
+          <div class="section-accent"></div>
+        </div>
+
+        <div class="settings-items">
+          <a href="#" @click.prevent="openLink('/terms-of-service.html')" class="setting-item legal-link">
+            <div class="setting-info">
+              <div class="setting-icon">
+                <ion-icon name="document-text-outline"></ion-icon>
+              </div>
+              <div class="setting-content">
+                <h3 class="setting-title">Условия использования</h3>
+                <p class="setting-description">Ознакомьтесь с условиями использования приложения</p>
+              </div>
+            </div>
+            <ion-icon name="chevron-forward-outline" class="link-arrow"></ion-icon>
+          </a>
+
+          <a href="#" @click.prevent="openLink('/privacy-policy.html')" class="setting-item legal-link">
+            <div class="setting-info">
+              <div class="setting-icon">
+                <ion-icon name="shield-checkmark-outline"></ion-icon>
+              </div>
+              <div class="setting-content">
+                <h3 class="setting-title">Политика конфиденциальности</h3>
+                <p class="setting-description">Информация о защите ваших данных</p>
+              </div>
+            </div>
+            <ion-icon name="chevron-forward-outline" class="link-arrow"></ion-icon>
+          </a>
+        </div>
+      </div>
     </div>
+    <AppFooter/>
   </ion-content>
 </template>
 
@@ -129,7 +181,6 @@ const changeSpeech = (event: any) => {
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -197,6 +248,29 @@ const changeSpeech = (event: any) => {
 .setting-item:last-child {
   border-bottom: none;
   padding-bottom: 0;
+}
+
+.legal-link {
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.legal-link:hover {
+  background: rgba(255, 255, 255, 0.05);
+  margin: 0 -24px;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.link-arrow {
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.3s ease;
+}
+
+.legal-link:hover .link-arrow {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .setting-info {

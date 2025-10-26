@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {IonContent, IonHeader, IonPage, IonIcon} from "@ionic/vue";
 import HeaderToolbarPages from "@/components/header/HeaderToolbarPages.vue";
+import AppFooter from "@/components/AppFooter.vue";
 import {vocabularyStore} from "@/store/vocabulary";
 import {storeToRefs} from "pinia";
 import {addCircleOutline, bookmarkOutline, checkmarkCircleOutline} from "ionicons/icons";
@@ -65,6 +66,7 @@ const actionFavorite = (word: COMMON.Word, isFavorite: boolean): void => {
         </ion-button>
 
       </ion-card>
+      <AppFooter/>
     </ion-content>
   </ion-page>
 </template>

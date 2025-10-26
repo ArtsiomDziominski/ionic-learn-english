@@ -5,6 +5,7 @@
     </ion-header>
     <ion-content :fullscreen="true">
       <VocabularyList />
+      <AppFooter/>
     </ion-content>
   </ion-page>
 </template>
@@ -14,6 +15,7 @@ import { IonPage, IonHeader, IonContent } from '@ionic/vue';
 import { onMounted } from 'vue';
 import VocabularyList from "@/components/vocabulary/VocabularyList.vue";
 import HeaderToolbarMainPages from "@/components/header/HeaderToolbarMainPages.vue";
+import AppFooter from "@/components/AppFooter.vue";
 import { useSEO } from '@/composables/useSEO';
 
 onMounted(() => {

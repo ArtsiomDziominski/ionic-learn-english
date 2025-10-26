@@ -3,6 +3,7 @@ import HeaderToolbarMainPages from "@/components/header/HeaderToolbarMainPages.v
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/vue";
 import {onMounted, Ref, ref, UnwrapRef} from "vue";
 import ArticleCardPreview from "@/components/blog/ArticleCardPreview.vue";
+import AppFooter from "@/components/AppFooter.vue";
 import { useSEO } from '@/composables/useSEO';
 
 const articles: Ref<UnwrapRef<ARTICLE.Article[]>> = ref([])
@@ -53,6 +54,9 @@ const setMeta = () => {
             :index="index"
           />
         </div>
+
+        <!-- Footer -->
+        <AppFooter/>
       </div>
 
     </ion-content>

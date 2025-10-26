@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import {IonPage, IonToolbar, IonTitle, IonContent, IonHeader, IonIcon, useIonRouter} from '@ionic/vue';
+import {IonPage, IonToolbar, IonContent, IonHeader, IonIcon, useIonRouter} from '@ionic/vue';
 import { onMounted } from 'vue';
 import SettingsToggleTheme from "@/components/settings/SettingsToggleTheme.vue";
 import {chevronBackOutline} from "ionicons/icons";

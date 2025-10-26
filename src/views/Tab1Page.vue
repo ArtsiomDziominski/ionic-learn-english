@@ -5,6 +5,7 @@
     </ion-header>
     <ion-content class="ion-padding" :fullscreen="true">
       <ChooseFlowCards/>
+      <AppFooter/>
     </ion-content>
   </ion-page>
 </template>
@@ -20,6 +21,7 @@ import {
 import { onMounted } from 'vue';
 import ChooseFlowCards from "@/components/words/WordsSelectFlowCards.vue";
 import HeaderToolbarMainPages from "@/components/header/HeaderToolbarMainPages.vue";
+import AppFooter from "@/components/AppFooter.vue";
 import { useSEO } from '@/composables/useSEO';
 import { useWebApplicationSchema } from '@/composables/useStructuredData';
 
