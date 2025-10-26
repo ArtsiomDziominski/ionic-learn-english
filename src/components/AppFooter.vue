@@ -2,10 +2,12 @@
 import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
 
+const years = new Date().getFullYear();
+
 const openLink = async (url: string) => {
   // В мобильном приложении открываем в системном браузере
   if (Capacitor.isNativePlatform()) {
-    await Browser.open({ 
+    await Browser.open({
       url,
       presentationStyle: 'fullscreen'
     });
@@ -28,7 +30,7 @@ const openLink = async (url: string) => {
           Условия использования
         </a>
       </div>
-      <p class="footer-copyright">© 2024 Слова.Day</p>
+      <p class="footer-copyright">© {{ years }} Слова.Day</p>
     </div>
   </div>
 </template>
