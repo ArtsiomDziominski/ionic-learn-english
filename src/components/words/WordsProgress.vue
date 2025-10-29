@@ -45,6 +45,7 @@ import {settingsStore} from "@/store/settings";
 import WordsStudyCompeted from "@/components/words/WordsStudyCompeted.vue";
 import HeaderToolbarPages from "@/components/header/HeaderToolbarPages.vue";
 import {vocabularyStore} from "@/store/vocabulary";
+import {statisticsStore} from "@/store/statistics";
 
 const storeWords = wordsStore();
 const {
@@ -59,6 +60,7 @@ const {
 
 const storeSettings = settingsStore();
 const storeVocabulary = vocabularyStore();
+const storeStatistics = statisticsStore();
 const {favoritesWords} = storeToRefs(storeVocabulary);
 const ionRouter = useIonRouter();
 
@@ -67,6 +69,7 @@ const colorCards: Ref<UnwrapRef<string[]>> = ref([]);
 
 onIonViewDidEnter(() => {
   setDefault();
+  storeStatistics.loadStatistics();
   if (!currentWord.value) ionRouter.push('/words');
 })
 
@@ -75,7 +78,10 @@ onIonViewDidLeave(() => {
 })
 
 watch(isCompleted, (value) => {
-  if (value) storeVocabulary.updateStudiedList(studyWords.value);
+  if (value) {
+    storeVocabulary.updateStudiedList(studyWords.value);
+    storeStatistics.addStudyDay();
+  }
 })
 
 const titleRandomWord = computed((): string => {

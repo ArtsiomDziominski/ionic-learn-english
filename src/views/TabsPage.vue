@@ -15,9 +15,9 @@
           <div class="tab-indicator"></div>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab3" href="/article" class="glass-tab-button">
-          <ion-icon aria-hidden="true" :icon="bookOutline" class="tab-icon" />
-          <ion-label class="tab-label">Блог</ion-label>
+        <ion-tab-button tab="profile" href="/profile" class="glass-tab-button">
+          <ion-icon aria-hidden="true" :icon="personOutline" class="tab-icon" />
+          <ion-label class="tab-label">Профиль</ion-label>
           <div class="tab-indicator"></div>
         </ion-tab-button>
       </ion-tab-bar>
@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { IonTabBar, IonTabButton, IonTabs, IonLabel, IonIcon, IonPage, IonRouterOutlet } from '@ionic/vue';
-import { albumsOutline, fileTrayFullOutline, bookOutline } from 'ionicons/icons';
+import { albumsOutline, fileTrayFullOutline, personOutline } from 'ionicons/icons';
 </script>
 
 <style scoped lang="scss">
