@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import {settingsOutline} from "ionicons/icons";
-import {IonToolbar, IonTitle, IonIcon, useIonRouter} from '@ionic/vue';
+import {settingsOutline, bookOutline} from "ionicons/icons";
+import {IonToolbar, IonTitle, IonIcon, IonButton, useIonRouter} from '@ionic/vue';
+import PointsIndicator from '@/components/PointsIndicator.vue';
 
 defineProps({
   title: {
@@ -14,22 +15,34 @@ const ionRouter = useIonRouter();
 const toSettings = (): void => {
   ionRouter.push('/settings');
 }
+
+const toBlog = (): void => {
+  ionRouter.push('/article');
+}
 </script>
 
 <template>
   <ion-toolbar class="glass-toolbar">
     <div class="toolbar">
       <div class="title-section">
-        <h1 class="page-title">{{ title }}</h1>
-        <div class="title-accent"></div>
+        <PointsIndicator />
       </div>
-      <ion-button
-        class="settings-btn glass-button"
-        fill="clear"
-        @click="toSettings"
-      >
-        <ion-icon :icon="settingsOutline" size="large"></ion-icon>
-      </ion-button>
+      <div class="actions-section">
+        <ion-button
+          class="blog-btn glass-button"
+          fill="clear"
+          @click="toBlog"
+        >
+          <ion-icon :icon="bookOutline" size="large"></ion-icon>
+        </ion-button>
+        <ion-button
+          class="settings-btn glass-button"
+          fill="clear"
+          @click="toSettings"
+        >
+          <ion-icon :icon="settingsOutline" size="large"></ion-icon>
+        </ion-button>
+      </div>
     </div>
   </ion-toolbar>
 </template>
@@ -51,13 +64,6 @@ const toSettings = (): void => {
   min-height: 60px;
 }
 
-.title-section {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
 .page-title {
   font-size: 1.5rem;
   font-weight: 700;
@@ -72,15 +78,13 @@ const toSettings = (): void => {
   line-height: 1.2;
 }
 
-.title-accent {
-  width: 60px;
-  height: 3px;
-  background: var(--glass-gradient-primary);
-  border-radius: 2px;
-  margin-top: 4px;
-  opacity: 0.8;
+.actions-section {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
+.blog-btn,
 .settings-btn {
   --background: rgba(255, 255, 255, 0.1);
   --background-hover: rgba(255, 255, 255, 0.2);
@@ -95,16 +99,19 @@ const toSettings = (): void => {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.blog-btn:hover,
 .settings-btn:hover {
   transform: translateY(-2px);
   box-shadow: var(--glass-shadow);
   --background: rgba(255, 255, 255, 0.15);
 }
 
+.blog-btn ion-icon,
 .settings-btn ion-icon {
   transition: all 0.3s ease;
 }
 
+.blog-btn:hover ion-icon,
 .settings-btn:hover ion-icon {
   transform: scale(1.1);
   filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
@@ -126,6 +133,7 @@ const toSettings = (): void => {
     height: 2px;
   }
 
+  .blog-btn,
   .settings-btn {
     --padding-start: 10px;
     --padding-end: 10px;

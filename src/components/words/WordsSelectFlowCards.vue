@@ -408,7 +408,7 @@ const redirectToLearnWords = (flow: FlowWords): void => {
 /* Responsive Design */
 @media (max-width: 768px) {
   .wrapper-flow {
-    padding: 16px;
+    padding: 0;
   }
 
   .hero-section {
