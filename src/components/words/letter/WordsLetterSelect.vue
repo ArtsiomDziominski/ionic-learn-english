@@ -163,7 +163,7 @@ const clickNext = (): void => {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  overflow-x: hidden;
+  overflow: hidden;
 
   &__header {
     display: flex;
