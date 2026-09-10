@@ -83,7 +83,7 @@ defineProps<Props>();
 }
 
 .achievements-total {
-  color: var(--ion-color-medium);
+  color: var(--app-text-muted);
 }
 
 .achievements {
@@ -114,17 +114,42 @@ defineProps<Props>();
 .achievement-item {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px;
+  gap: var(--app-sp-4);
+  padding: var(--app-sp-4);
   background: var(--app-surface-2);
-  border-radius: 12px;
-  transition: all 0.3s ease;
-  opacity: 0.5;
-  
+  border-radius: var(--app-r-md);
+  transition: background-color var(--app-dur-base) var(--app-ease);
+
+  /* Заблокированное достижение приглушаем точечно — иконкой и
+     цветом подписи. Раньше на весь блок вешался opacity: 0.5,
+     из-за чего текст терял контраст. */
+  .achievement-icon {
+    background: var(--app-surface-3);
+
+    ion-icon {
+      color: var(--app-text-subtle);
+    }
+  }
+
+  .achievement-title {
+    color: var(--app-text-muted);
+  }
+
   &.unlocked {
-    opacity: 1;
     background: var(--app-tint-success);
     box-shadow: var(--app-e1);
+
+    .achievement-icon {
+      background: var(--app-surface);
+
+      ion-icon {
+        color: var(--app-success-ink);
+      }
+    }
+
+    .achievement-title {
+      color: var(--app-text);
+    }
   }
 }
 
@@ -150,13 +175,13 @@ defineProps<Props>();
 
 .achievement-title {
   font-weight: 600;
-  color: var(--ion-color-light);
+  color: var(--app-text);
   margin-bottom: 4px;
 }
 
 .achievement-description {
   font-size: 0.9rem;
-  color: var(--ion-color-medium);
+  color: var(--app-text-muted);
 }
 
 @media (max-width: 768px) {

@@ -95,7 +95,7 @@ const formatDate = (dateString: string): string => {
 
 .activity-date {
   font-weight: 500;
-  color: var(--ion-color-light);
+  color: var(--app-text);
 }
 
 .activity-status {
