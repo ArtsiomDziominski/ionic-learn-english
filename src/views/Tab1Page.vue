@@ -14,8 +14,6 @@
 import {
   IonPage,
   IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
 } from '@ionic/vue';
 import { onMounted } from 'vue';

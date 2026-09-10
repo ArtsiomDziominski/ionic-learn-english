@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import HeaderToolbarMainPages from "@/components/header/HeaderToolbarMainPages.vue";
-import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/vue";
+import {IonContent, IonHeader, IonPage} from "@ionic/vue";
 import {onMounted, Ref, ref, UnwrapRef} from "vue";
 import ArticleCardPreview from "@/components/blog/ArticleCardPreview.vue";
 import AppFooter from "@/components/AppFooter.vue";

@@ -14,7 +14,7 @@ const storeStatistics = statisticsStore();
 const storePoints = pointsStore();
 const {currentFlow} = storeToRefs(storeWords);
 const {totalStudyDays, currentStreak} = storeToRefs(storeStatistics);
-const {totalPoints, todayRepeatCount} = storeToRefs(storePoints);
+const {totalPoints} = storeToRefs(storePoints);
 
 // Реактивные переменные для анимации
 const animatedPoints = ref(0);
