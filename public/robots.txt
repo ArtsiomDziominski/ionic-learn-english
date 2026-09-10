@@ -1,3 +1,11 @@
 User-agent: *
 Allow: /
+
+# Страница настроек — служебная, в поиске не нужна
+Disallow: /settings
+
+# Полный список слов рендерится только через JS и не несёт
+# самостоятельной ценности для поиска
+Disallow: /vocabulary/list
+
 Sitemap: https://www.learnenglisheasy.ru/sitemap.xml
