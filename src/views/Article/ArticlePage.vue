@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onMounted, Ref, ref, UnwrapRef} from "vue";
 import {useRoute} from "vue-router";
-import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/vue";
+import {IonContent, IonHeader, IonPage} from "@ionic/vue";
 import HeaderToolbarPages from "@/components/header/HeaderToolbarPages.vue";
 import AppFooter from "@/components/AppFooter.vue";
 import {useArticleSEO} from "@/composables/useSEO";

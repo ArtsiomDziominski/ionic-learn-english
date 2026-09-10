@@ -3,6 +3,7 @@ import {computed, Ref, ref, UnwrapRef} from "vue";
 import {VocabularyViews} from "@/const/vocabulary";
 import {words} from "@/content/words_level";
 import {STORAGE_KEY_FAVORITES_WORDS, STORAGE_KEY_STUDIED_WORDS} from "@/const/const";
+import {getStorageJSON, setStorageJSON} from "@/utils/util";
 
 export const vocabularyStore = defineStore('vocabularyStore', () => {
     const vocabularyView = ref(VocabularyViews.AllVocabulary);
@@ -31,22 +32,22 @@ export const vocabularyStore = defineStore('vocabularyStore', () => {
     }
 
     const setStudiedWords = () => {
-        studiedWords.value = JSON.parse(localStorage.getItem(STORAGE_KEY_STUDIED_WORDS) || '[]');
+        studiedWords.value = getStorageJSON<COMMON.Word[]>(STORAGE_KEY_STUDIED_WORDS, []);
     };
 
     const updateStudiedWords = (word: COMMON.Word) => {
         studiedWords.value.push(word);
-        localStorage.setItem(STORAGE_KEY_STUDIED_WORDS, JSON.stringify(studiedWords.value));
+        setStorageJSON(STORAGE_KEY_STUDIED_WORDS, studiedWords.value);
     };
 
     const updateStudiedList = (words: COMMON.Word[]) => {
         studiedWords.value = [...studiedWords.value, ...words];
-        localStorage.setItem(STORAGE_KEY_STUDIED_WORDS, JSON.stringify(studiedWords.value));
+        setStorageJSON(STORAGE_KEY_STUDIED_WORDS, studiedWords.value);
     };
 
     const deleteStudiedWords = (word: COMMON.Word) => {
         studiedWords.value = studiedWords.value.filter((item: COMMON.Word) => item.word !== word.word);
-        localStorage.setItem(STORAGE_KEY_STUDIED_WORDS, JSON.stringify(studiedWords.value));
+        setStorageJSON(STORAGE_KEY_STUDIED_WORDS, studiedWords.value);
     };
 
     const countStudiedWords = computed((): UnwrapRef<number> => {
@@ -54,17 +55,17 @@ export const vocabularyStore = defineStore('vocabularyStore', () => {
     });
 
     const setFavoritesWord = () => {
-        favoritesWords.value = JSON.parse(localStorage.getItem(STORAGE_KEY_FAVORITES_WORDS) || '[]');
+        favoritesWords.value = getStorageJSON<COMMON.Word[]>(STORAGE_KEY_FAVORITES_WORDS, []);
     };
 
     const updateFavoritesWord = (word: COMMON.Word) => {
         favoritesWords.value.push(word);
-        localStorage.setItem(STORAGE_KEY_FAVORITES_WORDS, JSON.stringify(favoritesWords.value));
+        setStorageJSON(STORAGE_KEY_FAVORITES_WORDS, favoritesWords.value);
     };
 
     const deleteFavoritesWord = (word: COMMON.Word) => {
         favoritesWords.value = favoritesWords.value.filter((item: COMMON.Word) => item.word !== word.word);
-        localStorage.setItem(STORAGE_KEY_FAVORITES_WORDS, JSON.stringify(favoritesWords.value));
+        setStorageJSON(STORAGE_KEY_FAVORITES_WORDS, favoritesWords.value);
     };
 
     const countFavoritesWords = computed((): UnwrapRef<number> => {

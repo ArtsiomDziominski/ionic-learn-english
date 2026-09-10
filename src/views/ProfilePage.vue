@@ -94,21 +94,19 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
-import { 
-  IonPage, 
-  IonHeader, 
-  IonContent, 
-  IonIcon,
+import {
+  IonPage,
+  IonHeader,
+  IonContent,
   IonActionSheet
 } from '@ionic/vue';
-import { 
+import {
   cameraOutline,
   imageOutline,
   closeCircleOutline,
   trophyOutline,
   medalOutline,
   rocketOutline,
-  trendingUpOutline,
   heartOutline,
   timeOutline,
   diamondOutline,
@@ -141,6 +139,8 @@ import { statisticsStore } from '@/store/statistics';
 import { vocabularyStore } from '@/store/vocabulary';
 import { pointsStore } from '@/store/points';
 import { storeToRefs } from 'pinia';
+import { STORAGE_KEY_USER_AVATAR } from '@/const/const';
+import { getStorageItem, removeStorageItem, setStorageItem } from '@/utils/util';
 
 const storeStatistics = statisticsStore();
 const storeVocabulary = vocabularyStore();
@@ -148,10 +148,9 @@ const storePoints = pointsStore();
 const { 
   totalStudyDays, 
   currentStreak, 
-  hasStudiedToday, 
+  hasStudiedToday,
   studyDays,
   getStudyDaysThisWeek,
-  getStudyDaysThisMonth,
   getAverageStudyDaysPerWeek
 } = storeToRefs(storeStatistics);
 const { 
@@ -179,14 +178,14 @@ onMounted(() => {
 
 // Avatar functions
 const loadAvatar = () => {
-  const savedAvatar = localStorage.getItem('userAvatar');
+  const savedAvatar = getStorageItem(STORAGE_KEY_USER_AVATAR);
   if (savedAvatar) {
     avatarImage.value = savedAvatar;
   }
 };
 
 const saveAvatar = (imageData: string) => {
-  localStorage.setItem('userAvatar', imageData);
+  setStorageItem(STORAGE_KEY_USER_AVATAR, imageData);
   avatarImage.value = imageData;
 };
 
@@ -233,7 +232,7 @@ const closeActionSheet = () => {
 };
 
 const removeAvatar = () => {
-  localStorage.removeItem('userAvatar');
+  removeStorageItem(STORAGE_KEY_USER_AVATAR);
   avatarImage.value = null;
 };
 

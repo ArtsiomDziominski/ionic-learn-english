@@ -8,7 +8,7 @@
 <script setup lang="ts">
 import { IonIcon } from '@ionic/vue';
 import { starOutline } from 'ionicons/icons';
-import { computed, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import { pointsStore } from '@/store/points';
 import { storeToRefs } from 'pinia';
 import router from '@/router';

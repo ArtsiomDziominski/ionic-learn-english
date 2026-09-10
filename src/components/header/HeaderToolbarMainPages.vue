@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {settingsOutline, bookOutline} from "ionicons/icons";
-import {IonToolbar, IonTitle, IonIcon, IonButton, useIonRouter} from '@ionic/vue';
+import {IonToolbar, IonIcon, IonButton, useIonRouter} from '@ionic/vue';
 import PointsIndicator from '@/components/PointsIndicator.vue';
 
 defineProps({

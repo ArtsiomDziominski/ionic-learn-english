@@ -6,6 +6,7 @@ export const STORAGE_KEY_STUDY_DAYS = 'studyDays';
 export const STORAGE_KEY_LAST_STUDY_DATE = 'lastStudyDate';
 export const STORAGE_KEY_USER_POINTS = 'userPoints';
 export const STORAGE_KEY_DAILY_REPEATS = 'dailyRepeats';
+export const STORAGE_KEY_USER_AVATAR = 'userAvatar';
 
 export enum ThemeType {
     Light = 'light',
