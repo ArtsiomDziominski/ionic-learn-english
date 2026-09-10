@@ -1,12 +1,12 @@
 <template>
   <ion-page class="page">
-    <ion-header class="header">
+    <ion-header>
       <HeaderToolbarPages title="Обучение"/>
       <ion-progress-bar :buffer="0" :value="progressBarStudyCount"></ion-progress-bar>
     </ion-header>
     <ion-content v-if="!isCompleted" class="ion-padding page__content" :fullscreen="true">
       <div class="content">
-        <ion-text v-if="selectedCardView !== ViewCardWords.Match" class="content__title" @click="speck">
+        <ion-text v-if="selectedCardView !== ViewCardWords.Match" class="content__title" @click="speak">
           {{ titleRandomWord }}
           <ion-icon :icon="volumeMediumOutline" size="large" color="medium"/>
         </ion-text>
@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, Ref, ref, UnwrapRef, watch} from "vue";
+import {computed, watch} from "vue";
 import {storeToRefs} from "pinia";
 import {wordsStore} from "@/store/words";
 import {IonContent, IonHeader, IonPage, IonIcon, useIonRouter, onIonViewDidEnter, onIonViewDidLeave} from '@ionic/vue';
@@ -49,7 +49,6 @@ import {statisticsStore} from "@/store/statistics";
 
 const storeWords = wordsStore();
 const {
-  cards,
   currentWord,
   selectedCardView,
   selectedCardViewWord,
@@ -64,11 +63,7 @@ const storeStatistics = statisticsStore();
 const {favoritesWords} = storeToRefs(storeVocabulary);
 const ionRouter = useIonRouter();
 
-const wordSelected = ref('');
-const colorCards: Ref<UnwrapRef<string[]>> = ref([]);
-
 onIonViewDidEnter(() => {
-  setDefault();
   storeStatistics.loadStatistics();
   if (!currentWord.value) ionRouter.push('/words');
 })
@@ -91,15 +86,10 @@ const titleRandomWord = computed((): string => {
 })
 
 const isFavorite = computed((): boolean => {
-  return !!favoritesWords.value.find((item) => item.word === currentWord.value.word);
+  return !!favoritesWords.value.find((item) => item.word === currentWord.value?.word);
 })
 
-const setDefault = (): void => {
-  colorCards.value = cards.value.map(() => ('medium'));
-  wordSelected.value = '';
-}
-
-const speck = (): void => {
+const speak = (): void => {
   storeSettings.speakText(currentWord.value.word);
 }
 
@@ -115,9 +105,6 @@ const setFavorite = (): void => {
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  .header {
-  }
 
   &__content {
     .content {
