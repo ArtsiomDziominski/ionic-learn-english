@@ -10,6 +10,8 @@ export const STORAGE_KEY_DAILY_REPEATS = 'dailyRepeats';
 export enum ThemeType {
     Light = 'light',
     Dark = 'dark',
+    /** Следовать системной настройке устройства — режим по умолчанию. */
+    System = 'system',
 }
 
 export enum VoiceSpeech {

@@ -108,7 +108,7 @@ const nextWord = (): void => {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(4, min-content);
-  gap: 6px 10px;
+  gap: var(--app-sp-2) var(--app-sp-3);
 
   &__word {
     grid-column: 1/2;

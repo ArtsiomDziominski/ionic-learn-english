@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {IonCard, IonCardContent} from "@ionic/vue";
 import {PropType} from "vue";
 
 defineProps({
@@ -16,51 +15,60 @@ defineProps({
 </script>
 
 <template>
-  <div class="wrapper-letter">
-    <ion-card color="medium" class="letter">
-      <ion-card-content class="letter__content content ion-no-padding">
-        <ion-text class="content__text">
-          {{ letter }}
-        </ion-text>
-      </ion-card-content>
-    </ion-card>
-    <ion-badge v-if="count > 1" class="badge">{{ count }}</ion-badge>
+  <div class="key">
+    <span class="key__letter">{{ letter }}</span>
+    <span v-if="count > 1" class="key__count app-nums">{{ count }}</span>
   </div>
 </template>
 
 <style scoped lang="scss">
-.wrapper-letter {
+/* Буква-клавиша. Размер 56px — выше минимума в 44px, попасть
+   пальцем можно не глядя. */
+.key {
   position: relative;
-  width: 50px;
-  text-align: center;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--app-r-md);
+  background: var(--app-surface-2);
+  border: 1.5px solid var(--app-border);
+  color: var(--app-text);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--app-dur-fast) var(--app-ease),
+              background-color var(--app-dur-fast) var(--app-ease);
 
-  .letter {
-    margin: 0;
-    transition: transform 0.3s ease;
-    cursor: pointer;
-
-    &:active {
-      transform: scale(0.9);
-    }
-
-    &__content {
-      padding: 6px 10px;
-
-      .content {
-        position: relative;
-
-        &__text {
-          font-size: 42px;
-        }
-      }
-    }
+  &:hover {
+    background: var(--app-surface-3);
   }
 
-  .badge {
+  &:active {
+    transform: scale(0.92);
+  }
+
+  &__letter {
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  /* Сколько раз буква ещё встречается в слове */
+  &__count {
     position: absolute;
-    z-index: 1000;
-    top: -8px;
-    right: -4px;
+    top: -6px;
+    right: -6px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 5px;
+    box-sizing: border-box;
+    display: grid;
+    place-items: center;
+    border-radius: var(--app-r-pill);
+    background: var(--ion-color-primary);
+    color: var(--app-text-on-accent);
+    font-size: var(--app-fs-caption);
+    font-weight: 700;
   }
 }
 </style>

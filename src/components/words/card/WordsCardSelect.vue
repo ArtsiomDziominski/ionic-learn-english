@@ -67,7 +67,8 @@ const setDefault = (): void => {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 100px);
+  grid-template-rows: repeat(2, minmax(92px, auto));
+  gap: var(--app-sp-3);
 
   &__card {
     display: flex;

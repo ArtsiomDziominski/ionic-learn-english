@@ -4,17 +4,26 @@ import { storeToRefs } from "pinia";
 import AppFooter from "@/components/AppFooter.vue";
 import AppSelect from "@/components/UI/AppSelect.vue";
 import { computed } from "vue";
-import { VoiceSpeech } from "@/const/const";
-import { volumeHighOutline } from "ionicons/icons";
+import { ThemeType, VoiceSpeech } from "@/const/const";
+import { contrastOutline, moonOutline, sunnyOutline, volumeHighOutline } from "ionicons/icons";
+import { IonContent, IonIcon } from "@ionic/vue";
 import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
 
 const storeSettings = settingsStore();
-const { voiceSpeech } = storeToRefs(storeSettings);
+const { voiceSpeech, themeMode } = storeToRefs(storeSettings);
 
-// const toggleMode = () => {
-//   storeSettings.toggleMode();
-// };
+/* Сегментированный выбор из трёх режимов вместо переключателя:
+   «как в системе» невозможно выразить булевым тумблером. */
+const themeOptions = [
+  { value: ThemeType.System, label: 'Системная', icon: contrastOutline },
+  { value: ThemeType.Light, label: 'Светлая', icon: sunnyOutline },
+  { value: ThemeType.Dark, label: 'Тёмная', icon: moonOutline },
+];
+
+const setTheme = (mode: ThemeType): void => {
+  storeSettings.setThemeMode(mode);
+};
 
 const valueVoiceSpeech = computed(() => {
   return voiceSpeech.value?.voiceURI || '';
@@ -56,36 +65,47 @@ const openLink = async (url: string) => {
 
 <template>
   <ion-content>
-    <div class="settings-container glass-fade-in">
+    <div class="settings-container app-enter">
       <!-- Appearance Settings -->
-      <!--      <div class="settings-section glass-card">-->
-      <!--        <div class="section-header">-->
-      <!--          <h2 class="section-title">Внешний вид</h2>-->
-      <!--          <div class="section-accent"></div>-->
-      <!--        </div>-->
-      <!--        -->
-      <!--        <div class="settings-items">-->
-      <!--          <div class="setting-item">-->
-      <!--            <div class="setting-info">-->
-      <!--              <div class="setting-icon">-->
-      <!--                <ion-icon name="moon"></ion-icon>-->
-      <!--              </div>-->
-      <!--              <div class="setting-content">-->
-      <!--                <h3 class="setting-title">Темная тема</h3>-->
-      <!--                <p class="setting-description">Переключиться на темную тему интерфейса</p>-->
-      <!--              </div>-->
-      <!--            </div>-->
-      <!--            <ion-toggle -->
-      <!--              :checked="isDarkMode" -->
-      <!--              @ion-change="toggleMode" -->
-      <!--              class="glass-toggle"-->
-      <!--            />-->
-      <!--          </div>-->
-      <!--        </div>-->
-      <!--      </div>-->
+      <div class="settings-section app-card">
+        <div class="section-header">
+          <h2 class="section-title">Внешний вид</h2>
+          <div class="section-accent"></div>
+        </div>
+
+        <div class="settings-items">
+          <div class="setting-item setting-item--stacked">
+            <div class="setting-info">
+              <div class="setting-icon">
+                <ion-icon :icon="moonOutline"></ion-icon>
+              </div>
+              <div class="setting-content">
+                <h3 class="setting-title">Тема оформления</h3>
+                <p class="setting-description">Системная подстраивается под настройки устройства</p>
+              </div>
+            </div>
+
+            <div class="theme-switch" role="radiogroup" aria-label="Тема оформления">
+              <button
+                v-for="option in themeOptions"
+                :key="option.value"
+                type="button"
+                class="theme-switch__option"
+                :class="{ 'theme-switch__option--active': themeMode === option.value }"
+                role="radio"
+                :aria-checked="themeMode === option.value"
+                @click="setTheme(option.value)"
+              >
+                <ion-icon :icon="option.icon" />
+                <span>{{ option.label }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- Audio Settings -->
-      <div class="settings-section glass-card">
+      <div class="settings-section app-card">
         <div class="section-header">
           <h2 class="section-title">Аудио</h2>
           <div class="section-accent"></div>
@@ -116,7 +136,7 @@ const openLink = async (url: string) => {
       </div>
 
       <!-- About Section -->
-      <div class="settings-section glass-card">
+      <div class="settings-section app-card">
         <div class="section-header">
           <h2 class="section-title">О приложении</h2>
           <div class="section-accent"></div>
@@ -137,7 +157,7 @@ const openLink = async (url: string) => {
       </div>
 
       <!-- Legal Section -->
-      <div class="settings-section glass-card">
+      <div class="settings-section app-card">
         <div class="section-header">
           <h2 class="section-title">Правовая информация</h2>
           <div class="section-accent"></div>
@@ -178,20 +198,18 @@ const openLink = async (url: string) => {
 
 <style scoped lang="scss">
 .settings-container {
-  padding: 20px;
+  padding: var(--app-sp-4) var(--app-sp-4) var(--app-sp-7);
   max-width: 800px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--app-sp-4);
 }
 
 /* Settings Sections */
 .settings-section {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-radius: var(--glass-border-radius);
+  background: var(--app-surface-2);
+  border-radius: var(--app-r-lg);
   padding: 24px;
   position: relative;
   overflow: hidden;
@@ -220,9 +238,8 @@ const openLink = async (url: string) => {
 .section-title {
   font-size: 1.4rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--app-text);
   margin: 0 0 8px 0;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .section-accent {
@@ -242,7 +259,7 @@ const openLink = async (url: string) => {
   align-items: center;
   justify-content: space-between;
   padding: 20px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--app-border);
 }
 
 .setting-item:last-child {
@@ -257,7 +274,7 @@ const openLink = async (url: string) => {
 }
 
 .legal-link:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--app-surface-2);
   margin: 0 -24px;
   padding-left: 24px;
   padding-right: 24px;
@@ -265,12 +282,12 @@ const openLink = async (url: string) => {
 
 .link-arrow {
   font-size: 20px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--app-text-subtle);
   transition: color 0.3s ease;
 }
 
 .legal-link:hover .link-arrow {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--app-text-muted);
 }
 
 .setting-info {
@@ -283,10 +300,8 @@ const openLink = async (url: string) => {
 .setting-icon {
   width: 48px;
   height: 48px;
-  border-radius: var(--glass-border-radius-small);
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--app-r-md);
+  background: var(--app-surface-2);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -295,7 +310,7 @@ const openLink = async (url: string) => {
 
 .setting-icon ion-icon {
   font-size: 24px;
-  color: #ffffff;
+  color: var(--app-text);
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
 }
 
@@ -307,14 +322,14 @@ const openLink = async (url: string) => {
 .setting-title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--app-text);
   margin: 0 0 4px 0;
   line-height: 1.3;
 }
 
 .setting-description {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--app-text-muted);
   margin: 0;
   line-height: 1.4;
 }
@@ -325,8 +340,8 @@ const openLink = async (url: string) => {
 
 /* Glass Toggle */
 .glass-toggle {
-  --track-background: rgba(255, 255, 255, 0.2);
-  --track-background-checked: var(--glass-bg-primary);
+  --track-background: var(--app-surface-3);
+  --track-background-checked: var(--app-tint-primary);
   --handle-background: #ffffff;
   --handle-background-checked: #ffffff;
   --handle-width: 28px;
@@ -342,17 +357,13 @@ const openLink = async (url: string) => {
   width: 60px;
   overflow: visible;
   border-radius: 50px;
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 /* Glass Select */
 .glass-select {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-radius: var(--glass-border-radius-small);
-  color: #ffffff;
+  background: var(--app-surface-2);
+  border-radius: var(--app-r-md);
+  color: var(--app-text);
   min-width: 200px;
   padding: 0 10px;
 }
@@ -368,18 +379,14 @@ const openLink = async (url: string) => {
   align-items: center;
   gap: 20px;
   padding: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-radius: var(--glass-border-radius-small);
+  background: var(--app-surface-2);
+  border-radius: var(--app-r-md);
 }
 
 .app-icon {
   width: 64px;
   height: 64px;
-  border-radius: var(--glass-border-radius-small);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--app-r-md);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -388,7 +395,7 @@ const openLink = async (url: string) => {
 
 .app-icon ion-icon {
   font-size: 32px;
-  color: #ffffff;
+  color: var(--app-text);
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
 }
 
@@ -399,20 +406,19 @@ const openLink = async (url: string) => {
 .app-name {
   font-size: 1.3rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--app-text);
   margin: 0 0 4px 0;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .app-version {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--app-text-subtle);
   margin: 0 0 8px 0;
 }
 
 .app-description {
   font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--app-text-muted);
   margin: 0;
   line-height: 1.4;
 }
@@ -420,7 +426,7 @@ const openLink = async (url: string) => {
 /* Responsive Design */
 @media (max-width: 768px) {
   .settings-container {
-    padding: 16px;
+    padding: var(--app-sp-4) var(--app-sp-4) var(--app-sp-6);
     gap: 20px;
   }
 
@@ -437,6 +443,14 @@ const openLink = async (url: string) => {
     align-items: flex-start;
     gap: 16px;
     padding: 16px 0;
+  }
+
+  /* Переключатель остаётся справа от подписи: в столбик
+     складывается только широкий контрол выбора голоса */
+  .setting-item--inline {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
   }
 
   .setting-info {
@@ -512,5 +526,56 @@ const openLink = async (url: string) => {
   .app-name {
     font-size: 1.1rem;
   }
+}
+
+/* Сегментированный переключатель темы */
+.setting-item--stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--app-sp-4);
+}
+
+.theme-switch {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--app-r-md);
+  background: var(--app-surface-2);
+}
+
+.theme-switch__option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 10px 6px;
+  min-height: var(--app-tap);
+  border: 0;
+  border-radius: var(--app-r-sm);
+  background: transparent;
+  color: var(--app-text-muted);
+  font-family: inherit;
+  font-size: var(--app-fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color var(--app-dur-base) var(--app-ease),
+              color var(--app-dur-base) var(--app-ease);
+}
+
+.theme-switch__option ion-icon {
+  font-size: 19px;
+}
+
+.theme-switch__option:active {
+  transform: scale(0.97);
+}
+
+/* Выбранный режим отмечен и заливкой, и цветом, и весом шрифта */
+.theme-switch__option--active {
+  background: var(--app-surface);
+  color: var(--app-accent-ink);
+  box-shadow: var(--app-e1);
 }
 </style>

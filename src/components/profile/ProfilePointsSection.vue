@@ -1,5 +1,5 @@
 <template>
-  <div class="points-section glass-card">
+  <div class="points-section app-card">
     <h3 class="section-title">Система баллов</h3>
     
     <div class="points-info">
@@ -51,14 +51,15 @@ defineProps<Props>();
 
 <style scoped lang="scss">
 .points-section {
-  margin-bottom: 24px;
-  padding: 24px;
+  padding: var(--app-sp-5);
 }
 
+/* Заголовки секций нейтральные: акцентный цвет закреплён за
+   действиями и прогрессом, иначе он перестаёт что-либо значить */
 .section-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--ion-color-primary);
+  font-size: var(--app-fs-h2);
+  font-weight: 700;
+  color: var(--app-text);
   margin: 0;
 }
 
@@ -79,13 +80,13 @@ defineProps<Props>();
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--app-surface-2);
   border-radius: 12px;
   transition: all 0.3s ease;
 }
 
 .points-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--app-surface-2);
   transform: translateY(-2px);
 }
 

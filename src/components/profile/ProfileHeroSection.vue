@@ -1,5 +1,5 @@
 <template>
-  <div class="hero-section glass-card glass-card-large">
+  <div class="hero-section app-card app-card">
     <div class="hero-content">
       <div class="avatar-section">
         <div class="avatar" @click="handleAvatarClick">
@@ -51,54 +51,36 @@ const handleAvatarClick = () => {
 </script>
 
 <style scoped lang="scss">
+/* Компактная шапка профиля: аватар и имя в строку.
+   Раньше блок занимал полэкрана под градиентом и не нёс данных. */
 .hero-section {
-  margin-bottom: 24px;
-  padding: 32px;
-  background: var(--glass-gradient-primary);
-  position: relative;
-  overflow: hidden;
-}
-
-.hero-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 30% 20%, rgba(99, 102, 241, 0.3) 0%, transparent 50%),
-              radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.2) 0%, transparent 50%);
-  pointer-events: none;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 1;
+  padding: var(--app-sp-5);
 }
 
 .avatar-section {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: var(--app-sp-4);
 }
 
 .avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(10px);
   position: relative;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--app-r-pill);
+  background: var(--app-tint-primary);
+  color: var(--app-accent-ink);
+  font-size: 34px;
   overflow: hidden;
-  
-  &:hover {
-    transform: scale(1.05);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--app-dur-fast) var(--app-ease);
+
+  &:active {
+    transform: scale(0.94);
   }
 }
 
@@ -106,51 +88,39 @@ const handleAvatarClick = () => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 50%;
 }
 
+/* Подсказка «можно сменить фото» — маленький значок камеры в углу,
+   а не оверлей поверх всего аватара */
 .avatar-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  
-  ion-icon {
-    font-size: 24px;
-    color: white;
-  }
+  right: -2px;
+  bottom: -2px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--app-r-pill);
+  background: var(--ion-color-primary);
+  color: var(--app-text-on-accent);
+  border: 2px solid var(--app-surface);
+  font-size: 12px;
 }
 
-.avatar:hover .avatar-overlay {
-  opacity: 1;
+.user-info {
+  min-width: 0;
 }
 
 .user-name {
-  font-size: 1.8rem;
+  font-size: var(--app-fs-h2);
   font-weight: 700;
-  color: #ffffff;
-  margin: 0 0 8px 0;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.user-subtitle {
-  font-size: 1rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--app-text);
   margin: 0;
 }
 
-@media (max-width: 768px) {
-  .avatar-section {
-    flex-direction: column;
-    text-align: center;
-  }
+.user-subtitle {
+  font-size: var(--app-fs-sm);
+  color: var(--app-text-muted);
+  margin: 2px 0 0;
 }
 </style>

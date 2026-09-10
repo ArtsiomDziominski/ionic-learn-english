@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onMounted, Ref, ref, UnwrapRef} from "vue";
 import {useRoute} from "vue-router";
-import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from "@ionic/vue";
+import {IonContent, IonHeader, IonPage} from "@ionic/vue";
 import HeaderToolbarPages from "@/components/header/HeaderToolbarPages.vue";
 import AppFooter from "@/components/AppFooter.vue";
 import {useArticleSEO} from "@/composables/useSEO";
@@ -57,7 +57,7 @@ const setMeta = () => {
     <ion-header>
       <HeaderToolbarPages :title="article?.title" />
     </ion-header>
-    <ion-content class="ion-padding" :fullscreen="true">
+    <ion-content :fullscreen="true">
       <div class="body-container" v-html="article?.body"></div>
       <AppFooter/>
     </ion-content>
@@ -66,7 +66,9 @@ const setMeta = () => {
 
 <style scoped lang="scss">
 .body-container {
-  max-width: 1440px;
-  margin: auto;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--app-sp-4) var(--app-sp-4) var(--app-sp-7);
+  line-height: 1.7;
 }
 </style>

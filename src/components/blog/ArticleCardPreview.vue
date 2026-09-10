@@ -15,7 +15,7 @@ defineProps({
 
 <template>
   <router-link
-    class="article-card glass-card glass-scale-in"
+    class="article-card app-card app-enter"
     :style="`animation-delay: ${index * 0.1}s`"
     :to="`/article/${article.id}`"
   >
@@ -43,10 +43,8 @@ defineProps({
 <style scoped lang="scss">
 .article-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(var(--glass-blur));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  border-radius: var(--glass-border-radius);
+  background: var(--app-surface-2);
+  border-radius: var(--app-r-lg);
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
@@ -57,8 +55,8 @@ defineProps({
 
 .article-card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: var(--glass-shadow-hover);
-  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: var(--app-e3);
+  border-color: var(--app-border-strong);
 }
 
 .article-card:active {
@@ -70,7 +68,7 @@ defineProps({
   width: 100%;
   height: 200px;
   overflow: hidden;
-  border-radius: var(--glass-border-radius-small) var(--glass-border-radius-small) 0 0;
+  border-radius: var(--app-r-md) var(--app-r-md) 0 0;
 }
 
 .card-image {
@@ -110,19 +108,18 @@ defineProps({
 .article-title {
   font-size: 1.3rem;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--app-text);
   margin: 0 0 12px 0;
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .article-description {
   font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--app-text-muted);
   line-height: 1.5;
   margin: 0 0 20px 0;
   flex: 1;
@@ -141,33 +138,33 @@ defineProps({
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--app-surface-2);
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  border-radius: var(--glass-border-radius-small);
+  border-radius: var(--app-r-md);
   transition: all 0.3s ease;
 }
 
 .article-card:hover .read-more {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: var(--app-surface-2);
+  border-color: var(--app-border-strong);
   transform: translateX(4px);
 }
 
 .read-text {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--app-text);
 }
 
 .arrow-icon {
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--app-text-muted);
   transition: all 0.3s ease;
 }
 
 .article-card:hover .arrow-icon {
-  color: #ffffff;
+  color: var(--app-text);
   transform: translateX(4px);
 }
 
@@ -177,7 +174,7 @@ defineProps({
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--app-tint-primary) 0%, transparent 70%);
   opacity: 0;
   transition: opacity 0.4s ease;
   pointer-events: none;

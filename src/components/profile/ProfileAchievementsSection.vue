@@ -1,5 +1,5 @@
 <template>
-  <div class="motivation-section glass-card">
+  <div class="motivation-section app-card">
     <div class="section-header">
       <h3 class="section-title">Достижения</h3>
       <div class="achievements-counter">
@@ -48,8 +48,7 @@ defineProps<Props>();
 
 <style scoped lang="scss">
 .motivation-section {
-  margin-bottom: 24px;
-  padding: 24px;
+  padding: var(--app-sp-5);
 }
 
 .section-header {
@@ -59,10 +58,12 @@ defineProps<Props>();
   margin-bottom: 20px;
 }
 
+/* Заголовки секций нейтральные: акцентный цвет закреплён за
+   действиями и прогрессом, иначе он перестаёт что-либо значить */
 .section-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--ion-color-primary);
+  font-size: var(--app-fs-h2);
+  font-weight: 700;
+  color: var(--app-text);
   margin: 0;
 }
 
@@ -71,7 +72,7 @@ defineProps<Props>();
   align-items: center;
   gap: 4px;
   padding: 8px 12px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--app-surface-2);
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 600;
@@ -97,17 +98,17 @@ defineProps<Props>();
 }
 
 .achievements::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--app-surface-2);
   border-radius: 3px;
 }
 
 .achievements::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--app-border-strong);
   border-radius: 3px;
 }
 
 .achievements::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--app-text-subtle);
 }
 
 .achievement-item {
@@ -115,15 +116,15 @@ defineProps<Props>();
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--app-surface-2);
   border-radius: 12px;
   transition: all 0.3s ease;
   opacity: 0.5;
   
   &.unlocked {
     opacity: 1;
-    background: rgba(76, 175, 80, 0.1);
-    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+    background: var(--app-tint-success);
+    box-shadow: var(--app-e1);
   }
 }
 
@@ -131,14 +132,15 @@ defineProps<Props>();
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: var(--glass-gradient-primary);
+  background: var(--app-tint-primary);
+  flex: 0 0 48px;
   display: flex;
   align-items: center;
   justify-content: center;
   
   ion-icon {
     font-size: 24px;
-    color: #ffffff;
+    color: var(--app-accent-ink);
   }
 }
 

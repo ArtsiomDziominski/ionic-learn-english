@@ -1,113 +1,240 @@
-/* Liquid Glass Design System - iOS inspired */
+/* ============================================================
+   Слова.Day — дизайн-система
+   ------------------------------------------------------------
+   :root                — тёмная тема (приложение стартует в ней)
+   .ion-palette-light   — светлая тема, переопределяет только токены
+
+   Правило: компоненты стилизуются ТОЛЬКО через семантические
+   токены (--app-*). Ни один цвет не задаётся литералом в компоненте,
+   иначе он сломается в одной из тем.
+   ============================================================ */
 
 :root {
-    /* Dark base theme */
-    --ion-background-color: #0a0a0a;
-    --ion-background-color-rgb: 10, 10, 10;
-
-    /* Liquid Glass Primary Colors */
+    /* ——— Бренд ————————————————————————————————————— */
     --ion-color-primary: #6366f1;
     --ion-color-primary-rgb: 99, 102, 241;
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255, 255, 255;
-    --ion-color-primary-shade: #5758d4;
-    --ion-color-primary-tint: #7375f2;
+    --ion-color-primary-shade: #5457d4;
+    --ion-color-primary-tint: #7c7ef3;
 
-    /* Glass Accent Colors */
     --ion-color-secondary: #8b5cf6;
     --ion-color-secondary-rgb: 139, 92, 246;
     --ion-color-secondary-contrast: #ffffff;
     --ion-color-secondary-contrast-rgb: 255, 255, 255;
     --ion-color-secondary-shade: #7a51d8;
-    --ion-color-secondary-tint: #976df7;
+    --ion-color-secondary-tint: #9c74f7;
 
     --ion-color-tertiary: #06b6d4;
     --ion-color-tertiary-rgb: 6, 182, 212;
     --ion-color-tertiary-contrast: #ffffff;
     --ion-color-tertiary-contrast-rgb: 255, 255, 255;
-    --ion-color-tertiary-shade: #059fba;
-    --ion-color-tertiary-tint: #1fbdd8;
+    --ion-color-tertiary-shade: #059bb5;
+    --ion-color-tertiary-tint: #22c1db;
 
-    /* Status Colors with Glass Effect */
+    /* ——— Семантика состояний ——————————————————————— */
     --ion-color-success: #10b981;
     --ion-color-success-rgb: 16, 185, 129;
     --ion-color-success-contrast: #ffffff;
     --ion-color-success-contrast-rgb: 255, 255, 255;
-    --ion-color-success-shade: #0ea371;
-    --ion-color-success-tint: #28c091;
+    --ion-color-success-shade: #0e9e6e;
+    --ion-color-success-tint: #2bc593;
 
     --ion-color-warning: #f59e0b;
     --ion-color-warning-rgb: 245, 158, 11;
-    --ion-color-warning-contrast: #ffffff;
-    --ion-color-warning-contrast-rgb: 255, 255, 255;
-    --ion-color-warning-shade: #d8890a;
-    --ion-color-warning-tint: #f6a724;
+    --ion-color-warning-contrast: #1a1205;
+    --ion-color-warning-contrast-rgb: 26, 18, 5;
+    --ion-color-warning-shade: #d88b0a;
+    --ion-color-warning-tint: #f7ac2b;
 
     --ion-color-danger: #ef4444;
     --ion-color-danger-rgb: 239, 68, 68;
     --ion-color-danger-contrast: #ffffff;
     --ion-color-danger-contrast-rgb: 255, 255, 255;
-    --ion-color-danger-shade: #d23c3c;
+    --ion-color-danger-shade: #d23b3b;
     --ion-color-danger-tint: #f15757;
 
-    /* Glass Surface Colors */
-    --ion-color-light: rgba(255, 255, 255, 0.815);
-    --ion-color-light-rgb: 255, 255, 255;
-    --ion-color-light-contrast: #ffffff;
-    --ion-color-light-contrast-rgb: 255, 255, 255;
-    --ion-color-light-shade: rgba(255, 255, 255, 0.08);
-    --ion-color-light-tint: rgba(255, 255, 255, 0.12);
+    /* ——— Поверхности: тёмная тема ——————————————————
+       Нейтрали слегка смещены в индиго, чтобы не читались
+       как «грязный серый» рядом с брендовым цветом. */
+    --app-bg: #0b0b13;
+    --app-surface: #14141f;
+    --app-surface-2: #1c1c2a;
+    --app-surface-3: #242434;
+    --app-border: rgba(255, 255, 255, 0.08);
+    --app-border-strong: rgba(255, 255, 255, 0.14);
 
-    --ion-color-medium: rgba(255, 255, 255, 0.2);
-    --ion-color-medium-rgb: 255, 255, 255;
+    /* ——— Текст ————————————————————————————————————
+       Три уровня. Ниже --app-text-subtle не опускаться:
+       контраст уйдёт под 4.5:1. */
+    --app-text: #f2f1f7;
+    --app-text-muted: #a3a1b8;
+    --app-text-subtle: #9694ab; /* ≈6:1 на --app-surface, проходит AA */
+    --app-text-on-accent: #ffffff;
+
+    /* ——— Подложки акцентов (для «мягких» плашек) ————— */
+    --app-tint-primary: rgba(99, 102, 241, 0.16);
+    --app-tint-success: rgba(16, 185, 129, 0.16);
+    --app-tint-warning: rgba(245, 158, 11, 0.16);
+    --app-tint-danger: rgba(239, 68, 68, 0.16);
+
+    /* Читаемые версии акцентов поверх тёмного фона */
+    --app-accent-ink: #a5a7fb;
+    --app-success-ink: #4ade9f;
+    --app-warning-ink: #fbbf4d;
+    --app-danger-ink: #f87b7b;
+
+    /* ——— Высоты (elevation) ————————————————————————
+       В тёмной теме тень почти не видна, поэтому глубину
+       несёт --app-surface-2, а тень лишь отделяет от фона. */
+    --app-e1: 0 1px 2px rgba(0, 0, 0, 0.28);
+    --app-e2: 0 2px 6px -1px rgba(0, 0, 0, 0.36), 0 1px 2px rgba(0, 0, 0, 0.24);
+    --app-e3: 0 8px 24px -8px rgba(0, 0, 0, 0.52), 0 2px 6px -2px rgba(0, 0, 0, 0.32);
+    --app-e-accent: 0 6px 18px -8px rgba(99, 102, 241, 0.7);
+
+    /* ——— Радиусы ——————————————————————————————————— */
+    --app-r-xs: 8px;
+    --app-r-sm: 12px;
+    --app-r-md: 16px;
+    --app-r-lg: 20px;
+    --app-r-xl: 28px;
+    --app-r-pill: 999px;
+
+    /* ——— Отступы ——————————————————————————————————— */
+    --app-sp-1: 4px;
+    --app-sp-2: 8px;
+    --app-sp-3: 12px;
+    --app-sp-4: 16px;
+    --app-sp-5: 20px;
+    --app-sp-6: 24px;
+    --app-sp-7: 32px;
+    --app-sp-8: 40px;
+
+    /* ——— Типографика ——————————————————————————————— */
+    --app-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI Variable',
+                'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
+    --app-fs-display: 1.75rem;   /* 28px */
+    --app-fs-h1: 1.375rem;       /* 22px */
+    --app-fs-h2: 1.125rem;       /* 18px */
+    --app-fs-body: 0.9375rem;    /* 15px */
+    --app-fs-sm: 0.8125rem;      /* 13px */
+    --app-fs-caption: 0.6875rem; /* 11px */
+
+    /* ——— Движение ——————————————————————————————————
+       Никаких transition: all — только конкретные свойства. */
+    --app-dur-fast: 140ms;
+    --app-dur-base: 220ms;
+    --app-dur-slow: 320ms;
+    --app-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --app-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* ——— Минимальная зона нажатия (WCAG 2.5.8) ————— */
+    --app-tap: 44px;
+
+    /* ——— Ionic-мостик ——————————————————————————————
+       Ionic ждёт эти имена; отдаём им наши поверхности. */
+    --ion-background-color: var(--app-bg);
+    --ion-background-color-rgb: 11, 11, 19;
+    --ion-text-color: var(--app-text);
+    --ion-text-color-rgb: 242, 241, 247;
+    --ion-toolbar-background: var(--app-bg);
+    --ion-item-background: var(--app-surface);
+    --ion-card-background: var(--app-surface);
+
+    --ion-color-light: #1c1c2a;
+    --ion-color-light-rgb: 28, 28, 42;
+    --ion-color-light-contrast: #f2f1f7;
+    --ion-color-light-contrast-rgb: 242, 241, 247;
+    --ion-color-light-shade: #191926;
+    --ion-color-light-tint: #333344;
+
+    --ion-color-medium: #78768f;
+    --ion-color-medium-rgb: 120, 118, 143;
     --ion-color-medium-contrast: #ffffff;
     --ion-color-medium-contrast-rgb: 255, 255, 255;
-    --ion-color-medium-shade: rgba(255, 255, 255, 0.15);
-    --ion-color-medium-tint: rgba(255, 255, 255, 0.25);
+    --ion-color-medium-shade: #6a687e;
+    --ion-color-medium-tint: #86849a;
 
-    --ion-color-dark: #1a1a1a;
-    --ion-color-dark-rgb: 26, 26, 26;
+    --ion-color-dark: #f2f1f7;
+    --ion-color-dark-rgb: 242, 241, 247;
+    --ion-color-dark-contrast: #0b0b13;
+    --ion-color-dark-contrast-rgb: 11, 11, 19;
+    --ion-color-dark-shade: #d5d4d9;
+    --ion-color-dark-tint: #f3f2f8;
+}
+
+/* Тёмная палитра Ionic объявлена как :root.ion-palette-dark и по
+   специфичности бьёт наш :root, подменяя фон на свой #121212.
+   Повторяем мост с той же специфичностью, чтобы выиграть. */
+:root.ion-palette-dark {
+    --ion-background-color: var(--app-bg);
+    --ion-background-color-rgb: 11, 11, 19;
+    --ion-text-color: var(--app-text);
+    --ion-text-color-rgb: 242, 241, 247;
+    --ion-toolbar-background: var(--app-bg);
+    --ion-item-background: var(--app-surface);
+    --ion-card-background: var(--app-surface);
+}
+
+/* ============================================================
+   Светлая тема
+   ============================================================ */
+:root.ion-palette-light,
+.ion-palette-light {
+    --app-bg: #f6f7fb;
+    --app-surface: #ffffff;
+    --app-surface-2: #f0f1f7;
+    --app-surface-3: #e7e8f1;
+    --app-border: rgba(17, 17, 34, 0.09);
+    --app-border-strong: rgba(17, 17, 34, 0.16);
+
+    --app-text: #16162a;
+    --app-text-muted: #5a5872;
+    --app-text-subtle: #7d7b93;
+    --app-text-on-accent: #ffffff;
+
+    --app-tint-primary: rgba(99, 102, 241, 0.10);
+    --app-tint-success: rgba(16, 185, 129, 0.12);
+    --app-tint-warning: rgba(245, 158, 11, 0.14);
+    --app-tint-danger: rgba(239, 68, 68, 0.10);
+
+    /* Акценты затемнены: исходные оттенки не дают 4.5:1 на белом */
+    --app-accent-ink: #4f46e5;
+    --app-success-ink: #047857;
+    --app-warning-ink: #b45309;
+    --app-danger-ink: #dc2626;
+
+    --app-e1: 0 1px 2px rgba(20, 20, 43, 0.06);
+    --app-e2: 0 2px 6px -1px rgba(20, 20, 43, 0.08), 0 1px 2px rgba(20, 20, 43, 0.05);
+    --app-e3: 0 10px 28px -10px rgba(20, 20, 43, 0.16), 0 2px 6px -2px rgba(20, 20, 43, 0.08);
+    --app-e-accent: 0 8px 20px -10px rgba(99, 102, 241, 0.6);
+
+    --ion-background-color: var(--app-bg);
+    --ion-background-color-rgb: 246, 247, 251;
+    --ion-text-color: var(--app-text);
+    --ion-text-color-rgb: 22, 22, 42;
+    --ion-toolbar-background: var(--app-bg);
+    --ion-item-background: var(--app-surface);
+    --ion-card-background: var(--app-surface);
+
+    --ion-color-light: #f0f1f7;
+    --ion-color-light-rgb: 240, 241, 247;
+    --ion-color-light-contrast: #16162a;
+    --ion-color-light-contrast-rgb: 22, 22, 42;
+    --ion-color-light-shade: #d3d4d9;
+    --ion-color-light-tint: #f2f3f8;
+
+    --ion-color-medium: #7d7b93;
+    --ion-color-medium-rgb: 125, 123, 147;
+    --ion-color-medium-contrast: #ffffff;
+    --ion-color-medium-contrast-rgb: 255, 255, 255;
+    --ion-color-medium-shade: #6e6c81;
+    --ion-color-medium-tint: #8a889e;
+
+    --ion-color-dark: #16162a;
+    --ion-color-dark-rgb: 22, 22, 42;
     --ion-color-dark-contrast: #ffffff;
     --ion-color-dark-contrast-rgb: 255, 255, 255;
-    --ion-color-dark-shade: #171717;
-    --ion-color-dark-tint: #313131;
-
-    /* Glass Design System Variables */
-    --glass-bg-primary: rgba(99, 102, 241, 0.1);
-    --glass-bg-secondary: rgba(139, 92, 246, 0.1);
-    --glass-bg-tertiary: rgba(6, 182, 212, 0.1);
-
-    --glass-border: rgba(255, 255, 255, 0.2);
-    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    --glass-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.4);
-
-    --glass-blur: 20px;
-    --glass-border-radius: 24px;
-    --glass-border-radius-small: 16px;
-    --glass-border-radius-large: 32px;
-
-    /* Gradients */
-    --glass-gradient-primary: linear-gradient(135deg, rgb(99, 102, 241) 0%, rgb(139, 92, 246) 100%);
-    --glass-gradient-secondary: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(99, 102, 241, 0.2) 100%);
-    --glass-gradient-accent: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%);
-
-    /* Background Gradients */
-    --bg-gradient-primary: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-    --bg-gradient-secondary: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    --ion-color-dark-shade: #131325;
+    --ion-color-dark-tint: #2d2d3f;
 }
-
-.ion-palette-light {
-
-}
-
-.ion-palette-dark {
-}
-
-:root.ios {
-}
-
-:root.md {
-}
-
-
-

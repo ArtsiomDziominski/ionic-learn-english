@@ -1,5 +1,5 @@
 <template>
-  <div class="progress-section glass-card">
+  <div class="progress-section app-card">
     <h3 class="section-title">Прогресс обучения</h3>
     
     <div class="progress-item">
@@ -38,14 +38,15 @@ defineProps<Props>();
 
 <style scoped lang="scss">
 .progress-section {
-  margin-bottom: 24px;
-  padding: 24px;
+  padding: var(--app-sp-5);
 }
 
+/* Заголовки секций нейтральные: акцентный цвет закреплён за
+   действиями и прогрессом, иначе он перестаёт что-либо значить */
 .section-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--ion-color-primary);
+  font-size: var(--app-fs-h2);
+  font-weight: 700;
+  color: var(--app-text);
   margin: 0;
 }
 
@@ -66,11 +67,12 @@ defineProps<Props>();
 
 .progress-label {
   font-weight: 500;
-  color: white;
+  color: var(--app-text);
 }
 
 .progress-status {
-  font-size: 0.9rem;
+  font-size: var(--app-fs-sm);
+  color: var(--app-text-muted);
   font-weight: 500;
   
   &.completed {
@@ -85,15 +87,15 @@ defineProps<Props>();
 
 .progress-bar {
   height: 8px;
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--app-surface-3);
   border-radius: 4px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: var(--glass-gradient-primary);
+  background: var(--ion-color-primary);
   border-radius: 4px;
-  transition: width 0.3s ease;
+  transition: width var(--app-dur-slow) var(--app-ease);
 }
 </style>

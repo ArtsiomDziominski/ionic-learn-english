@@ -220,7 +220,7 @@ const clickNext = (): void => {
       border-radius: 50px;
 
       &::part(native) {
-        color: white;
+        color: var(--app-text-on-accent);
         box-shadow: 0 4px 8px rgba(45, 213, 91, 0.3);
         transition: all 0.2s ease;
       }

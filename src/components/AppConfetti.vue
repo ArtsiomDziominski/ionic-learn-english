@@ -13,7 +13,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'Confetti',
+  name: 'AppConfetti',
   setup() {
     const confettiCount = 150;
     const colors = [

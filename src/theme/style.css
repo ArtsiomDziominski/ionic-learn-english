@@ -1,317 +1,263 @@
-/* Disable iOS swipe back gesture to prevent conflicts with Ionic navigation */
+/* ============================================================
+   Слова.Day — базовые стили
+   ------------------------------------------------------------
+   Здесь НЕТ глобальных перебивок цвета текста и иконок
+   (p/span/div/h1-h6/ion-icon). Раньше они форсировали белый на
+   всём приложении и делали светлую тему невозможной.
+   Цвет наследуется от --ion-text-color; исключения задаются точечно.
+   ============================================================ */
+
+/* Шрифт — системный: на iOS это SF Pro, на Android Roboto.
+   Загружать веб-шрифт в Capacitor-приложении нельзя: без сети он
+   не приедет, а старт задержится на сетевом запросе. */
+
+/* Отключаем горизонтальный свайп-назад, чтобы не конфликтовал
+   с навигацией Ionic */
 html, body {
     overscroll-behavior-x: none;
-    -webkit-overscroll-behavior-x: none;
     touch-action: pan-y pinch-zoom;
 }
 
+body {
+    font-family: var(--app-font);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
 ion-app {
+    background: var(--app-bg);
     overscroll-behavior-x: none;
-    -webkit-overscroll-behavior-x: none;
 }
 
-ion-content {
-    overscroll-behavior-x: contain;
-    -webkit-overscroll-behavior-x: contain;
-}
-
-/* Liquid Glass Base Styles */
-ion-app {
-    background: var(--bg-gradient-primary);
-    min-height: 100vh;
-}
-
-/* Glass Background for all pages */
 ion-page {
-    background: transparent !important;
+    background: var(--app-bg);
 }
 
 ion-content {
-    --background: transparent !important;
-    background: var(--bg-gradient-primary) !important;
+    --background: var(--app-bg);
+    overscroll-behavior-x: contain;
 }
 
-/* Glass Cards and Surfaces */
-.glass-card {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border-radius: var(--glass-border-radius);
-    box-shadow: var(--glass-shadow);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+/* ============================================================
+   Типографика
+   ============================================================ */
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--app-text);
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    margin: 0;
 }
 
-.glass-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--glass-shadow-hover);
-    border-color: rgba(255, 255, 255, 0.3);
+h1 { font-size: var(--app-fs-h1); }
+h2 { font-size: var(--app-fs-h2); }
+h3 { font-size: var(--app-fs-body); }
+
+p {
+    margin: 0;
+    line-height: 1.6;
 }
 
-.glass-card-small {
-    border-radius: var(--glass-border-radius-small);
+/* Утилиты текста */
+.app-text-muted { color: var(--app-text-muted); }
+.app-text-subtle { color: var(--app-text-subtle); }
+
+.app-caption {
+    font-size: var(--app-fs-caption);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--app-text-subtle);
 }
 
-.glass-card-large {
-    border-radius: var(--glass-border-radius-large);
+/* Цифры в колонках не должны «прыгать» */
+.app-nums { font-variant-numeric: tabular-nums; }
+
+/* ============================================================
+   Поверхности
+   ============================================================ */
+
+.app-card {
+    background: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: var(--app-r-lg);
+    box-shadow: var(--app-e1);
 }
 
-/* Glass Buttons */
-ion-button {
+/* Кликабельная карточка: приподнимается на наведении,
+   проседает на нажатии — тактильная обратная связь */
+.app-card-interactive {
     cursor: pointer;
-    --border-radius: var(--glass-border-radius-small);
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform var(--app-dur-base) var(--app-ease),
+                box-shadow var(--app-dur-base) var(--app-ease),
+                border-color var(--app-dur-base) var(--app-ease);
 }
 
-ion-button.button-fill {
-    --background: var(--glass-bg-primary);
-    --background-hover: var(--glass-bg-secondary);
-    --color: #ffffff;
-    box-shadow: var(--glass-shadow);
+.app-card-interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--app-e3);
+    border-color: var(--app-border-strong);
 }
 
-ion-button.button-fill:hover {
-    transform: translateY(-1px);
-    box-shadow: var(--glass-shadow-hover);
+.app-card-interactive:active {
+    transform: translateY(0) scale(0.985);
+    box-shadow: var(--app-e1);
 }
 
-ion-button.button-outline {
-    --border-color: var(--glass-border);
-    --color: #ffffff;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
+/* ============================================================
+   Доступность
+   ============================================================ */
+
+/* Раньше фокус-состояний не было вовсе — навигация с клавиатуры
+   и с внешнего пульта была невозможна */
+:focus-visible {
+    outline: 2px solid var(--ion-color-primary);
+    outline-offset: 2px;
+    border-radius: var(--app-r-xs);
 }
 
-/* Glass Toggle */
-ion-toggle {
-    padding: 12px;
-    --track-background: rgba(255, 255, 255, 0.2);
-    --track-background-checked: var(--glass-bg-primary);
-    --handle-background: #ffffff;
-    --handle-background-checked: #ffffff;
-    --handle-width: 25px;
-    --handle-height: 27px;
-    --handle-max-height: auto;
-    --handle-spacing: 6px;
-    --handle-border-radius: 50%;
-    --handle-box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+ion-button:focus-visible,
+ion-tab-button:focus-visible {
+    outline: 2px solid var(--ion-color-primary);
+    outline-offset: -2px;
 }
 
-ion-toggle::part(track) {
-    height: 10px;
-    width: 65px;
-    overflow: visible;
-    border-radius: 50px;
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
+/* Уважаем системную настройку «меньше движения» */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 
-/* Glass Lists */
-ion-list {
-    background: transparent;
-    border-radius: var(--glass-border-radius);
+/* ============================================================
+   Ionic-компоненты
+   ============================================================ */
+
+ion-button {
+    --border-radius: var(--app-r-md);
+    --box-shadow: none;
+    font-family: var(--app-font);
+    font-weight: 600;
+    letter-spacing: 0;
+    text-transform: none;
+    cursor: pointer;
+    transition: transform var(--app-dur-fast) var(--app-ease);
 }
 
-ion-item {
-    --background: rgba(255, 255, 255, 0.1);
-    --background-hover: rgba(255, 255, 255, 0.15);
-    --border-color: var(--glass-border);
-    --color: #ffffff;
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border-radius: var(--glass-border-radius-small);
-    margin: 8px 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+ion-button::part(native) {
+    transition: background-color var(--app-dur-base) var(--app-ease);
 }
 
-ion-item:hover {
-    transform: translateX(4px);
-    --background: rgba(255, 255, 255, 0.15);
+ion-button:active {
+    transform: scale(0.97);
 }
 
-/* Glass Tab Bar */
-ion-tab-bar {
-    --background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border-top: 1px solid var(--glass-border);
-    border-radius: var(--glass-border-radius) var(--glass-border-radius) 0 0;
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.3);
+/* Основное действие на экране — единственная заметная кнопка */
+ion-button.app-btn-primary {
+    --background: var(--ion-color-primary);
+    --background-hover: var(--ion-color-primary-tint);
+    --background-activated: var(--ion-color-primary-shade);
+    --color: var(--app-text-on-accent);
+    --padding-top: 18px;
+    --padding-bottom: 18px;
+    --box-shadow: var(--app-e-accent);
+    font-size: var(--app-fs-body);
 }
 
-ion-tab-button {
-    --color: rgba(255, 255, 255, 0.7);
-    --color-selected: #ffffff;
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-ion-tab-button:hover {
-    --color: rgba(255, 255, 255, 0.9);
-}
-
-ion-tab-button.tab-selected {
-    background: var(--glass-bg-primary);
-    border-radius: var(--glass-border-radius-small);
-    margin: 4px;
-}
-
-/* Glass Headers */
-ion-header {
-    --background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border-bottom: 1px solid var(--glass-border);
+ion-button.app-btn-quiet {
+    --background: var(--app-surface-2);
+    --background-hover: var(--app-surface-3);
+    --color: var(--app-text);
 }
 
 ion-toolbar {
-    --background: transparent;
-    --color: #ffffff;
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
+    --background: var(--app-bg);
+    --color: var(--app-text);
+    --border-color: var(--app-border);
+    --min-height: 56px;
 }
 
-/* Glass Modal */
-ion-modal {
-    --background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+ion-header {
+    box-shadow: none;
 }
 
-ion-modal ion-content {
-    --background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border-radius: var(--glass-border-radius-large) var(--glass-border-radius-large) 0 0;
-    border-top: 1px solid var(--glass-border);
+/* Ionic по умолчанию рисует под заголовком жирную линию-тень */
+ion-header.header-md::after,
+ion-header.header-ios::after {
+    display: none;
 }
 
-/* Glass Inputs */
-ion-input, ion-textarea, ion-select {
-    --background: rgba(255, 255, 255, 0);
-    --color: #ffffff;
-    --placeholder-color: rgba(255, 255, 255, 0.6);
-    --border-color: var(--glass-border);
-    border-radius: var(--glass-border-radius-small);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
+ion-item {
+    --background: var(--app-surface);
+    --background-hover: var(--app-surface-2);
+    --color: var(--app-text);
+    --border-color: var(--app-border);
+    --min-height: var(--app-tap);
 }
 
-/* Glass Progress */
+ion-list {
+    background: transparent;
+    padding: 0;
+}
+
 ion-progress-bar {
-    --background: rgba(255, 255, 255, 0.2);
-    --progress-background: var(--glass-gradient-primary);
-    border-radius: 50px;
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
+    --background: var(--app-surface-3);
+    --progress-background: var(--ion-color-primary);
+    height: 6px;
+    border-radius: var(--app-r-pill);
+    overflow: hidden;
 }
 
-/* Glass Icons */
-ion-icon {
-    color: #ffffff;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+ion-toggle {
+    --track-background: var(--app-surface-3);
+    --track-background-checked: var(--ion-color-primary);
+    --handle-background: #ffffff;
+    --handle-background-checked: #ffffff;
+    --handle-box-shadow: var(--app-e1);
+    padding: 8px 0;
 }
 
-ion-icon:hover {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+ion-modal {
+    --background: var(--app-surface);
+    --border-radius: var(--app-r-xl) var(--app-r-xl) 0 0;
 }
 
-/* Glass Text */
-h1, h2, h3, h4, h5, h6 {
-    color: #ffffff;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+ion-alert,
+ion-action-sheet {
+    --background: var(--app-surface);
+    --color: var(--app-text);
 }
 
-p, span, div {
-    color: rgba(255, 255, 255, 0.9);
+ion-input,
+ion-textarea,
+ion-select,
+ion-searchbar {
+    --background: var(--app-surface-2);
+    --color: var(--app-text);
+    --placeholder-color: var(--app-text-subtle);
+    --border-radius: var(--app-r-md);
 }
 
-/* Glass Loading */
-ion-loading {
-    --background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+/* ============================================================
+   Появление контента
+   ------------------------------------------------------------
+   Стартуем с видимого состояния и лишь слегка сдвигаем: если
+   анимация не отработает, контент останется на экране, а не
+   застрянет в opacity: 0.
+   ============================================================ */
+
+.app-enter {
+    animation: appEnter var(--app-dur-slow) var(--app-ease) both;
 }
 
-ion-loading .loading-wrapper {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border-radius: var(--glass-border-radius);
-    box-shadow: var(--glass-shadow);
-}
-
-/* Glass Alert */
-ion-alert {
-    --background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border-radius: var(--glass-border-radius);
-    box-shadow: var(--glass-shadow);
-}
-
-/* Animation Classes */
-.glass-fade-in {
-    animation: glassFadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.glass-slide-up {
-    animation: glassSlideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.glass-scale-in {
-    animation: glassScaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-@keyframes glassFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes glassSlideUp {
-    from {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes glassScaleIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-/* Dark theme specific adjustments */
-.ion-palette-light {
-    --ion-color-light: black;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .glass-card {
-        border-radius: var(--glass-border-radius-small);
-    }
-
-    ion-tab-bar {
-        border-radius: var(--glass-border-radius-small) var(--glass-border-radius-small) 0 0;
-    }
+@keyframes appEnter {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
