@@ -51,7 +51,7 @@ const changeSpeech = (event: any) => {
 const openLink = async (url: string) => {
   // В мобильном приложении открываем в системном браузере
   if (Capacitor.isNativePlatform()) {
-    await Browser.open({ 
+    await Browser.open({
       url,
       presentationStyle: 'fullscreen'
     });
@@ -149,7 +149,7 @@ const openLink = async (url: string) => {
             </div>
             <div class="app-details">
               <h3 class="app-name">Слова.Day</h3>
-              <p class="app-version">Версия 1.0.5</p>
+              <p class="app-version">Версия 1.0.6</p>
               <p class="app-description">Эффективное изучение английского языка</p>
             </div>
           </div>

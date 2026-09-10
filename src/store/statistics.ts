@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia';
 import {computed, Ref, ref, UnwrapRef} from "vue";
 import {STORAGE_KEY_STUDY_DAYS, STORAGE_KEY_LAST_STUDY_DATE} from "@/const/const";
+import {getStorageItem, getStorageJSON, setStorageItem, setStorageJSON} from "@/utils/util";
 
 export interface StudyDay {
     date: string; // YYYY-MM-DD format
@@ -35,14 +36,14 @@ export const statisticsStore = defineStore('statisticsStore', () => {
     });
 
     const loadStatistics = (): void => {
-        studyDays.value = JSON.parse(localStorage.getItem(STORAGE_KEY_STUDY_DAYS) || '[]');
-        lastStudyDate.value = localStorage.getItem(STORAGE_KEY_LAST_STUDY_DATE);
+        studyDays.value = getStorageJSON<StudyDay[]>(STORAGE_KEY_STUDY_DAYS, []);
+        lastStudyDate.value = getStorageItem(STORAGE_KEY_LAST_STUDY_DATE);
     };
 
     const saveStatistics = (): void => {
-        localStorage.setItem(STORAGE_KEY_STUDY_DAYS, JSON.stringify(studyDays.value));
+        setStorageJSON(STORAGE_KEY_STUDY_DAYS, studyDays.value);
         if (lastStudyDate.value) {
-            localStorage.setItem(STORAGE_KEY_LAST_STUDY_DATE, lastStudyDate.value);
+            setStorageItem(STORAGE_KEY_LAST_STUDY_DATE, lastStudyDate.value);
         }
     };
 

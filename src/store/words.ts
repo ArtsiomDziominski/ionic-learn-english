@@ -4,7 +4,7 @@ import {ActiveFlowWords, FlowWords, VIEW_CARD_WORDS, ViewCardWords} from "@/cons
 import {words} from "@/content/words_level";
 import {STORAGE_KEY_STUDIED_WORDS} from "@/const/const";
 import {notificationStore} from "@/store/notification";
-import {addUniqueElements} from "@/utils/util";
+import {addUniqueElements, getStorageJSON} from "@/utils/util";
 
 export const wordsStore = defineStore('wordsStore', () => {
     const storeNotification = notificationStore();
@@ -54,7 +54,7 @@ export const wordsStore = defineStore('wordsStore', () => {
         if (selectedCardView.value === ViewCardWords.Match) {
             randomCards.value = studyWords.value;
         } else {
-            const studiedWords = JSON.parse(localStorage.getItem(STORAGE_KEY_STUDIED_WORDS) || '[]');
+            const studiedWords = getStorageJSON<COMMON.Word[]>(STORAGE_KEY_STUDIED_WORDS, []);
             const wordsListFilter = studiedWords.length ?
                 wordsList.value
                     .filter((w) => !studiedWords

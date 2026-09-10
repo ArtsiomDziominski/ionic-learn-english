@@ -1,7 +1,7 @@
 import {defineStore} from 'pinia';
 import {computed, Ref, ref, UnwrapRef} from "vue";
 import {STORAGE_KEY_SPEECH, STORAGE_KEY_THEME, ThemeType} from "@/const/const";
-import {speak} from "@/utils/util";
+import {getStorageItem, getStorageJSON, setStorageItem, setStorageJSON, speak} from "@/utils/util";
 
 export const settingsStore = defineStore('settingsStore', () => {
     /** Что выбрал пользователь: светлая, тёмная или «как в системе». */
@@ -32,11 +32,7 @@ export const settingsStore = defineStore('settingsStore', () => {
 
     const setThemeMode = (mode: ThemeType): void => {
         themeMode.value = mode;
-        try {
-            localStorage.setItem(STORAGE_KEY_THEME, mode);
-        } catch (error) {
-            console.warn('Не удалось сохранить тему', error);
-        }
+        setStorageItem(STORAGE_KEY_THEME, mode);
         applyTheme();
     };
 
@@ -54,12 +50,7 @@ export const settingsStore = defineStore('settingsStore', () => {
             window.speechSynthesis.speak(new SpeechSynthesisUtterance(''));
         }
 
-        let stored: string | null = null;
-        try {
-            stored = localStorage.getItem(STORAGE_KEY_THEME);
-        } catch (error) {
-            console.warn('Не удалось прочитать тему', error);
-        }
+        const stored = getStorageItem(STORAGE_KEY_THEME);
 
         /* Раньше здесь хранилось только 'light' | 'dark' — оба значения
            остаются валидными, поэтому выбор существующих пользователей
@@ -74,14 +65,7 @@ export const settingsStore = defineStore('settingsStore', () => {
             if (themeMode.value === ThemeType.System) applyTheme();
         });
 
-        let speech: SpeechSynthesisVoice | null = null;
-        try {
-            const raw = localStorage.getItem(STORAGE_KEY_SPEECH);
-            speech = raw ? JSON.parse(raw) : null;
-        } catch (error) {
-            console.warn('Не удалось прочитать голос озвучки', error);
-        }
-        setVoiceSpeech(speech);
+        setVoiceSpeech(getStorageJSON<SpeechSynthesisVoice | null>(STORAGE_KEY_SPEECH, null));
     };
 
     const setVoiceSpeech = (speech: SpeechSynthesisVoice | null): void => {
@@ -92,11 +76,7 @@ export const settingsStore = defineStore('settingsStore', () => {
             localService: speech.localService,
             default: speech.default
         };
-        try {
-            localStorage.setItem(STORAGE_KEY_SPEECH, JSON.stringify(voiceSpeech.value));
-        } catch (error) {
-            console.warn('Не удалось сохранить голос озвучки', error);
-        }
+        setStorageJSON(STORAGE_KEY_SPEECH, voiceSpeech.value);
     }
 
     const speakText = (text: string): void => {

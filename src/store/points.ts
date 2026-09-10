@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia';
 import {computed, Ref, ref, UnwrapRef} from "vue";
 import {STORAGE_KEY_USER_POINTS, STORAGE_KEY_DAILY_REPEATS} from "@/const/const";
+import {getStorageItem, getStorageJSON, setStorageItem, setStorageJSON} from "@/utils/util";
 
 export interface DailyRepeat {
     date: string; // YYYY-MM-DD format
@@ -26,13 +27,13 @@ export const pointsStore = defineStore('pointsStore', () => {
     });
 
     const loadPoints = (): void => {
-        userPoints.value = parseInt(localStorage.getItem(STORAGE_KEY_USER_POINTS) || '0');
-        dailyRepeats.value = JSON.parse(localStorage.getItem(STORAGE_KEY_DAILY_REPEATS) || '[]');
+        userPoints.value = parseInt(getStorageItem(STORAGE_KEY_USER_POINTS) || '0') || 0;
+        dailyRepeats.value = getStorageJSON<DailyRepeat[]>(STORAGE_KEY_DAILY_REPEATS, []);
     };
 
     const savePoints = (): void => {
-        localStorage.setItem(STORAGE_KEY_USER_POINTS, userPoints.value.toString());
-        localStorage.setItem(STORAGE_KEY_DAILY_REPEATS, JSON.stringify(dailyRepeats.value));
+        setStorageItem(STORAGE_KEY_USER_POINTS, userPoints.value.toString());
+        setStorageJSON(STORAGE_KEY_DAILY_REPEATS, dailyRepeats.value);
     };
 
     const addPointsForStudyCompletion = (): void => {
