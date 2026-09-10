@@ -1,45 +1,50 @@
 <template>
-  <ion-page class="page">
-    <ion-header class="header">
+  <ion-page>
+    <ion-header>
       <HeaderToolbarPages title="Обучение"/>
-      <ion-progress-bar :buffer="0" :value="progressBarStudyCount"></ion-progress-bar>
+      <div class="progress">
+        <div class="progress__fill" :style="{ width: progressPercent + '%' }"></div>
+      </div>
     </ion-header>
-    <ion-content v-if="!isCompleted" class="ion-padding page__content" :fullscreen="true">
-      <div class="content">
-        <ion-text v-if="selectedCardView !== ViewCardWords.Match" class="content__title" @click="speck">
-          {{ titleRandomWord }}
-          <ion-icon :icon="volumeMediumOutline" size="large" color="medium"/>
-        </ion-text>
-        <ion-button
-            v-if="selectedCardView !== ViewCardWords.Match"
-            class="content__button-favorite"
-            fill="clear"
-            size="large"
+
+    <ion-content v-if="!isCompleted" :fullscreen="true">
+      <div class="study">
+        <div v-if="selectedCardView !== ViewCardWords.Match" class="study__prompt">
+          <button type="button" class="study__word" @click="speak">
+            <span>{{ titleRandomWord }}</span>
+            <ion-icon :icon="volumeMediumOutline" class="study__speaker" aria-hidden="true" />
+          </button>
+
+          <button
+            type="button"
+            class="study__favorite"
+            :class="{ 'study__favorite--on': isFavorite }"
+            :aria-pressed="isFavorite"
+            :aria-label="isFavorite ? 'Убрать из избранного' : 'В избранное'"
             @click="setFavorite"
-        >
-          <ion-icon
-              class="icon"
-              :icon="bookmarkOutline"
-              :color="isFavorite ? 'warning' : 'medium'"
-          />
-        </ion-button>
-        <div class="content__card">
+          >
+            <ion-icon :icon="isFavorite ? bookmark : bookmarkOutline" />
+          </button>
+        </div>
+
+        <div class="study__card">
           <component :is="selectedCardViewWord"/>
         </div>
       </div>
     </ion-content>
-    <ion-content v-else>
+
+    <ion-content v-else :fullscreen="true">
       <WordsStudyCompeted/>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup lang="ts">
-import {computed, Ref, ref, UnwrapRef, watch} from "vue";
+import {computed, watch} from "vue";
 import {storeToRefs} from "pinia";
 import {wordsStore} from "@/store/words";
 import {IonContent, IonHeader, IonPage, IonIcon, useIonRouter, onIonViewDidEnter, onIonViewDidLeave} from '@ionic/vue';
-import {bookmarkOutline, volumeMediumOutline} from "ionicons/icons";
+import {bookmark, bookmarkOutline, volumeMediumOutline} from "ionicons/icons";
 import {VIEW_WORDS_TRANSLATION, ViewCardWords} from "@/const/flow";
 import {settingsStore} from "@/store/settings";
 import WordsStudyCompeted from "@/components/words/WordsStudyCompeted.vue";
@@ -49,7 +54,6 @@ import {statisticsStore} from "@/store/statistics";
 
 const storeWords = wordsStore();
 const {
-  cards,
   currentWord,
   selectedCardView,
   selectedCardViewWord,
@@ -64,11 +68,7 @@ const storeStatistics = statisticsStore();
 const {favoritesWords} = storeToRefs(storeVocabulary);
 const ionRouter = useIonRouter();
 
-const wordSelected = ref('');
-const colorCards: Ref<UnwrapRef<string[]>> = ref([]);
-
 onIonViewDidEnter(() => {
-  setDefault();
   storeStatistics.loadStatistics();
   if (!currentWord.value) ionRouter.push('/words');
 })
@@ -90,66 +90,132 @@ const titleRandomWord = computed((): string => {
       : currentWord.value?.word;
 })
 
-const isFavorite = computed((): boolean => {
-  return !!favoritesWords.value.find((item) => item.word === currentWord.value.word);
+const progressPercent = computed((): number => {
+  return Math.min(Math.max(progressBarStudyCount.value * 100, 0), 100);
 })
 
-const setDefault = (): void => {
-  colorCards.value = cards.value.map(() => ('medium'));
-  wordSelected.value = '';
-}
+const isFavorite = computed((): boolean => {
+  return !!favoritesWords.value.find((item) => item.word === currentWord.value?.word);
+})
 
-const speck = (): void => {
-  storeSettings.speakText(currentWord.value.word);
+const speak = (): void => {
+  storeSettings.speakText(currentWord.value?.word || '');
 }
 
 const setFavorite = (): void => {
+  if (!currentWord.value) return;
   if (isFavorite.value) storeVocabulary.deleteFavoritesWord(currentWord.value);
   else storeVocabulary.updateFavoritesWord(currentWord.value);
 }
 </script>
 
 <style scoped lang="scss">
-.page {
-  height: 100%;
+/* Полоса прогресса собственная, а не ion-progress-bar: нужна
+   плавная анимация ширины и радиус без ковыряния в shadow parts */
+.progress {
+  height: 4px;
+  background: var(--app-surface-3);
+
+  &__fill {
+    height: 100%;
+    background: var(--ion-color-primary);
+    border-radius: 0 var(--app-r-pill) var(--app-r-pill) 0;
+    transition: width var(--app-dur-slow) var(--app-ease);
+  }
+}
+
+/* Слово и варианты — единая группа по центру экрана.
+   Раньше карточки растягивались на остаток высоты и «отрывались»
+   от слова, оставляя пустоту сверху и снизу. */
+.study {
+  max-width: 600px;
+  min-height: 100%;
+  margin: 0 auto;
+  padding: var(--app-sp-4);
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: center;
+  gap: var(--app-sp-5);
 
-  .header {
+  &__prompt {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--app-sp-2);
+    padding: var(--app-sp-6) 56px;
+    min-height: 96px;
   }
 
-  &__content {
-    .content {
-      max-width: 600px;
-      height: 100%;
-      display: grid;
-      grid-template-columns: 1fr;
-      grid-template-rows: 1fr 2fr;
-      margin: 0 auto;
+  /* Слово целиком — одна кнопка озвучки: большая цель для пальца
+     вместо мелкой иконки */
+  &__word {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--app-sp-3);
+    border: 0;
+    padding: var(--app-sp-2) var(--app-sp-3);
+    border-radius: var(--app-r-md);
+    background: transparent;
+    color: var(--app-text);
+    font-family: inherit;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    text-align: center;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--app-dur-fast) var(--app-ease);
 
-      &__title {
-        grid-area: 1/1/2/2;
-        justify-self: center;
-        align-self: center;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        gap: 14px;
-        font-size: 26px;
-        word-break: break-all;
-      }
+    &:active {
+      background: var(--app-surface-2);
+    }
+  }
 
-      &__card {
-        grid-area: 2/1/3/2;
-      }
+  &__speaker {
+    flex: 0 0 auto;
+    font-size: 22px;
+    color: var(--app-text-subtle);
+  }
 
-      &__button-favorite {
-        position: absolute;
-        top: 70px;
-        right: 30px;
-      }
+  &__favorite {
+    position: absolute;
+    top: var(--app-sp-3);
+    right: 0;
+    width: var(--app-tap);
+    height: var(--app-tap);
+    display: grid;
+    place-items: center;
+    border: 0;
+    padding: 0;
+    border-radius: var(--app-r-md);
+    background: transparent;
+    color: var(--app-text-subtle);
+    font-size: 22px;
+    cursor: pointer;
+    transition: color var(--app-dur-base) var(--app-ease),
+                background-color var(--app-dur-fast) var(--app-ease),
+                transform var(--app-dur-base) var(--app-ease-spring);
+
+    &:active {
+      transform: scale(0.9);
+    }
+
+    &--on {
+      color: var(--app-warning-ink);
+      background: var(--app-tint-warning);
+    }
+  }
+
+  &__card {
+    display: flex;
+    justify-content: center;
+
+    > * {
+      width: 100%;
     }
   }
 }

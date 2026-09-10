@@ -3,7 +3,7 @@
     <ion-header>
       <HeaderToolbarMainPages title="Профиль" />
     </ion-header>
-    <ion-content class="ion-padding" :fullscreen="true">
+    <ion-content :fullscreen="true">
       <div class="profile-container">
         <!-- Hero Section -->
         <ProfileHeroSection 
@@ -535,9 +535,14 @@ const totalAchievementsCount = computed(() => {
 </script>
 
 <style scoped lang="scss">
+/* Отступы между секциями задаёт gap контейнера, а не margin-bottom
+   каждой секции: так они не складываются и не схлопываются. */
 .profile-container {
   max-width: 800px;
   margin: 0 auto;
-  padding-bottom: 20px;
+  padding: var(--app-sp-4) var(--app-sp-4) var(--app-sp-7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--app-sp-4);
 }
 </style>

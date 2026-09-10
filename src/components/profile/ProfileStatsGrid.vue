@@ -1,6 +1,6 @@
 <template>
   <div class="stats-grid">
-    <div class="stat-card glass-card">
+    <div class="stat-card app-card">
       <div class="stat-icon">
         <ion-icon :icon="calendarOutline" />
       </div>
@@ -10,7 +10,7 @@
       </div>
     </div>
 
-    <div class="stat-card glass-card">
+    <div class="stat-card app-card">
       <div class="stat-icon">
         <ion-icon :icon="flameOutline" />
       </div>
@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div class="stat-card glass-card">
+    <div class="stat-card app-card">
       <div class="stat-icon">
         <ion-icon :icon="bookOutline" />
       </div>
@@ -30,7 +30,7 @@
       </div>
     </div>
 
-    <div class="stat-card glass-card">
+    <div class="stat-card app-card">
       <div class="stat-icon">
         <ion-icon :icon="starOutline" />
       </div>
@@ -40,7 +40,7 @@
       </div>
     </div>
 
-    <div class="stat-card glass-card">
+    <div class="stat-card app-card">
       <div class="stat-icon">
         <ion-icon :icon="calendarOutline" />
       </div>
@@ -50,7 +50,7 @@
       </div>
     </div>
 
-    <div class="stat-card glass-card">
+    <div class="stat-card app-card">
       <div class="stat-icon">
         <ion-icon :icon="trendingUpOutline" />
       </div>
@@ -60,7 +60,7 @@
       </div>
     </div>
 
-    <div class="stat-card glass-card points-card">
+    <div class="stat-card app-card points-card">
       <div class="stat-icon points-icon">
         <ion-icon :icon="starOutline" />
       </div>
@@ -70,7 +70,7 @@
       </div>
     </div>
 
-    <div class="stat-card glass-card">
+    <div class="stat-card app-card">
       <div class="stat-icon">
         <ion-icon :icon="flameOutline" />
       </div>
@@ -107,65 +107,56 @@ defineProps<Props>();
 </script>
 
 <style scoped lang="scss">
+/* Плитки статистики: нейтральная поверхность, цвет несёт только
+   иконка. Раньше карточки заливались насыщенным градиентом, и
+   цифра теряла контраст на собственном фоне. */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 16px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--app-sp-3);
 }
 
 .stat-card {
-  padding: 20px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  background: var(--glass-gradient-secondary);
+  gap: var(--app-sp-3);
+  padding: var(--app-sp-4);
 }
 
 .stat-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: var(--glass-gradient-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  ion-icon {
-    font-size: 24px;
-    color: #ffffff;
-  }
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--app-r-md);
+  background: var(--app-tint-primary);
+  color: var(--app-accent-ink);
+  font-size: 20px;
 }
 
 .stat-content {
-  flex: 1;
+  min-width: 0;
 }
 
 .stat-number {
-  font-size: 2rem;
+  font-size: var(--app-fs-h1);
   font-weight: 700;
-  color: var(--ion-color-primary);
-  margin-bottom: 4px;
+  line-height: 1.1;
+  color: var(--app-text);
+  font-variant-numeric: tabular-nums;
 }
 
 .stat-label {
-  font-size: 0.9rem;
-  color: var(--ion-color-medium);
-  font-weight: 500;
+  font-size: var(--app-fs-sm);
+  color: var(--app-text-muted);
+  line-height: 1.3;
+  margin-top: 2px;
 }
 
-.points-card {
-  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.1) 100%);
-  border: 1px solid rgba(255, 193, 7, 0.2);
-}
-
-.points-icon {
-  background: linear-gradient(135deg, rgba(255, 193, 7, 0.8) 0%, rgba(255, 152, 0, 0.8) 100%);
-}
-
-@media (max-width: 768px) {
-  .stats-grid {
-    grid-template-columns: repeat(1, 1fr);
-  }
+/* Баллы — единственная выделенная плитка: это валюта прогресса */
+.points-card .stat-icon {
+  background: var(--app-tint-warning);
+  color: var(--app-warning-ink);
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="recentStudyDays.length" class="activity-section glass-card">
+  <div v-if="recentStudyDays.length" class="activity-section app-card">
     <h3 class="section-title">Последние дни обучения</h3>
     <div class="activity-list">
       <div 
@@ -61,14 +61,15 @@ const formatDate = (dateString: string): string => {
 
 <style scoped lang="scss">
 .activity-section {
-  margin-bottom: 24px;
-  padding: 24px;
+  padding: var(--app-sp-5);
 }
 
+/* Заголовки секций нейтральные: акцентный цвет закреплён за
+   действиями и прогрессом, иначе он перестаёт что-либо значить */
 .section-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--ion-color-primary);
+  font-size: var(--app-fs-h2);
+  font-weight: 700;
+  color: var(--app-text);
   margin: 0;
 }
 
@@ -83,18 +84,18 @@ const formatDate = (dateString: string): string => {
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--app-surface-2);
   border-radius: 12px;
   transition: all 0.3s ease;
   
   &.completed {
-    background: rgba(76, 175, 80, 0.1);
+    background: var(--app-tint-success);
   }
 }
 
 .activity-date {
   font-weight: 500;
-  color: var(--ion-color-light);
+  color: var(--app-text);
 }
 
 .activity-status {

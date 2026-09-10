@@ -35,10 +35,10 @@ const setMeta = () => {
     <ion-header>
       <HeaderToolbarMainPages title="Полезные статьи для изучения английского языка" />
     </ion-header>
-    <ion-content class="ion-padding" :fullscreen="true">
-      <div class="articles-container glass-fade-in">
+    <ion-content :fullscreen="true">
+      <div class="articles-container app-enter">
         <!-- Hero Section -->
-        <div class="articles-hero glass-card glass-card-large">
+        <div class="articles-hero app-card app-card">
           <div class="hero-content">
             <h1 class="hero-title">Блог для изучения английского</h1>
             <p class="hero-subtitle">Полезные статьи, советы и ресурсы для эффективного изучения языка</p>
@@ -65,17 +65,16 @@ const setMeta = () => {
 
 <style scoped lang="scss">
 .articles-container {
-  padding: 20px;
+  padding: var(--app-sp-4) var(--app-sp-4) var(--app-sp-7);
   max-width: 1200px;
   margin: 0 auto;
-  min-height: 100vh;
 }
 
 /* Hero Section */
 .articles-hero {
   margin-bottom: 32px;
   padding: 40px 32px;
-  background: var(--glass-gradient-accent);
+  background: linear-gradient(135deg, var(--ion-color-secondary), var(--ion-color-primary));
   position: relative;
   overflow: hidden;
 }
@@ -102,16 +101,12 @@ const setMeta = () => {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 16px;
-  background: linear-gradient(135deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  color: var(--app-text);
 }
 
 .hero-subtitle {
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--app-text);
   margin: 0;
   line-height: 1.6;
 }
@@ -126,7 +121,7 @@ const setMeta = () => {
 /* Responsive Design */
 @media (max-width: 768px) {
   .articles-container {
-    padding: 16px;
+    padding: var(--app-sp-4) var(--app-sp-4) var(--app-sp-6);
   }
 
   .articles-hero {

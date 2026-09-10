@@ -66,6 +66,7 @@ const setDefault = (): void => {
   width: 100%;
   display: flex;
   flex-direction: column;
+  gap: var(--app-sp-3);
 
   &__card {
     display: flex;

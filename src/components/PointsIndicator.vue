@@ -1,8 +1,8 @@
 <template>
-  <div class="points-indicator" @click="toProfile">
-    <ion-icon :icon="starOutline" color="warning" />
-    <span class="points-text">{{ totalPoints }}</span>
-  </div>
+  <button type="button" class="points" :aria-label="`Баллы: ${totalPoints}. Открыть профиль`" @click="toProfile">
+    <ion-icon :icon="starOutline" class="points__icon" />
+    <span class="points__value app-nums">{{ totalPoints }}</span>
+  </button>
 </template>
 
 <script setup lang="ts">
@@ -26,20 +26,32 @@ const toProfile = () => {
 </script>
 
 <style scoped lang="scss">
-.points-indicator {
-  display: flex;
+.points {
+  display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  background: rgba(255, 193, 7, 0.2);
-  border-radius: 12px;
-  border: 1px solid rgba(255, 193, 7, 0.3);
-  backdrop-filter: blur(10px);
-}
+  gap: 6px;
+  height: 34px;
+  padding: 0 var(--app-sp-3);
+  border: 0;
+  border-radius: var(--app-r-pill);
+  background: var(--app-tint-warning);
+  color: var(--app-warning-ink);
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform var(--app-dur-fast) var(--app-ease),
+              background-color var(--app-dur-fast) var(--app-ease);
 
-.points-text {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--ion-color-warning);
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &__icon {
+    font-size: 17px;
+  }
+
+  &__value {
+    font-size: var(--app-fs-body);
+    font-weight: 700;
+  }
 }
 </style>

@@ -11,6 +11,8 @@ export const STORAGE_KEY_USER_AVATAR = 'userAvatar';
 export enum ThemeType {
     Light = 'light',
     Dark = 'dark',
+    /** Следовать системной настройке устройства — режим по умолчанию. */
+    System = 'system',
 }
 
 export enum VoiceSpeech {

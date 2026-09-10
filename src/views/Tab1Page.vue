@@ -3,7 +3,9 @@
     <ion-header>
       <HeaderToolbarMainPages title="Изучать английские слова легко и быстро!" />
     </ion-header>
-    <ion-content class="ion-padding" :fullscreen="true">
+    <!-- Без ion-padding: горизонтальные отступы задаёт сам экран,
+         иначе они складываются и съедают колонку в сетке -->
+    <ion-content :fullscreen="true">
       <ChooseFlowCards/>
       <AppFooter/>
     </ion-content>

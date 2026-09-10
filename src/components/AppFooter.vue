@@ -58,23 +58,23 @@ const openLink = async (url: string) => {
 }
 
 .footer-link {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--app-text-muted);
   text-decoration: none;
   font-size: 0.9rem;
   transition: color 0.3s ease;
 
   &:hover {
-    color: #ffffff;
+    color: var(--app-text);
   }
 }
 
 .footer-separator {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--app-text-subtle);
   font-size: 0.9rem;
 }
 
 .footer-copyright {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--app-text-subtle);
   font-size: 0.85rem;
   margin: 0;
 }
