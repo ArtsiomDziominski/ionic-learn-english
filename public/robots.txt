@@ -1,11 +1,35 @@
+# robots.txt — Слова.Day
+# https://www.learnenglisheasy.ru
+
 User-agent: *
 Allow: /
 
-# Страница настроек — служебная, в поиске не нужна
+# Экраны без самостоятельной ценности для поиска: одни требуют
+# состояния сессии, другие персональны и у каждого посетителя свои
+Disallow: /words/progress
+Disallow: /profile
 Disallow: /settings
-
-# Полный список слов рендерится только через JS и не несёт
-# самостоятельной ценности для поиска
 Disallow: /vocabulary/list
+
+# Стили, скрипты и данные статей должны оставаться доступными:
+# без них Google не отрисует страницу, а Яндекс сочтёт её
+# неадаптированной под мобильные устройства
+Allow: /assets/
+Allow: /articles/
+
+# Отдельный блок для Яндекса: при его наличии Яндекс читает только
+# его и полностью игнорирует User-agent: *, поэтому правила выше
+# продублированы здесь целиком
+User-agent: Yandex
+Allow: /
+Disallow: /words/progress
+Disallow: /profile
+Disallow: /settings
+Disallow: /vocabulary/list
+Allow: /assets/
+Allow: /articles/
+
+# Метки рекламных кампаний не должны плодить дубли одной страницы
+Clean-param: utm_source&utm_medium&utm_campaign&utm_term&utm_content&yclid&gclid&_openstat&from&ref
 
 Sitemap: https://www.learnenglisheasy.ru/sitemap.xml
