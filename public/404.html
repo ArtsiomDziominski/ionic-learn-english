@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Страница не найдена | Слова.Day</title>
+  <meta name="robots" content="noindex, follow">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <style>
+    /* Страница отдаётся хостингом отдельно от приложения, поэтому
+       стили инлайновые: подключать бандл ради неё незачем. Токены
+       продублированы из theme/variables.css. */
+    :root {
+      --bg: #f6f7fb;
+      --surface: #ffffff;
+      --border: rgba(17, 17, 34, 0.09);
+      --text: #16162a;
+      --muted: #5a5872;
+      --subtle: #7d7b93;
+      --accent: #6366f1;
+      --accent-ink: #4f46e5;
+      --tint: rgba(99, 102, 241, 0.10);
+      --shadow: 0 10px 28px -10px rgba(20, 20, 43, 0.16);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not(.theme-light) {
+        --bg: #0b0b13;
+        --surface: #14141f;
+        --border: rgba(255, 255, 255, 0.08);
+        --text: #f2f1f7;
+        --muted: #a3a1b8;
+        --subtle: #9694ab;
+        --accent-ink: #a5a7fb;
+        --tint: rgba(99, 102, 241, 0.16);
+        --shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.52);
+      }
+    }
+
+    .theme-dark {
+      --bg: #0b0b13;
+      --surface: #14141f;
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f2f1f7;
+      --muted: #a3a1b8;
+      --subtle: #9694ab;
+      --accent-ink: #a5a7fb;
+      --tint: rgba(99, 102, 241, 0.16);
+      --shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.52);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI',
+                   Roboto, 'Helvetica Neue', system-ui, sans-serif;
+      line-height: 1.6;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 440px;
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    /* Словарная статья: приём подсказывает, что искомого слова
+       просто нет в словаре */
+    .entry-head {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .word {
+      font-size: 2.75rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      margin: 0;
+    }
+
+    .phonetic {
+      font-size: 1rem;
+      color: var(--subtle);
+    }
+
+    .pos {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 3px 9px;
+      border-radius: 8px;
+      background: var(--tint);
+      color: var(--accent-ink);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .rule {
+      height: 1px;
+      margin: 18px 0;
+      background: var(--border);
+      border: 0;
+    }
+
+    .translation {
+      font-size: 1.125rem;
+      font-weight: 650;
+      margin: 0 0 4px;
+    }
+
+    .translation .en { color: var(--text); }
+    .translation .sep { color: var(--subtle); margin: 0 8px; font-weight: 400; }
+    .translation .ru { color: var(--muted); }
+
+    .note {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      margin: 12px 0 0;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      display: block;
+      padding: 15px;
+      border-radius: 16px;
+      text-align: center;
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      transition: background-color 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 8px 20px -10px rgba(99, 102, 241, 0.7);
+    }
+
+    .btn-primary:hover { background: #7c7ef3; }
+
+    .btn-quiet {
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .btn-quiet:hover { background: var(--tint); color: var(--accent-ink); }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="entry-head">
+      <h1 class="word">404</h1>
+      <span class="phonetic">/ˌfɔː(r) əʊ ˈfɔː(r)/</span>
+    </div>
+    <span class="pos">noun</span>
+
+    <hr class="rule">
+
+    <p class="translation">
+      <span class="en">not found</span><span class="sep">—</span><span class="ru">не найдено</span>
+    </p>
+    <p class="note">
+      Такого слова нет в нашем словаре. Возможно, ссылка устарела
+      или в адресе опечатка.
+    </p>
+
+    <div class="actions">
+      <a class="btn btn-primary" href="/">На главную</a>
+      <a class="btn btn-quiet" href="/vocabulary">Открыть словарь</a>
+    </div>
+  </main>
+
+  <script>
+    // Повторяем выбор темы, сохранённый приложением, чтобы страница
+    // не мигала светлым у тех, кто выбрал тёмную
+    try {
+      var mode = localStorage.getItem('theme');
+      if (mode === 'dark') document.documentElement.className = 'theme-dark';
+      else if (mode === 'light') document.documentElement.className = 'theme-light';
+    } catch (e) { /* приватный режим — остаётся системная тема */ }
+  </script>
+</body>
+</html>

@@ -54,6 +54,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/settings',
     component: SettingsPage,
   },
+  /* Ловим всё остальное: без этого маршрута неизвестный адрес
+     внутри приложения показывал пустой экран */
+  {
+    path: '/:pathMatch(.*)*',
+    component: () => import('@/views/NotFoundPage.vue'),
+  },
 ]
 
 const router = createRouter({
