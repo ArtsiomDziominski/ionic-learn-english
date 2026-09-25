@@ -1,6 +1,7 @@
 import {defineStore} from 'pinia';
 import {computed, Ref, ref, UnwrapRef} from "vue";
 import {STORAGE_KEY_SPEECH, STORAGE_KEY_THEME, ThemeType} from "@/const/const";
+import {applyStatusBarTheme} from "@/utils/statusBar";
 import {getStorageItem, getStorageJSON, setStorageItem, setStorageJSON, speak} from "@/utils/util";
 
 export const settingsStore = defineStore('settingsStore', () => {
@@ -28,6 +29,10 @@ export const settingsStore = defineStore('settingsStore', () => {
         isDarkMode.value = resolveIsDark(themeMode.value);
         document.documentElement.classList.toggle('ion-palette-dark', isDarkMode.value);
         document.documentElement.classList.toggle('ion-palette-light', !isDarkMode.value);
+        /* Статус-бар — часть экрана приложения: если его не
+           перекрасить, на светлой теме остаются белые значки
+           на белом фоне. */
+        applyStatusBarTheme(isDarkMode.value);
     };
 
     const setThemeMode = (mode: ThemeType): void => {
