@@ -18,6 +18,7 @@ import {onMounted, ref, Ref, UnwrapRef} from "vue";
 import {wordsStore} from "@/store/words";
 import {storeToRefs} from "pinia";
 import {settingsStore} from "@/store/settings";
+import {hapticError, hapticSuccess} from "@/composables/useHaptics";
 
 const storeWords = wordsStore();
 const {cards, currentWord} = storeToRefs(storeWords);
@@ -48,6 +49,8 @@ const chooseWord = (word: COMMON.Word, index: number): void => {
   storeSettings.speakText(currentWord.value?.word || '');
 
   const isCorrectWord = currentWord.value.word === word.word;
+  if (isCorrectWord) hapticSuccess();
+  else hapticError();
   storeWords.setAnswer(currentWord.value, isCorrectWord);
   setTimeout(() => {
     storeWords.setNextWord();
