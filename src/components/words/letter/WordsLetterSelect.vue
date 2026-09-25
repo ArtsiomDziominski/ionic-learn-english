@@ -52,6 +52,7 @@ import LetterCard from "@/components/words/letter/LetterCard.vue";
 import {backspaceOutline, radioButtonOffOutline} from "ionicons/icons";
 import {IonIcon} from "@ionic/vue";
 import {settingsStore} from "@/store/settings";
+import {hapticError, hapticSuccess} from "@/composables/useHaptics";
 
 const storeWords = wordsStore();
 const {currentWord} = storeToRefs(storeWords);
@@ -119,6 +120,7 @@ const selectLetter = (letter: string): void => {
     storeSettings.speakText(currentWord.value?.word || '');
 
     if (currentWord.value.word === checkingWord) {
+      hapticSuccess();
       isCardLetters.value = false;
       storeWords.setAnswer(currentWord.value, true);
       setTimeout(() => {
@@ -126,6 +128,7 @@ const selectLetter = (letter: string): void => {
         setDefault();
       }, 3000);
     } else {
+      hapticError();
       isCorrectTranslation.value = true;
     }
   }

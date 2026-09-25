@@ -4,6 +4,7 @@ import {wordsStore} from "@/store/words";
 import {storeToRefs} from "pinia";
 import {computed, nextTick, onBeforeUnmount, onMounted, Ref, ref, UnwrapRef, watch} from "vue";
 import {settingsStore} from "@/store/settings";
+import {hapticError, hapticSuccess} from "@/composables/useHaptics";
 
 const storeWords = wordsStore();
 const {cards} = storeToRefs(storeWords);
@@ -47,8 +48,13 @@ const setWordList = (value: string): void => {
 const actionsSelectedList = (word: COMMON.Word | undefined, translation: COMMON.Word | undefined, value: string): void => {
   if (selectedErrorWordTimeout.value) clearTimeout(selectedErrorWordTimeout.value);
   const selectedLastElements = selected.value.at(-1);
-  if (word && word?.translation === value) selectedLastElements?.push(value);
-  else if (translation && translation?.word === value) selectedLastElements?.push(value);
+  if (word && word?.translation === value) {
+    hapticSuccess();
+    selectedLastElements?.push(value);
+  } else if (translation && translation?.word === value) {
+    hapticSuccess();
+    selectedLastElements?.push(value);
+  }
   else if (
       (/[А-Яа-яЁё]/.test(selectedLastElements?.[0] || '') && /[А-Яа-яЁё]/.test(value)) ||
       (!/[А-Яа-яЁё]/.test(selectedLastElements?.[0] || '') && !/[А-Яа-яЁё]/.test(value))
@@ -56,6 +62,7 @@ const actionsSelectedList = (word: COMMON.Word | undefined, translation: COMMON.
     selected.value.pop();
     selected.value.push([value]);
   } else {
+    hapticError();
     selectedErrorWord.value = value;
     selectedErrorWordTimeout.value = setTimeout(() => selectedErrorWord.value = '', 3000);
   }
