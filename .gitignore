@@ -31,3 +31,9 @@ npm-debug.log*
 /plugins
 /www
 .vercel
+
+# TypeScript incremental build info (tsconfig.node.json is composite)
+*.tsbuildinfo
+
+# Local dev-server launch configs for Claude Code
+/.claude/launch.json
