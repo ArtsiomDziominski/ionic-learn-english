@@ -172,7 +172,7 @@ const openLink = async (url: string) => {
         </div>
 
         <div class="settings-items">
-          <a href="#" @click.prevent="openLink('/terms-of-service.html')" class="setting-item legal-link">
+          <a href="#" @click.prevent="openLink('/terms-of-service.html')" class="setting-item setting-item--inline legal-link">
             <div class="setting-info">
               <div class="setting-icon">
                 <ion-icon :icon="documentTextOutline"></ion-icon>
@@ -185,7 +185,7 @@ const openLink = async (url: string) => {
             <ion-icon :icon="chevronForwardOutline" class="link-arrow"></ion-icon>
           </a>
 
-          <a href="#" @click.prevent="openLink('/privacy-policy.html')" class="setting-item legal-link">
+          <a href="#" @click.prevent="openLink('/privacy-policy.html')" class="setting-item setting-item--inline legal-link">
             <div class="setting-info">
               <div class="setting-icon">
                 <ion-icon :icon="shieldCheckmarkOutline"></ion-icon>
@@ -289,6 +289,7 @@ const openLink = async (url: string) => {
 }
 
 .link-arrow {
+  flex-shrink: 0;
   font-size: 20px;
   color: var(--app-text-subtle);
   transition: color 0.3s ease;
