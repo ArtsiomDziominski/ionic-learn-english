@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import {PropType} from "vue";
+import {IonIcon} from "@ionic/vue";
+import {arrowForward} from "ionicons/icons";
 
 defineProps({
   article: {
@@ -31,7 +33,7 @@ defineProps({
       <div class="card-footer">
         <div class="read-more">
           <span class="read-text">Читать статью</span>
-          <ion-icon name="arrow-forward" class="arrow-icon"></ion-icon>
+          <ion-icon :icon="arrowForward" class="arrow-icon"></ion-icon>
         </div>
       </div>
     </div>

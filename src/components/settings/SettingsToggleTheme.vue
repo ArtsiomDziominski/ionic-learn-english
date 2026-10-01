@@ -5,7 +5,15 @@ import AppFooter from "@/components/AppFooter.vue";
 import AppSelect from "@/components/UI/AppSelect.vue";
 import { computed } from "vue";
 import { ThemeType, VoiceSpeech } from "@/const/const";
-import { contrastOutline, moonOutline, sunnyOutline, volumeHighOutline } from "ionicons/icons";
+import {
+  chevronForwardOutline,
+  contrastOutline,
+  documentTextOutline,
+  moonOutline,
+  shieldCheckmarkOutline,
+  sunnyOutline,
+  volumeHighOutline,
+} from "ionicons/icons";
 import { IonContent, IonIcon } from "@ionic/vue";
 import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
@@ -167,27 +175,27 @@ const openLink = async (url: string) => {
           <a href="#" @click.prevent="openLink('/terms-of-service.html')" class="setting-item legal-link">
             <div class="setting-info">
               <div class="setting-icon">
-                <ion-icon name="document-text-outline"></ion-icon>
+                <ion-icon :icon="documentTextOutline"></ion-icon>
               </div>
               <div class="setting-content">
                 <h3 class="setting-title">Условия использования</h3>
                 <p class="setting-description">Ознакомьтесь с условиями использования приложения</p>
               </div>
             </div>
-            <ion-icon name="chevron-forward-outline" class="link-arrow"></ion-icon>
+            <ion-icon :icon="chevronForwardOutline" class="link-arrow"></ion-icon>
           </a>
 
           <a href="#" @click.prevent="openLink('/privacy-policy.html')" class="setting-item legal-link">
             <div class="setting-info">
               <div class="setting-icon">
-                <ion-icon name="shield-checkmark-outline"></ion-icon>
+                <ion-icon :icon="shieldCheckmarkOutline"></ion-icon>
               </div>
               <div class="setting-content">
                 <h3 class="setting-title">Политика конфиденциальности</h3>
                 <p class="setting-description">Информация о защите ваших данных</p>
               </div>
             </div>
-            <ion-icon name="chevron-forward-outline" class="link-arrow"></ion-icon>
+            <ion-icon :icon="chevronForwardOutline" class="link-arrow"></ion-icon>
           </a>
         </div>
       </div>
