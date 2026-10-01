@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, Ref, ref, UnwrapRef, watch} from "vue";
+import {computed, onBeforeUnmount, onMounted, Ref, ref, UnwrapRef, watch} from "vue";
 import {wordsStore} from "@/store/words";
 import {storeToRefs} from "pinia";
 import LetterCard from "@/components/words/letter/LetterCard.vue";
@@ -66,9 +66,18 @@ const isCorrectWord: Ref<UnwrapRef<boolean>> = ref(false);
 const isCorrectTranslation: Ref<UnwrapRef<boolean>> = ref(false);
 const isCardLetters: Ref<UnwrapRef<boolean>> = ref(true);
 
+/* Отложенный переход после верного ответа. Держим ссылку на таймер:
+   если слово исправили после ошибки, на экране ещё висит «Запомнил»,
+   и нажатие на неё не должно перелистнуть слово второй раз. */
+let nextWordTimeout: ReturnType<typeof setTimeout> | null = null;
+
 onMounted(() => {
   setLettersRandom();
   setDefault();
+});
+
+onBeforeUnmount(() => {
+  if (nextWordTimeout) clearTimeout(nextWordTimeout);
 });
 
 watch(currentWord, () => {
@@ -123,10 +132,7 @@ const selectLetter = (letter: string): void => {
       hapticSuccess();
       isCardLetters.value = false;
       storeWords.setAnswer(currentWord.value, true);
-      setTimeout(() => {
-        storeWords.setNextWord();
-        setDefault();
-      }, 3000);
+      nextWordTimeout = setTimeout(goToNextWord, 3000);
     } else {
       hapticError();
       isCorrectTranslation.value = true;
@@ -151,9 +157,20 @@ const clearLastSelectedLetter = (): void => {
   });
 }
 
-const clickNext = (): void => {
+const goToNextWord = (): void => {
+  if (nextWordTimeout) {
+    clearTimeout(nextWordTimeout);
+    nextWordTimeout = null;
+  }
   storeWords.setNextWord();
   setDefault();
+}
+
+const clickNext = (): void => {
+  /* Кнопка исчезает с анимацией и всё это время ловит нажатия:
+     повторное не должно перелистывать слово ещё раз. */
+  if (!isCorrectTranslation.value) return;
+  goToNextWord();
 }
 
 </script>
