@@ -16,7 +16,10 @@ import '@ionic/vue/css/typography.css';
 
 /* Optional CSS utils that can be commented out */
 import '@ionic/vue/css/padding.css';
-import '@ionic/vue/css/float-elements.css';
+/* Классы ion-float-* не используются, а RTL-правила этого файла на
+   :host-context минификатор Vite 8 (Lightning CSS) отбрасывает с
+   предупреждением на каждое — поэтому не подключаем. */
+// import '@ionic/vue/css/float-elements.css';
 import '@ionic/vue/css/text-alignment.css';
 import '@ionic/vue/css/text-transformation.css';
 import '@ionic/vue/css/flex-utils.css';
