@@ -15,6 +15,14 @@
     {
       "source": "/settings",
       "destination": "/"
+    },
+    {
+      "source": "/practice",
+      "destination": "/"
+    },
+    {
+      "source": "/lesson/:path*",
+      "destination": "/"
     }
   ],
   "headers": [

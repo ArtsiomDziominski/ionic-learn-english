@@ -1,71 +1,38 @@
 # Ресурсы приложения
 
-Эта папка содержит исходные файлы для генерации иконок и splash screens приложения.
+Исходники иконок и заставок. Их не рисуют вручную: они генерируются
+из кода талисмана Лекси (`src/art/lexi.ts`), поэтому иконка всегда
+совпадает с персонажем в приложении.
 
-## Требования к файлам
-
-### icon.png
-- **Размер:** 1024x1024 пикселей
-- **Формат:** PNG
-- **Рекомендации:** 
-  - Используйте прозрачный фон для лучшего результата на Android Adaptive Icons
-  - Убедитесь, что важные элементы находятся в центральной области (избегайте важного контента по краям)
-  - Минимальная безопасная зона: 512x512 пикселей в центре
-
-### splash.png
-- **Размер:** 2732x2732 пикселей
-- **Формат:** PNG
-- **Рекомендации:**
-  - Размещайте логотип в центре
-  - Используйте простой фон (цвет фона настраивается в команде генерации)
-
-## Генерация ресурсов
-
-После изменения файлов `icon.png` или `splash.png`, запустите команду для генерации ресурсов:
+## Как обновить иконки и заставки
 
 ```bash
-npm run generate:assets
+npm run generate:brand    # пересоздаёт файлы в этой папке и фавиконки сайта
+npm run generate:assets   # раскладывает их по Android и PWA (@capacitor/assets)
+npm run cap:sync:android  # переносит ресурсы в Android-проект
 ```
 
-Эта команда автоматически создаст:
-- Иконки для Android (все необходимые размеры и adaptive icons)
-- Splash screens для Android (все ориентации и размеры, включая темную тему)
-- PWA иконки для веб-версии (в формате webp)
+## Файлы
 
-## Настройка цветов
+`@capacitor/assets` работает в режиме полного контроля — фон каждого
+изображения задан в самом файле, флаги цветов не нужны.
 
-По умолчанию используются следующие цвета:
-- **Фон иконки (светлая тема):** #ffffff (белый)
-- **Фон иконки (темная тема):** #000000 (черный)
-- **Фон splash screen (светлая тема):** #ffffff (белый)
-- **Фон splash screen (темная тема):** #000000 (черный)
+| Файл | Размер | Назначение |
+|---|---|---|
+| `icon-only.png` | 1024×1024 | Обычная иконка (старые Android, PWA): мордочка на фиолетовом фоне |
+| `icon-foreground.png` | 1024×1024 | Передний слой adaptive icon: мордочка на прозрачном фоне |
+| `icon-background.png` | 1024×1024 | Задний слой adaptive icon: фирменный фиолетовый |
+| `splash.png` | 2732×2732 | Заставка светлой темы: Лекси машет лапой на белом |
+| `splash-dark.png` | 2732×2732 | Заставка тёмной темы: то же на фоне `#131022` |
 
-Чтобы изменить цвета, отредактируйте скрипт `generate:assets` в файле `package.json`.
+Скрипт `generate:brand` также обновляет `public/favicon.png` (512×512) и
+`public/favicon.ico` (48×48).
 
-## Что генерируется
+## Что генерирует `generate:assets`
 
 ### Android
-- `android/app/src/main/res/mipmap-*/ic_launcher.png` - обычные иконки
-- `android/app/src/main/res/mipmap-*/ic_launcher_round.png` - круглые иконки
-- `android/app/src/main/res/mipmap-*/ic_launcher_foreground.png` - foreground для adaptive icons
-- `android/app/src/main/res/mipmap-*/ic_launcher_background.png` - background для adaptive icons
-- `android/app/src/main/res/drawable-*/splash.png` - splash screens
+- `android/app/src/main/res/mipmap-*/ic_launcher*.png` — иконки, включая слои adaptive icon
+- `android/app/src/main/res/drawable-*/splash.png` — заставки всех ориентаций и плотностей, в том числе для тёмной темы
 
-### PWA (Web)
-- `public/assets/icons/icon-*.webp` - иконки разных размеров для PWA
-
-## После генерации
-
-1. Для Android: пересоберите приложение
-   ```bash
-   npm run build
-   npx cap sync android
-   ```
-
-2. Для веб-версии: пересоберите проект
-   ```bash
-   npm run build
-   ```
-
-3. Проверьте результат на устройстве или эмуляторе
-
+### PWA
+- `public/assets/icons/icon-*.webp` — иконки для `manifest.json`

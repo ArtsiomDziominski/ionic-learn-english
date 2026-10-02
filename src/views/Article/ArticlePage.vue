@@ -2,7 +2,7 @@
 import {onMounted, Ref, ref, UnwrapRef} from "vue";
 import {useRoute} from "vue-router";
 import {IonContent, IonHeader, IonPage} from "@ionic/vue";
-import HeaderToolbarPages from "@/components/header/HeaderToolbarPages.vue";
+import PageTopBar from "@/components/PageTopBar.vue";
 import AppFooter from "@/components/AppFooter.vue";
 import {useArticleSEO} from "@/composables/useSEO";
 import {useArticleSchema, useBreadcrumbSchema} from "@/composables/useStructuredData";
@@ -54,21 +54,29 @@ const setMeta = () => {
 
 <template>
   <ion-page>
-    <ion-header>
-      <HeaderToolbarPages :title="article?.title" />
+    <ion-header class="header">
+      <PageTopBar :title="article?.title ?? 'Статья'" back />
     </ion-header>
-    <ion-content :fullscreen="true">
+    <ion-content>
+      <!-- Тексты статей — наш собственный контент из public/articles -->
       <div class="body-container" v-html="article?.body"></div>
-      <AppFooter/>
+      <div class="page"><AppFooter /></div>
     </ion-content>
   </ion-page>
 </template>
 
 <style scoped lang="scss">
+.header {
+  background: var(--bg);
+  border-bottom: 2px solid var(--line);
+  padding-top: env(safe-area-inset-top);
+}
+
 .body-container {
   max-width: 720px;
   margin: 0 auto;
-  padding: var(--app-sp-4) var(--app-sp-4) var(--app-sp-7);
+  padding: 16px 16px 32px;
+  font-size: 1.02rem;
   line-height: 1.7;
 }
 </style>

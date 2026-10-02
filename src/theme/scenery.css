@@ -1,0 +1,563 @@
+/* ============================================================
+   Мир Лекси — оформление главной
+   ------------------------------------------------------------
+   Земля локаций, природа, тропинки и узлы пути рисуются SVG-
+   строками из src/art/scenery.ts. Здесь их цвета (светлая и
+   тёмная темы) и движение: деревья качаются, листья и снег
+   падают, светлячки мигают ночью. Всё движение глушится
+   настройкой «меньше движения» (style.css).
+   ============================================================ */
+
+:root {
+    --font-display: 'Comfortaa Variable', 'Comfortaa', var(--font);
+
+    /* ——— Бумага: панели и карточки главной ——— */
+    --paper: #FFFAEE;
+    --paper-line: #EAD9B6;
+    --paper-ink: #3B2A1A;
+    --paper-muted: #7A6650;
+    --paper-subtle: #A8977F;
+    --paper-bar: rgba(255, 249, 234, 0.96);
+    --paper-shadow: 0 14px 26px -18px rgba(70, 50, 20, 0.55);
+    --leaf: #4FAE4A;
+    --leaf-shade: #3A9137;
+    --leaf-ink: #2F7A2C;
+    --leaf-soft: rgba(79, 174, 74, 0.16);
+    --wood-1: #B97E48;
+    --wood-2: #9B6436;
+    --wood-ink: #FFF4DE;
+    --wood-seam: rgba(60, 30, 10, 0.32);
+
+    /* ——— Земля локаций ——— */
+    --g-forest: #8FCB68;
+    --g-forest-2: #88C562;
+    --g-field: #BFDD7A;
+    --g-field-2: #B8D872;
+    --g-lake: #69C3E6;
+    --g-lake-2: #62BEE3;
+    --g-autumn: #E2B567;
+    --g-autumn-2: #DCAE60;
+    --g-mountains: #A9C78C;
+    --g-mountains-2: #A2C185;
+    --g-winter: #EEF4FA;
+    --g-winter-2: #E6EEF7;
+    --sand: #F2DBA4;
+    --foam: rgba(255, 255, 255, 0.85);
+    --frost: rgba(255, 255, 255, 0.95);
+
+    /* ——— Тропинки ——— */
+    --dirt: #EBCF9C;
+    --dirt-edge: #D2AE74;
+    --paw-dirt: #A97B4B;
+    --gravel: #DCDFD7;
+    --gravel-edge: #C3C7BE;
+    --paw-gravel: #8E938A;
+    --snowpath: #E1EBF5;
+    --snowpath-edge: #C7D7E6;
+    --paw-snow: #9AB2C8;
+
+    /* ——— Природа ——— */
+    --sc-shadow: rgba(40, 60, 20, 0.2);
+    --trunk: #8A5A34;
+    --pine: #3D9259;
+    --pine-l: #52AB6C;
+    --crown-green: #5DAE48;
+    --crown-green-d: #4B9639;
+    --crown-green-l: #7CC75E;
+    --crown-orange: #F08A2E;
+    --crown-orange-d: #D9701A;
+    --crown-orange-l: #F6A85A;
+    --crown-red: #D9533B;
+    --crown-red-d: #BC3F2A;
+    --crown-red-l: #E8785F;
+    --crown-yellow: #F2C14E;
+    --crown-yellow-d: #DDA933;
+    --crown-yellow-l: #F7D57C;
+    --bush: #66B84F;
+    --berry: #E8484B;
+    --tuft: #6DAF4A;
+    --tuft-dry: #C99A45;
+    --tuft-frost: #B9CCDD;
+    --stone: #BFC2BA;
+    --stone-d: #A2A69C;
+    --stone-l: #DCDED7;
+    --stem: #F4E8D2;
+    --cap: #E5483B;
+    --cap-dot: #FFF6EA;
+    --boletus: #8B5A2B;
+    --boletus-l: #A8703D;
+    --straw: #C99A2E;
+    --grain: #EDC048;
+    --hay: #EBC56A;
+    --hay-d: #D9AE4F;
+    --hay-end: #F5D88E;
+    --hay-line: #C79A3A;
+    --reed: #6D8E3A;
+    --reed-leaf: #7FA548;
+    --cattail: #8A5A34;
+    --pad: #5DBB63;
+    --pad-d: #3F9A4A;
+    --pad-vein: #86D58A;
+    --lily: #FFB7D2;
+    --lily-l: #FFE1EC;
+    --ripple: rgba(255, 255, 255, 0.7);
+    --duck: #FFFFFF;
+    --duck-wing: #E3E7EC;
+    --beak: #FF9F1C;
+    --plank: #C48A52;
+    --plank-d: #A87140;
+    --mound: #B9875A;
+    --mound-d: #9E6F45;
+    --mound-grass: #7DBE57;
+    --hole: #4A2E1A;
+    --hole-d: #2E1C0F;
+    --root: #7A4E2E;
+    --rock: #B9BDB5;
+    --rock-d: #9EA39A;
+    --rock-dd: #8A8F86;
+    --rock-l: #CDD1C9;
+    --moss: #7DBE57;
+    --crack: #8F948B;
+    --cliff: #98A2AC;
+    --cliff-l: #B3BCC5;
+    --waterfall: #7CCBEA;
+    --pool: #5CBDE6;
+    --foam-fall: rgba(255, 255, 255, 0.9);
+    --edelweiss: #FFFFFF;
+    --hedgehog: #8B6B4A;
+    --hedgehog-face: #E8D2B0;
+    --leaf-orange: #F08A2E;
+    --leaf-red: #D9533B;
+    --leaf-yellow: #F2C14E;
+    --snow: #FFFFFF;
+    --snow-shade: #D5E2EE;
+    --ice: #BFE3F5;
+    --ice-hi: rgba(255, 255, 255, 0.9);
+    --twig: #7A5232;
+    --carrot: #FF8A3D;
+    --scarf: #7C5CFF;
+    --flake: #FFFFFF;
+    --firefly: #F3FF9E;
+
+    /* ——— Узлы пути ——— */
+    --bark: #9A6438;
+    --bark-d: #7A4C29;
+    --bark-l: #B27748;
+    --wood: #F1D19A;
+    --ring: #D7AC6C;
+    --badge-gold: #FFBF2E;
+}
+
+:root.ion-palette-dark {
+    --paper: #22291F;
+    --paper-line: #34402E;
+    --paper-ink: #F4EBDC;
+    --paper-muted: #BDB099;
+    --paper-subtle: #857A68;
+    --paper-bar: rgba(24, 32, 22, 0.96);
+    --paper-shadow: 0 16px 28px -18px rgba(0, 0, 0, 0.85);
+    --leaf: #4CA847;
+    --leaf-shade: #36872F;
+    --leaf-ink: #8FD27F;
+    --leaf-soft: rgba(76, 168, 71, 0.2);
+    --wood-1: #7A522E;
+    --wood-2: #613F22;
+    --wood-ink: #F6E7CC;
+    --wood-seam: rgba(0, 0, 0, 0.35);
+
+    --g-forest: #22412A;
+    --g-forest-2: #203D28;
+    --g-field: #34452A;
+    --g-field-2: #324228;
+    --g-lake: #16405F;
+    --g-lake-2: #153C59;
+    --g-autumn: #4A3A22;
+    --g-autumn-2: #46371F;
+    --g-mountains: #2E3D2E;
+    --g-mountains-2: #2B3A2B;
+    --g-winter: #2A3448;
+    --g-winter-2: #283246;
+    --sand: #5F5440;
+    --foam: rgba(190, 220, 255, 0.35);
+    --frost: rgba(220, 235, 255, 0.45);
+
+    --dirt: #6A5841;
+    --dirt-edge: #4F4231;
+    --paw-dirt: #2E2418;
+    --gravel: #656A63;
+    --gravel-edge: #50554E;
+    --paw-gravel: #3A3E38;
+    --snowpath: #3A4660;
+    --snowpath-edge: #2F3A52;
+    --paw-snow: #232C40;
+
+    --sc-shadow: rgba(0, 0, 0, 0.35);
+    --trunk: #5A3B22;
+    --pine: #1F5A38;
+    --pine-l: #2A6E47;
+    --crown-green: #2F6B35;
+    --crown-green-d: #26592C;
+    --crown-green-l: #3C7F41;
+    --crown-orange: #A85A22;
+    --crown-orange-d: #8E4A1B;
+    --crown-orange-l: #C06D30;
+    --crown-red: #93392A;
+    --crown-red-d: #7C2F22;
+    --crown-red-l: #A84B39;
+    --crown-yellow: #A8862F;
+    --crown-yellow-d: #8F7126;
+    --crown-yellow-l: #BD9B42;
+    --bush: #33733A;
+    --berry: #B8383B;
+    --tuft: #3A6E37;
+    --tuft-dry: #8C6B33;
+    --tuft-frost: #5D6F86;
+    --stone: #6D7168;
+    --stone-d: #585C54;
+    --stone-l: #868A80;
+    --stem: #BDB29F;
+    --cap: #A8352C;
+    --cap-dot: #D9CFC1;
+    --boletus: #5E3D1F;
+    --boletus-l: #7A5230;
+    --straw: #8C6C24;
+    --grain: #A78A35;
+    --hay: #9C8344;
+    --hay-d: #8A7238;
+    --hay-end: #AE955A;
+    --hay-line: #7D6428;
+    --reed: #46612A;
+    --reed-leaf: #557336;
+    --cattail: #5A3B22;
+    --pad: #2F7A45;
+    --pad-d: #23603A;
+    --pad-vein: #46925A;
+    --lily: #C98AA6;
+    --lily-l: #E2B6C8;
+    --ripple: rgba(170, 210, 255, 0.35);
+    --duck: #D9DEE6;
+    --duck-wing: #B9C0CB;
+    --beak: #D9861A;
+    --plank: #8A603A;
+    --plank-d: #73502F;
+    --mound: #6E5035;
+    --mound-d: #5B412A;
+    --mound-grass: #33693A;
+    --hole: #1E130A;
+    --hole-d: #120B05;
+    --root: #4A3020;
+    --rock: #73786F;
+    --rock-d: #5E635A;
+    --rock-dd: #4E534B;
+    --rock-l: #858A80;
+    --moss: #3C7F41;
+    --crack: #5A5F56;
+    --cliff: #4F5763;
+    --cliff-l: #646D7A;
+    --waterfall: #2F6F96;
+    --pool: #1B4C70;
+    --foam-fall: rgba(200, 230, 255, 0.6);
+    --edelweiss: #D9DEE6;
+    --hedgehog: #5E4630;
+    --hedgehog-face: #B59E7E;
+    --leaf-orange: #B5651E;
+    --leaf-red: #99402F;
+    --leaf-yellow: #B3913A;
+    --snow: #C9D6E8;
+    --snow-shade: #9FB0C8;
+    --ice: #5C87A8;
+    --ice-hi: rgba(220, 240, 255, 0.6);
+    --twig: #4A3020;
+    --carrot: #D9701A;
+    --scarf: #6A4CF0;
+    --flake: #DCE8FF;
+
+    --bark: #6A4428;
+    --bark-d: #52331D;
+    --bark-l: #7E5332;
+    --wood: #B99668;
+    --ring: #96754C;
+    --badge-gold: #F2B41E;
+}
+
+/* ——— Земля: цвет и мягкие пятна травы ——— */
+
+.ground--forest { --g1: var(--g-forest); --g2: var(--g-forest-2); }
+.ground--field { --g1: var(--g-field); --g2: var(--g-field-2); }
+.ground--lake { --g1: var(--g-lake); --g2: var(--g-lake-2); }
+.ground--autumn { --g1: var(--g-autumn); --g2: var(--g-autumn-2); }
+.ground--mountains { --g1: var(--g-mountains); --g2: var(--g-mountains-2); }
+.ground--winter { --g1: var(--g-winter); --g2: var(--g-winter-2); }
+
+.edge-forest { fill: var(--g-forest); }
+.edge-field { fill: var(--g-field); }
+.edge-lake { fill: var(--g-lake); }
+.edge-autumn { fill: var(--g-autumn); }
+.edge-mountains { fill: var(--g-mountains); }
+.edge-winter { fill: var(--g-winter); }
+.edge-sand { fill: var(--sand); }
+.edge-foam,
+.edge-frost {
+    fill: none;
+    stroke: var(--foam);
+    stroke-width: 3;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+.edge-frost { stroke: var(--frost); stroke-width: 4; }
+.edge-art { display: block; width: 100%; height: 100%; }
+
+/* ——— Тропинки ——— */
+
+.tr-edge,
+.tr-path {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.tr-edge { stroke-width: 31; }
+.tr-path { stroke-width: 25; }
+.tr-edge--dirt { stroke: var(--dirt-edge); }
+.tr-path--dirt { stroke: var(--dirt); }
+.tr-edge--gravel { stroke: var(--gravel-edge); }
+.tr-path--gravel { stroke: var(--gravel); }
+.tr-edge--snow { stroke: var(--snowpath-edge); }
+.tr-path--snow { stroke: var(--snowpath); }
+/* Непройденная часть — светлее, тропинка ещё не протоптана */
+.tr-rest { opacity: 0.6; }
+.tr-paws { opacity: 0.6; }
+.tr-paws--dirt { fill: var(--paw-dirt); }
+.tr-paws--gravel { fill: var(--paw-gravel); }
+.tr-paws--snow { fill: var(--paw-snow); }
+
+/* ——— Природа ——— */
+
+.sc-shadow { fill: var(--sc-shadow); }
+.sc-trunk { fill: var(--trunk); }
+.sc-pine { fill: var(--pine); stroke: var(--pine); stroke-width: 3; stroke-linejoin: round; }
+.sc-pine-l { fill: var(--pine-l); }
+.sc-crown-green { fill: var(--crown-green); }
+.sc-crown-green-d { fill: var(--crown-green-d); }
+.sc-crown-green-l { fill: var(--crown-green-l); opacity: 0.85; }
+.sc-crown-orange { fill: var(--crown-orange); }
+.sc-crown-orange-d { fill: var(--crown-orange-d); }
+.sc-crown-orange-l { fill: var(--crown-orange-l); opacity: 0.85; }
+.sc-crown-red { fill: var(--crown-red); }
+.sc-crown-red-d { fill: var(--crown-red-d); }
+.sc-crown-red-l { fill: var(--crown-red-l); opacity: 0.85; }
+.sc-crown-yellow { fill: var(--crown-yellow); }
+.sc-crown-yellow-d { fill: var(--crown-yellow-d); }
+.sc-crown-yellow-l { fill: var(--crown-yellow-l); opacity: 0.85; }
+.sc-bush { fill: var(--bush); }
+.sc-berry { fill: var(--berry); }
+.sc-tuft { fill: var(--tuft); }
+.sc-tuft-dry { fill: var(--tuft-dry); }
+.sc-tuft-frost { fill: var(--tuft-frost); }
+.sc-stone { fill: var(--stone); }
+.sc-stone-d { fill: var(--stone-d); }
+.sc-stone-l { fill: var(--stone-l); }
+.sc-stem { fill: var(--stem); }
+.sc-cap { fill: var(--cap); }
+.sc-dot { fill: var(--cap-dot); }
+.sc-boletus { fill: var(--boletus); }
+.sc-boletus-l { fill: var(--boletus-l); }
+.sc-straw { fill: none; stroke: var(--straw); stroke-width: 1.4; stroke-linecap: round; }
+.sc-grain { fill: var(--grain); }
+.sc-hay { fill: var(--hay); }
+.sc-hay-d { fill: var(--hay-d); }
+.sc-hay-end { fill: var(--hay-end); }
+.sc-hay-line { fill: none; stroke: var(--hay-line); stroke-width: 1.3; stroke-linecap: round; }
+.sc-body { stroke: #3B2A1A; stroke-width: 1.6; stroke-linecap: round; }
+.sc-reed { fill: none; stroke: var(--reed); stroke-width: 1.8; stroke-linecap: round; }
+.sc-reed-leaf { fill: var(--reed-leaf); }
+.sc-cattail { fill: var(--cattail); }
+.sc-ripple { fill: none; stroke: var(--ripple); stroke-width: 1.6; stroke-linecap: round; }
+.sc-ripple-fill { fill: var(--ripple); opacity: 0.4; }
+.sc-pad { fill: var(--pad); }
+.sc-pad-d { fill: var(--pad-d); }
+.sc-lily { fill: var(--lily); }
+.sc-lily-l { fill: var(--lily-l); }
+.sc-duck { fill: var(--duck); }
+.sc-duck-wing { fill: var(--duck-wing); }
+.sc-beak { fill: var(--beak); }
+.sc-plank { fill: var(--plank); }
+.sc-plank-d,
+.sc-post { fill: var(--plank-d); }
+.sc-plank-gap { fill: none; stroke: var(--plank-d); stroke-width: 1.5; }
+.sc-mound { fill: var(--mound); }
+.sc-mound-d { fill: var(--mound-d); }
+.sc-mound-grass { fill: var(--mound-grass); }
+.sc-hole { fill: var(--hole); }
+.sc-hole-d { fill: var(--hole-d); }
+.sc-root { fill: none; stroke: var(--root); stroke-width: 2; stroke-linecap: round; }
+.sc-rock { fill: var(--rock); }
+.sc-rock-d { fill: var(--rock-d); }
+.sc-rock-dd { fill: var(--rock-dd); }
+.sc-rock-l { fill: var(--rock-l); }
+.sc-moss { fill: var(--moss); }
+.sc-crack { fill: none; stroke: var(--crack); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; }
+.sc-cliff { fill: var(--cliff); }
+.sc-cliff-l { fill: var(--cliff-l); }
+.sc-fall-water { fill: var(--waterfall); }
+.sc-pool { fill: var(--pool); }
+.sc-pool-foam { fill: var(--foam-fall); opacity: 0.7; }
+.sc-edelweiss { fill: var(--edelweiss); }
+.sc-hedgehog { fill: var(--hedgehog); }
+.sc-hedgehog-face { fill: var(--hedgehog-face); }
+.sc-leaf-orange { fill: var(--leaf-orange); }
+.sc-leaf-red { fill: var(--leaf-red); }
+.sc-leaf-yellow { fill: var(--leaf-yellow); }
+.sc-snow,
+.sc-snowball { fill: var(--snow); }
+.sc-snow-shade { fill: var(--snow-shade); }
+.sc-ice { fill: var(--ice); }
+.sc-ice-hi { fill: none; stroke: var(--ice-hi); stroke-width: 2; stroke-linecap: round; }
+.sc-twig { fill: none; stroke: var(--twig); stroke-width: 1.8; stroke-linecap: round; }
+.sc-carrot { fill: var(--carrot); }
+.sc-scarf { fill: var(--scarf); }
+
+/* ——— Движение ——— */
+
+.sc-sway {
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+    animation: sc-sway 6s ease-in-out infinite alternate;
+}
+.sc-sway--fast { animation-name: sc-sway-fast; }
+
+.sc-fly { animation: sc-fly 10s ease-in-out infinite; }
+.sc-flap {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: sc-flap 0.4s ease-in-out infinite alternate;
+}
+.sc-swim { animation: sc-swim 14s ease-in-out infinite alternate; }
+
+.sc-fall {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: sc-leaf-fall 7s ease-in-out infinite;
+}
+
+.sc-fall-foam {
+    fill: none;
+    stroke: var(--foam-fall);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-dasharray: 10 14;
+    animation: sc-foam 1.4s linear infinite;
+}
+
+.sc-flake {
+    fill: var(--flake);
+    animation: sc-flake 8s linear infinite;
+}
+
+/* Светлячки — только ночью */
+.sc-firefly { display: none; }
+.ion-palette-dark .sc-firefly {
+    display: inline;
+    fill: var(--firefly);
+    filter: drop-shadow(0 0 4px var(--firefly));
+    animation: sc-blink 3s ease-in-out infinite;
+}
+
+@keyframes sc-sway { from { transform: rotate(-1.6deg); } to { transform: rotate(1.6deg); } }
+@keyframes sc-sway-fast { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+@keyframes sc-fly {
+    0%, 100% { transform: translate(0, 0); }
+    25% { transform: translate(40px, -24px); }
+    50% { transform: translate(70px, 10px); }
+    75% { transform: translate(30px, 26px); }
+}
+@keyframes sc-flap { from { transform: scaleX(1); } to { transform: scaleX(0.3); } }
+@keyframes sc-swim { from { transform: translateX(-18px); } to { transform: translateX(18px); } }
+@keyframes sc-leaf-fall {
+    0% { transform: translate(0, 0) rotate(0); opacity: 0; }
+    12% { opacity: 1; }
+    50% { transform: translate(16px, 70px) rotate(170deg); }
+    88% { opacity: 1; }
+    100% { transform: translate(-8px, 140px) rotate(330deg); opacity: 0; }
+}
+@keyframes sc-foam { to { stroke-dashoffset: -24; } }
+@keyframes sc-flake {
+    0% { transform: translate(0, 0); opacity: 0; }
+    10% { opacity: 0.95; }
+    90% { opacity: 0.95; }
+    100% { transform: translate(14px, 170px); opacity: 0; }
+}
+@keyframes sc-blink {
+    0%, 100% { opacity: 0; transform: translate(0, 0); }
+    50% { opacity: 1; transform: translate(6px, -8px); }
+}
+
+/* ——— Узлы пути ——— */
+
+.nd-art { display: block; overflow: visible; }
+.nd-bark { fill: var(--bark); }
+.nd-bark-d { fill: var(--bark-d); opacity: 0.7; }
+.nd-root { fill: var(--bark-d); }
+.nd-groove { fill: none; stroke: var(--bark-d); stroke-width: 1.6; stroke-linecap: round; }
+.nd-rim { fill: var(--bark-l); }
+.nd-wood { fill: var(--wood); }
+.nd-ring { fill: none; stroke: var(--ring); stroke-width: 1.3; stroke-linecap: round; }
+.nd-badge--done { fill: var(--leaf); stroke: rgba(255, 255, 255, 0.55); stroke-width: 1.5; }
+.nd-badge--current { fill: var(--badge-gold); stroke: #fff; stroke-width: 2; }
+.nd-glyph { color: #fff; }
+.nd-lock { color: var(--bark-d); opacity: 0.7; }
+.nd-pad-lock { color: var(--pad-d); }
+.nd-vein { stroke: var(--pad-vein); stroke-width: 1.2; stroke-linecap: round; opacity: 0.8; }
+.nd-wave { fill: none; stroke: var(--ripple); stroke-width: 1.5; }
+.nd-pad-shadow { fill: rgba(0, 40, 70, 0.18); }
+.nd-shine { fill: #fff; opacity: 0.16; }
+.nd-muted { filter: grayscale(1); opacity: 0.55; }
+.nd-faded { opacity: 0.75; }
+
+.nd-float {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: nd-float 5s ease-in-out infinite;
+}
+
+.nd-glow {
+    fill: none;
+    stroke: var(--badge-gold);
+    stroke-width: 3;
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: nd-glow 2.2s ease-out infinite;
+}
+
+.nd-spark {
+    fill: var(--badge-gold);
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: nd-twinkle 2.4s ease-in-out infinite;
+}
+
+.nd-chest--ready {
+    transform-box: fill-box;
+    transform-origin: 50% 90%;
+    animation: nd-chest 2.4s ease-in-out infinite;
+}
+
+@keyframes nd-float {
+    0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+    50% { transform: translateY(2px) rotate(1.5deg); }
+}
+@keyframes nd-glow {
+    0% { transform: scale(0.6); opacity: 0.9; }
+    100% { transform: scale(1.25); opacity: 0; }
+}
+@keyframes nd-twinkle {
+    0%, 100% { opacity: 0; scale: 0.4; }
+    50% { opacity: 1; scale: 1; }
+}
+@keyframes nd-chest {
+    0%, 70%, 100% { transform: rotate(0); }
+    75% { transform: rotate(-8deg); }
+    80% { transform: rotate(8deg); }
+    85% { transform: rotate(-6deg); }
+    90% { transform: rotate(4deg); }
+}

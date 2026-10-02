@@ -43,10 +43,17 @@ import {createPinia} from 'pinia';
 /* @import '@ionic/vue/css/palettes/dark.class.css'; */
 // import '@ionic/vue/css/palettes/dark.system.css';
 
+/* Шрифты встроены в сборку: работают и без сети в приложении.
+   Comfortaa — заголовки на табличках и карточках главной. */
+import '@fontsource-variable/nunito';
+import '@fontsource-variable/comfortaa';
+
 /* Theme variables */
 import './theme/variables.css';
 
 import './theme/style.css';
+import './theme/mascot.css';
+import './theme/scenery.css';
 
 const head = createHead();
 const app = createApp(App)
@@ -59,7 +66,8 @@ const app = createApp(App)
     .use(head)
     .use(MetaPlugin);
 
-app.config.warnHandler = () => {};
+// В разработке предупреждения Vue нужны — глушим их только в сборке
+if (import.meta.env.PROD) app.config.warnHandler = () => {};
 
 router.isReady().then(() => {
   app.mount('#app');

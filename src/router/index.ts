@@ -1,58 +1,38 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
-import { RouteRecordRaw } from 'vue-router';
-import TabsPage from '../views/TabsPage.vue'
-import SettingsPage from "@/views/SettingsPage.vue";
-import VocabularyListView from "@/views/vocabulary/VocabularyListView.vue";
-import BlogPage from "@/views/Article/ArticlesPage.vue";
+import type { RouteRecordRaw } from 'vue-router';
+import TabsPage from '@/views/TabsPage.vue';
+import LearnPage from '@/views/LearnPage.vue';
 
+/*
+ * Адреса /words, /vocabulary и /article индексируются поисковиками
+ * (см. scripts/prerender.mjs) — их не меняем. Урок открывается на
+ * отдельном экране без вкладок: /lesson/<id урока> или
+ * /lesson/practice-<режим> для тренировок.
+ */
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     component: TabsPage,
     children: [
-      {
-        path: '',
-        redirect: '/words'
-      },
-      {
-        path: 'words',
-        component: () => import('@/views/Tab1Page.vue'),
-        children: [
-          {
-            path: '',
-            component: () => import('@/components/words/WordsSelectFlowCards.vue'),
-          }
-        ]
-      },
-      {
-        path: 'words/progress',
-        component: () => import('@/components/words/WordsProgress.vue'),
-      },
-      {
-        path: 'vocabulary',
-        component: () => import('@/views/vocabulary/VocabularyView.vue')
-      },
-      {
-        path: 'vocabulary/list',
-        component: VocabularyListView
-      },
-      {
-        path: '/article',
-        component: BlogPage,
-      },
-      {
-        path: '/article/:id',
-        component: () => import('@/views/Article/ArticlePage.vue')
-      },
-      {
-        path: 'profile',
-        component: () => import('@/views/ProfilePage.vue')
-      },
-    ]
+      { path: '', redirect: '/words' },
+      { path: 'words', component: LearnPage },
+      // Старый адрес урока из прежней версии
+      { path: 'words/progress', redirect: '/words' },
+      { path: 'practice', component: () => import('@/views/PracticePage.vue') },
+      { path: 'vocabulary', component: () => import('@/views/VocabularyPage.vue') },
+      { path: 'vocabulary/list', redirect: '/vocabulary' },
+      { path: 'profile', component: () => import('@/views/ProfilePage.vue') },
+      { path: 'article', component: () => import('@/views/Article/ArticlesPage.vue') },
+      { path: 'article/:id', component: () => import('@/views/Article/ArticlePage.vue') },
+    ],
+  },
+  {
+    path: '/lesson/:id',
+    component: () => import('@/views/LessonPage.vue'),
   },
   {
     path: '/settings',
-    component: SettingsPage,
+    component: () => import('@/views/SettingsPage.vue'),
   },
   /* Ловим всё остальное: без этого маршрута неизвестный адрес
      внутри приложения показывал пустой экран */
@@ -60,11 +40,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/:pathMatch(.*)*',
     component: () => import('@/views/NotFoundPage.vue'),
   },
-]
+];
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes
-})
+  routes,
+});
 
-export default router
+export default router;

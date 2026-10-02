@@ -4,13 +4,13 @@ import { Style, StatusBar } from '@capacitor/status-bar';
 /**
  * Окраска системного статус-бара под текущую тему.
  *
- * Значения цветов продублированы из --app-bg в theme/variables.css:
+ * Значения цветов продублированы из --bg в theme/variables.css:
  * плагин принимает строку, а не CSS-переменную, поэтому при смене
  * палитры их нужно поправить и здесь.
  */
 const BAR_BACKGROUND = {
-  dark: '#0b0b13',
-  light: '#f6f7fb',
+  dark: '#131022',
+  light: '#FFFFFF',
 };
 
 export const applyStatusBarTheme = async (isDark: boolean): Promise<void> => {
