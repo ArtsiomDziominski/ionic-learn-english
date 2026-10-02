@@ -1,24 +1,26 @@
 <template>
   <ion-app>
     <ion-router-outlet :animated="true" />
-    <AppNotifications />
+    <AppToasts />
+    <ImportSheet />
   </ion-app>
 </template>
 
 <script setup lang="ts">
 import { IonApp, IonRouterOutlet, useBackButton, useIonRouter } from '@ionic/vue';
-import { onMounted } from 'vue';
 import { App as CapacitorApp } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
-import { settingsStore } from '@/store/settings';
-import AppNotifications from '@/components/AppNotifications.vue';
+import { useSettingsStore } from '@/store/settings';
+import { useProgressStore } from '@/store/progress';
+import AppToasts from '@/components/ui/AppToasts.vue';
+import ImportSheet from '@/components/ImportSheet.vue';
 
-const storeSettings = settingsStore();
+const settings = useSettingsStore();
+const progress = useProgressStore();
 const ionRouter = useIonRouter();
 
-onMounted(() => {
-  storeSettings.initSettings();
-});
+settings.init();
+progress.init();
 
 /* Аппаратная кнопка «назад» на Android.
    Переходы между экранами Ionic обрабатывает сам с приоритетом 0,
@@ -28,6 +30,7 @@ onMounted(() => {
 useBackButton(-1, () => {
   if (!Capacitor.isNativePlatform()) return;
   if (!ionRouter.canGoBack()) {
+    progress.saveNow();
     CapacitorApp.exitApp();
   }
 });

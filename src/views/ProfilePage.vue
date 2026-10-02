@@ -1,548 +1,419 @@
+<script setup lang="ts">
+import { computed, nextTick, ref } from 'vue';
+import { IonContent, IonHeader, IonPage, useIonRouter } from '@ionic/vue';
+import { storeToRefs } from 'pinia';
+import { Capacitor } from '@capacitor/core';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { useProgressStore } from '@/store/progress';
+import { useToastStore } from '@/store/toast';
+import { getSection } from '@/core/course';
+import { formatDayLong } from '@/core/dates';
+import type { GameIconName } from '@/art/icons';
+import PageTopBar from '@/components/PageTopBar.vue';
+import LexiMascot from '@/components/ui/LexiMascot.vue';
+import GameIcon from '@/components/ui/GameIcon.vue';
+import AppSheet from '@/components/ui/AppSheet.vue';
+import WeekChart from '@/components/profile/WeekChart.vue';
+import AchievementBadge from '@/components/profile/AchievementBadge.vue';
+import TransferCard from '@/components/profile/TransferCard.vue';
+import AppFooter from '@/components/AppFooter.vue';
+
+const progress = useProgressStore();
+const toast = useToastStore();
+const router = useIonRouter();
+const { state, streak, learnedCount, achievements, today, lessonsDone } = storeToRefs(progress);
+
+const editing = ref(false);
+const nameDraft = ref('');
+const nameInput = ref<HTMLInputElement | null>(null);
+const avatarSheet = ref(false);
+const showAllAchievements = ref(false);
+
+const section = computed(() => getSection(state.value.sectionId));
+
+const stats = computed<Array<{ icon: GameIconName; value: number; label: string; color: string }>>(() => [
+  { icon: 'flame', value: streak.value, label: 'Серия дней', color: 'var(--orange)' },
+  { icon: 'bolt', value: state.value.xpTotal, label: 'Всего XP', color: 'var(--gold-ink)' },
+  { icon: 'book', value: learnedCount.value, label: 'Слов изучено', color: 'var(--blue)' },
+  { icon: 'trophy', value: lessonsDone.value, label: 'Уроков пройдено', color: 'var(--violet-ink)' },
+  { icon: 'gem', value: state.value.gems, label: 'Кристаллов', color: 'var(--blue)' },
+  { icon: 'medal', value: state.value.streak.best, label: 'Лучшая серия', color: 'var(--red-ink)' },
+]);
+
+const earned = computed(() => achievements.value.filter((a) => a.tier > 0).length);
+const shownAchievements = computed(() => {
+  const sorted = [...achievements.value].sort((a, b) => b.tier - a.tier || b.ratio - a.ratio);
+  return showAllAchievements.value ? sorted : sorted.slice(0, 4);
+});
+
+/* ——— Имя ——————————————————————————————————————————————————— */
+
+const startEdit = async (): Promise<void> => {
+  nameDraft.value = state.value.profile.name;
+  editing.value = true;
+  await nextTick();
+  nameInput.value?.select();
+};
+
+const saveName = (): void => {
+  if (nameDraft.value.trim()) progress.setName(nameDraft.value);
+  editing.value = false;
+};
+
+/* ——— Аватар ————————————————————————————————————————————————— */
+
+/** Уменьшает фото до 256 px: data URL весит десятки КБ, а не мегабайты. */
+function shrink(src: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const size = 256;
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return reject(new Error('canvas'));
+      const side = Math.min(img.width, img.height);
+      ctx.drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side, 0, 0, size, size);
+      resolve(canvas.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+const applyAvatar = async (src: string): Promise<void> => {
+  try {
+    progress.setAvatar(await shrink(src));
+    toast.show('Фото обновлено', 'success', 'check');
+  } catch {
+    toast.show('Не удалось загрузить фото', 'error');
+  }
+};
+
+const fromCamera = async (source: CameraSource): Promise<void> => {
+  avatarSheet.value = false;
+  try {
+    const photo = await Camera.getPhoto({ quality: 85, allowEditing: true, resultType: CameraResultType.DataUrl, source });
+    if (photo.dataUrl) await applyAvatar(photo.dataUrl);
+  } catch {
+    /* пользователь закрыл камеру */
+  }
+};
+
+const fromFile = (): void => {
+  avatarSheet.value = false;
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = () => {
+    const file = input.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => typeof reader.result === 'string' && void applyAvatar(reader.result);
+    reader.readAsDataURL(file);
+  };
+  input.click();
+};
+
+const removeAvatar = (): void => {
+  progress.setAvatar(null);
+  avatarSheet.value = false;
+};
+
+const isNative = Capacitor.isNativePlatform();
+</script>
+
 <template>
   <ion-page>
-    <ion-header>
-      <HeaderToolbarMainPages title="Профиль" />
+    <ion-header class="header">
+      <PageTopBar title="Профиль">
+        <button type="button" class="icon-btn" aria-label="Настройки" @click="router.push('/settings')">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4z" fill="none" stroke="currentColor" stroke-width="2.2" /><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.6-2-3.4-2.4 1a7.4 7.4 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.4 7.4 0 0 0 7 6.5l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 3l-2 1.6 2 3.4 2.4-1a7.4 7.4 0 0 0 2.6 1.5l.4 2.5h4l.4-2.5a7.4 7.4 0 0 0 2.6-1.5l2.4 1 2-3.4z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" /></svg>
+        </button>
+      </PageTopBar>
     </ion-header>
-    <ion-content :fullscreen="true">
-      <div class="profile-container">
-        <!-- Hero Section -->
-        <ProfileHeroSection 
-          :avatar-image="avatarImage"
-          @open-avatar-options="openAvatarOptions"
-        />
 
-        <!-- Main Statistics -->
-        <ProfileStatsGrid
-          :total-study-days="totalStudyDays"
-          :current-streak="currentStreak"
-          :studied-words-count="studiedWordsCount"
-          :favorites-count="favoritesCount"
-          :get-study-days-this-week="getStudyDaysThisWeek"
-          :get-average-study-days-per-week="getAverageStudyDaysPerWeek"
-          :total-points="totalPoints"
-          :today-repeat-count="todayRepeatCount"
-        />
+    <ion-content>
+      <div class="page stack">
+        <!-- Шапка профиля -->
+        <section class="hero">
+          <button type="button" class="avatar" aria-label="Сменить фото" @click="avatarSheet = true">
+            <img v-if="state.profile.avatar" :src="state.profile.avatar" alt="" />
+            <LexiMascot v-else head :size="96" :animated="false" label="Аватар" />
+            <span class="avatar__edit" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v8A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z" fill="currentColor" /><circle cx="12" cy="12.5" r="3.4" fill="var(--violet)" /></svg>
+            </span>
+          </button>
 
-        <!-- Progress Section -->
-        <ProfileProgressSection
-          :has-studied-today="hasStudiedToday"
-          :best-streak="bestStreak"
-          :best-streak-percentage="bestStreakPercentage"
-        />
+          <div class="hero__text">
+            <div v-if="editing" class="name-edit">
+              <label class="sr-only" for="profile-name">Имя</label>
+              <input id="profile-name" ref="nameInput" v-model="nameDraft" class="field" maxlength="40" @keydown.enter="saveName" @blur="saveName" />
+            </div>
+            <button v-else type="button" class="name" @click="startEdit">
+              {{ state.profile.name }}
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" /></svg>
+            </button>
+            <p class="muted">С нами с {{ formatDayLong(state.profile.joinedAt) }}</p>
+            <p class="level"><span>{{ section.badge }}</span> {{ section.title }}</p>
+          </div>
+        </section>
 
-        <!-- Points Section -->
-        <ProfilePointsSection
-          :total-points="totalPoints"
-          :get-points-this-week="getPointsThisWeek"
-          :get-points-this-month="getPointsThisMonth"
-        />
+        <!-- Статистика -->
+        <section>
+          <h2 class="section-title">Статистика</h2>
+          <div class="stats">
+            <div v-for="s in stats" :key="s.label" class="stat card">
+              <GameIcon :name="s.icon" :size="30" />
+              <div>
+                <p class="stat__value nums" :style="{ color: s.color }">{{ s.value }}</p>
+                <p class="stat__label">{{ s.label }}</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
-        <!-- Recent Activity -->
-        <ProfileActivitySection
-          :recent-study-days="recentStudyDays"
-        />
+        <section class="card">
+          <WeekChart :xp-by-day="state.xpByDay" :goal="state.dailyGoal" :today="today" />
+        </section>
 
-        <!-- Motivational Section -->
-        <ProfileAchievementsSection
-          :achievements="achievements"
-          :unlocked-achievements-count="unlockedAchievementsCount"
-          :total-achievements-count="totalAchievementsCount"
-        />
+        <!-- Достижения -->
+        <section>
+          <div class="section-head">
+            <h2 class="section-title">Достижения</h2>
+            <span class="muted nums">{{ earned }} из {{ achievements.length }}</span>
+          </div>
+          <div class="card achievements">
+            <AchievementBadge v-for="a in shownAchievements" :key="a.def.id" :view="a" />
+            <button type="button" class="btn btn--ghost btn--block" @click="showAllAchievements = !showAllAchievements">
+              {{ showAllAchievements ? 'Свернуть' : 'Показать все' }}
+            </button>
+          </div>
+        </section>
+
+        <TransferCard />
+
+        <button type="button" class="link card card--press" @click="router.push('/article')">
+          <GameIcon name="book" :size="34" />
+          <span class="grow">
+            <span class="link__title">Статьи об изучении английского</span>
+            <span class="link__text">Советы, подборки сериалов, книг и подкастов</span>
+          </span>
+          <svg class="link__chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+        </button>
+
+        <AppFooter />
       </div>
     </ion-content>
 
-    <!-- Avatar Action Sheet -->
-    <ion-action-sheet
-      :is-open="isActionSheetOpen"
-      header="Выберите аватарку"
-      :buttons="[
-        {
-          text: 'Сделать фото',
-          icon: cameraOutline,
-          handler: () => {
-            takePhoto();
-            closeActionSheet();
-          }
-        },
-        {
-          text: 'Выбрать из галереи',
-          icon: imageOutline,
-          handler: () => {
-            selectImageFromGallery();
-            closeActionSheet();
-          }
-        },
-        {
-          text: 'Удалить аватарку',
-          icon: closeCircleOutline,
-          role: 'destructive',
-          handler: () => {
-            removeAvatar();
-            closeActionSheet();
-          }
-        },
-        {
-          text: 'Отмена',
-          role: 'cancel',
-          handler: closeActionSheet
-        }
-      ]"
-      @did-dismiss="closeActionSheet"
-    />
+    <AppSheet :open="avatarSheet" label="Фото профиля" @close="avatarSheet = false">
+      <h2 class="sheet-title">Фото профиля</h2>
+      <div class="sheet-actions">
+        <template v-if="isNative">
+          <button type="button" class="btn btn--block" @click="fromCamera(CameraSource.Camera)">Сделать фото</button>
+          <button type="button" class="btn btn--block btn--secondary" @click="fromCamera(CameraSource.Photos)">Выбрать из галереи</button>
+        </template>
+        <button v-else type="button" class="btn btn--block" @click="fromFile">Выбрать изображение</button>
+        <button v-if="state.profile.avatar" type="button" class="btn btn--block btn--ghost danger" @click="removeAvatar">Вернуть Лекси</button>
+      </div>
+    </AppSheet>
   </ion-page>
 </template>
 
-<script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import {
-  IonPage,
-  IonHeader,
-  IonContent,
-  IonActionSheet
-} from '@ionic/vue';
-import {
-  cameraOutline,
-  imageOutline,
-  closeCircleOutline,
-  trophyOutline,
-  medalOutline,
-  rocketOutline,
-  heartOutline,
-  timeOutline,
-  diamondOutline,
-  shieldOutline,
-  flashOutline,
-  schoolOutline,
-  libraryOutline,
-  languageOutline,
-  globeOutline,
-  peopleOutline,
-  speedometerOutline,
-  pulseOutline,
-  refreshOutline,
-  checkmarkOutline,
-  calendarOutline,
-  bookOutline,
-  starOutline
-} from 'ionicons/icons';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import HeaderToolbarMainPages from '@/components/header/HeaderToolbarMainPages.vue';
-import {
-  ProfileHeroSection,
-  ProfileStatsGrid,
-  ProfileProgressSection,
-  ProfilePointsSection,
-  ProfileActivitySection,
-  ProfileAchievementsSection
-} from '@/components/profile';
-import { statisticsStore } from '@/store/statistics';
-import { vocabularyStore } from '@/store/vocabulary';
-import { pointsStore } from '@/store/points';
-import { storeToRefs } from 'pinia';
-import { STORAGE_KEY_USER_AVATAR } from '@/const/const';
-import { getStorageItem, removeStorageItem, setStorageItem } from '@/utils/util';
+<style scoped>
+.header {
+  background: var(--bg);
+  border-bottom: 2px solid var(--line);
+  padding-top: env(safe-area-inset-top);
+}
 
-const storeStatistics = statisticsStore();
-const storeVocabulary = vocabularyStore();
-const storePoints = pointsStore();
-const { 
-  totalStudyDays, 
-  currentStreak, 
-  hasStudiedToday,
-  studyDays,
-  getStudyDaysThisWeek,
-  getAverageStudyDaysPerWeek
-} = storeToRefs(storeStatistics);
-const { 
-  countStudiedWords: studiedWordsCount, 
-  countFavoritesWords: favoritesCount 
-} = storeToRefs(storeVocabulary);
-const {
-  totalPoints,
-  todayRepeatCount,
-  getPointsThisWeek,
-  getPointsThisMonth
-} = storeToRefs(storePoints);
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
 
-// Avatar state
-const avatarImage = ref<string | null>(null);
-const isActionSheetOpen = ref(false);
+.icon-btn svg { width: 26px; height: 26px; }
+.icon-btn:hover { background: var(--surface-2); }
 
-onMounted(() => {
-  storeStatistics.loadStatistics();
-  storeVocabulary.setStudiedWords();
-  storeVocabulary.setFavoritesWord();
-  storePoints.loadPoints();
-  loadAvatar();
-});
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 8px 0 4px;
+}
 
-// Avatar functions
-const loadAvatar = () => {
-  const savedAvatar = getStorageItem(STORAGE_KEY_USER_AVATAR);
-  if (savedAvatar) {
-    avatarImage.value = savedAvatar;
-  }
-};
+.avatar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 108px;
+  flex-shrink: 0;
+  padding: 0;
+  border: 4px solid var(--surface);
+  border-radius: 50%;
+  background: var(--violet-soft);
+  box-shadow: 0 0 0 3px var(--violet);
+  overflow: visible;
+  cursor: pointer;
+}
 
-const saveAvatar = (imageData: string) => {
-  setStorageItem(STORAGE_KEY_USER_AVATAR, imageData);
-  avatarImage.value = imageData;
-};
+.avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
-const selectImageFromGallery = async () => {
-  try {
-    const image = await Camera.getPhoto({
-      quality: 90,
-      allowEditing: true,
-      resultType: CameraResultType.DataUrl,
-      source: CameraSource.Photos
-    });
-    
-    if (image.dataUrl) {
-      saveAvatar(image.dataUrl);
-    }
-  } catch (error) {
-    console.error('Error selecting image:', error);
-  }
-};
+.avatar__edit {
+  position: absolute;
+  right: -4px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--surface);
+  border-radius: 50%;
+  background: var(--violet);
+  color: #fff;
+}
 
-const takePhoto = async () => {
-  try {
-    const image = await Camera.getPhoto({
-      quality: 90,
-      allowEditing: true,
-      resultType: CameraResultType.DataUrl,
-      source: CameraSource.Camera
-    });
-    
-    if (image.dataUrl) {
-      saveAvatar(image.dataUrl);
-    }
-  } catch (error) {
-    console.error('Error taking photo:', error);
-  }
-};
+.avatar__edit svg { width: 20px; height: 20px; }
 
-const openAvatarOptions = () => {
-  isActionSheetOpen.value = true;
-};
-
-const closeActionSheet = () => {
-  isActionSheetOpen.value = false;
-};
-
-const removeAvatar = () => {
-  removeStorageItem(STORAGE_KEY_USER_AVATAR);
-  avatarImage.value = null;
-};
-
-const bestStreak = computed(() => {
-  let maxStreak = 0;
-  let currentStreak = 0;
-  
-  const sortedDays = [...studyDays.value].sort((a, b) => 
-    new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
-  
-  for (const day of sortedDays) {
-    if (day.completed) {
-      currentStreak++;
-      maxStreak = Math.max(maxStreak, currentStreak);
-    } else {
-      currentStreak = 0;
-    }
-  }
-  
-  return maxStreak;
-});
-
-const bestStreakPercentage = computed(() => {
-  return Math.min((bestStreak.value / 30) * 100, 100);
-});
-
-const recentStudyDays = computed(() => {
-  return [...studyDays.value]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 7);
-});
-
-const achievements = computed(() => [
-  // Начальные достижения
-  {
-    id: 1,
-    title: 'Первые шаги',
-    description: 'Изучите первый день',
-    icon: rocketOutline,
-    unlocked: totalStudyDays.value >= 1
-  },
-  {
-    id: 2,
-    title: 'Начало пути',
-    description: 'Изучите 3 дня',
-    icon: schoolOutline,
-    unlocked: totalStudyDays.value >= 3
-  },
-  {
-    id: 3,
-    title: 'Первая неделя',
-    description: 'Изучите 7 дней',
-    icon: calendarOutline,
-    unlocked: totalStudyDays.value >= 7
-  },
-  
-  // Серии обучения
-  {
-    id: 4,
-    title: 'Неделя подряд',
-    description: 'Изучайте 7 дней подряд',
-    icon: trophyOutline,
-    unlocked: bestStreak.value >= 7
-  },
-  {
-    id: 5,
-    title: 'Две недели',
-    description: 'Изучайте 14 дней подряд',
-    icon: shieldOutline,
-    unlocked: bestStreak.value >= 14
-  },
-  {
-    id: 6,
-    title: 'Месяц обучения',
-    description: 'Изучайте 30 дней подряд',
-    icon: medalOutline,
-    unlocked: bestStreak.value >= 30
-  },
-  {
-    id: 7,
-    title: 'Легенда',
-    description: 'Изучайте 100 дней подряд',
-    icon: diamondOutline,
-    unlocked: bestStreak.value >= 100
-  },
-  
-  // Словарный запас
-  {
-    id: 8,
-    title: 'Первые слова',
-    description: 'Изучите 10 слов',
-    icon: bookOutline,
-    unlocked: studiedWordsCount.value >= 10
-  },
-  {
-    id: 9,
-    title: 'Словарный запас',
-    description: 'Изучите 50 слов',
-    icon: libraryOutline,
-    unlocked: studiedWordsCount.value >= 50
-  },
-  {
-    id: 10,
-    title: 'Словарный мастер',
-    description: 'Изучите 100 слов',
-    icon: languageOutline,
-    unlocked: studiedWordsCount.value >= 100
-  },
-  {
-    id: 11,
-    title: 'Лингвист',
-    description: 'Изучите 250 слов',
-    icon: globeOutline,
-    unlocked: studiedWordsCount.value >= 250
-  },
-  {
-    id: 12,
-    title: 'Полиглот',
-    description: 'Изучите 500 слов',
-    icon: peopleOutline,
-    unlocked: studiedWordsCount.value >= 500
-  },
-  {
-    id: 13,
-    title: 'Мастер слов',
-    description: 'Изучите 1000 слов',
-    icon: starOutline,
-    unlocked: studiedWordsCount.value >= 1000
-  },
-  
-  // Избранные слова
-  {
-    id: 14,
-    title: 'Первые избранные',
-    description: 'Добавьте 5 слов в избранное',
-    icon: heartOutline,
-    unlocked: favoritesCount.value >= 5
-  },
-  {
-    id: 15,
-    title: 'Коллекционер',
-    description: 'Добавьте 25 слов в избранное',
-    icon: heartOutline,
-    unlocked: favoritesCount.value >= 25
-  },
-  {
-    id: 16,
-    title: 'Любитель слов',
-    description: 'Добавьте 50 слов в избранное',
-    icon: heartOutline,
-    unlocked: favoritesCount.value >= 50
-  },
-  
-  // Баллы
-  {
-    id: 17,
-    title: 'Первые баллы',
-    description: 'Заработайте 100 баллов',
-    icon: starOutline,
-    unlocked: totalPoints.value >= 100
-  },
-  {
-    id: 18,
-    title: 'Сборщик баллов',
-    description: 'Заработайте 500 баллов',
-    icon: diamondOutline,
-    unlocked: totalPoints.value >= 500
-  },
-  {
-    id: 19,
-    title: 'Балльный мастер',
-    description: 'Заработайте 1000 баллов',
-    icon: trophyOutline,
-    unlocked: totalPoints.value >= 1000
-  },
-  {
-    id: 20,
-    title: 'Балльный чемпион',
-    description: 'Заработайте 2500 баллов',
-    icon: medalOutline,
-    unlocked: totalPoints.value >= 2500
-  },
-  {
-    id: 21,
-    title: 'Балльная легенда',
-    description: 'Заработайте 5000 баллов',
-    icon: diamondOutline,
-    unlocked: totalPoints.value >= 5000
-  },
-  
-  // Активность
-  {
-    id: 22,
-    title: 'Активный ученик',
-    description: 'Изучите 15 дней',
-    icon: pulseOutline,
-    unlocked: totalStudyDays.value >= 15
-  },
-  {
-    id: 23,
-    title: 'Постоянный ученик',
-    description: 'Изучите 30 дней',
-    icon: speedometerOutline,
-    unlocked: totalStudyDays.value >= 30
-  },
-  {
-    id: 24,
-    title: 'Преданный ученик',
-    description: 'Изучите 60 дней',
-    icon: flashOutline,
-    unlocked: totalStudyDays.value >= 60
-  },
-  {
-    id: 25,
-    title: 'Мастер обучения',
-    description: 'Изучите 100 дней',
-    icon: trophyOutline,
-    unlocked: totalStudyDays.value >= 100
-  },
-  {
-    id: 26,
-    title: 'Гранд-мастер',
-    description: 'Изучите 200 дней',
-    icon: diamondOutline,
-    unlocked: totalStudyDays.value >= 200
-  },
-  
-  // Еженедельные достижения
-  {
-    id: 27,
-    title: 'Недельный герой',
-    description: 'Изучайте 5 дней на этой неделе',
-    icon: calendarOutline,
-    unlocked: getStudyDaysThisWeek.value >= 5
-  },
-  {
-    id: 28,
-    title: 'Идеальная неделя',
-    description: 'Изучайте 7 дней на этой неделе',
-    icon: checkmarkOutline,
-    unlocked: getStudyDaysThisWeek.value >= 7
-  },
-  
-  // Повторения
-  {
-    id: 29,
-    title: 'Повторение - мать учения',
-    description: 'Сделайте 10 повторений за день',
-    icon: refreshOutline,
-    unlocked: todayRepeatCount.value >= 10
-  },
-  {
-    id: 30,
-    title: 'Мастер повторений',
-    description: 'Сделайте 25 повторений за день',
-    icon: refreshOutline,
-    unlocked: todayRepeatCount.value >= 25
-  },
-  {
-    id: 31,
-    title: 'Король повторений',
-    description: 'Сделайте 50 повторений за день',
-    icon: refreshOutline,
-    unlocked: todayRepeatCount.value >= 50
-  },
-  
-  // Специальные достижения
-  {
-    id: 32,
-    title: 'Ранняя пташка',
-    description: 'Изучайте утром 5 дней подряд',
-    icon: timeOutline,
-    unlocked: false // Можно добавить логику для утренних занятий
-  },
-  {
-    id: 33,
-    title: 'Ночная сова',
-    description: 'Изучайте вечером 5 дней подряд',
-    icon: timeOutline,
-    unlocked: false // Можно добавить логику для вечерних занятий
-  },
-  {
-    id: 34,
-    title: 'Выходной воин',
-    description: 'Изучайте в выходные 4 дня подряд',
-    icon: calendarOutline,
-    unlocked: false // Можно добавить логику для выходных дней
-  }
-]);
-
-const unlockedAchievementsCount = computed(() => {
-  return achievements.value.filter(achievement => achievement.unlocked).length;
-});
-
-const totalAchievementsCount = computed(() => {
-  return achievements.value.length;
-});
-
-</script>
-
-<style scoped lang="scss">
-/* Отступы между секциями задаёт gap контейнера, а не margin-bottom
-   каждой секции: так они не складываются и не схлопываются. */
-.profile-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: var(--app-sp-4) var(--app-sp-4) var(--app-sp-7);
+.hero__text {
   display: flex;
   flex-direction: column;
-  gap: var(--app-sp-4);
+  gap: 2px;
+  min-width: 0;
 }
+
+.name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 1.6rem;
+  font-weight: 900;
+  text-align: left;
+  cursor: pointer;
+}
+
+.name svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--text-subtle);
+}
+
+.name-edit .field {
+  font-size: 1.2rem;
+}
+
+.level {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-weight: 800;
+}
+
+.level span {
+  padding: 1px 8px;
+  border-radius: 8px;
+  background: var(--violet);
+  color: #fff;
+  font-size: 0.8rem;
+}
+
+.section-title {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+}
+
+.stat__value {
+  font-size: 1.3rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.stat__label {
+  color: var(--text-subtle);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.achievements {
+  padding: 4px 16px 10px;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  color: var(--text);
+}
+
+.link__title {
+  display: block;
+  font-weight: 900;
+}
+
+.link__text {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.link__chev {
+  width: 22px;
+  height: 22px;
+  color: var(--text-subtle);
+}
+
+.sheet-title {
+  margin-bottom: 14px;
+  font-size: 1.3rem;
+}
+
+.sheet-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.danger { --btn-fg: var(--red-ink); }
 </style>

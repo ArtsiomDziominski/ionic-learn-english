@@ -1,105 +1,95 @@
-import {defineStore} from 'pinia';
-import {computed, Ref, ref, UnwrapRef} from "vue";
-import {STORAGE_KEY_SPEECH, STORAGE_KEY_THEME, ThemeType} from "@/const/const";
-import {applyStatusBarTheme} from "@/utils/statusBar";
-import {getStorageItem, getStorageJSON, setStorageItem, setStorageJSON, speak} from "@/utils/util";
+import { defineStore } from 'pinia';
+import { computed, ref, watch } from 'vue';
+import { applyStatusBarTheme } from '@/utils/statusBar';
+import { getStorageItem, getStorageJSON, setStorageJSON } from '@/utils/util';
 
-export const settingsStore = defineStore('settingsStore', () => {
-    /** Что выбрал пользователь: светлая, тёмная или «как в системе». */
-    const themeMode: Ref<UnwrapRef<ThemeType>> = ref(ThemeType.System);
-    /** Какая тема применена фактически (System уже разрешён в конкретную). */
-    const isDarkMode = ref(true);
-    const voiceSpeech: Ref<UnwrapRef<SpeechSynthesisVoice | null>> = ref(null);
+export type ThemeMode = 'system' | 'light' | 'dark';
 
-    /* Ссылку на MediaQueryList нужно удерживать: если создавать его
-       на лету, объект может быть собран сборщиком мусора вместе с
-       подпиской, и приложение перестанет реагировать на смену
-       системной темы. */
-    const darkMediaQuery: MediaQueryList | null = window.matchMedia
-        ? window.matchMedia('(prefers-color-scheme: dark)')
-        : null;
+export interface AppSettings {
+  theme: ThemeMode;
+  sound: boolean;
+  haptics: boolean;
+  /** Жизни как в Duolingo; можно отключить и учиться без ограничений. */
+  hearts: boolean;
+  /** Задания на слух. */
+  listening: boolean;
+  voiceURI: string | null;
+  speechRate: number;
+}
 
-    const resolveIsDark = (mode: ThemeType): boolean => {
-        if (mode === ThemeType.Light) return false;
-        if (mode === ThemeType.Dark) return true;
-        return darkMediaQuery?.matches ?? true;
-    };
+const STORAGE_KEY = 'slovaday.settings.v1';
 
-    const applyTheme = (): void => {
-        isDarkMode.value = resolveIsDark(themeMode.value);
-        document.documentElement.classList.toggle('ion-palette-dark', isDarkMode.value);
-        document.documentElement.classList.toggle('ion-palette-light', !isDarkMode.value);
-        /* Статус-бар — часть экрана приложения: если его не
-           перекрасить, на светлой теме остаются белые значки
-           на белом фоне. */
-        applyStatusBarTheme(isDarkMode.value);
-    };
+const defaults = (): AppSettings => ({
+  theme: 'system',
+  sound: true,
+  haptics: true,
+  hearts: true,
+  listening: true,
+  voiceURI: null,
+  speechRate: 0.9,
+});
 
-    const setThemeMode = (mode: ThemeType): void => {
-        themeMode.value = mode;
-        setStorageItem(STORAGE_KEY_THEME, mode);
-        applyTheme();
-    };
+/** Настройки прежней версии лежали в ключах 'theme' и 'speech'. */
+function readLegacy(): Partial<AppSettings> {
+  const out: Partial<AppSettings> = {};
+  const theme = getStorageItem('theme');
+  if (theme === 'light' || theme === 'dark' || theme === 'system') out.theme = theme;
+  const speech = getStorageJSON<{ voiceURI?: unknown } | null>('speech', null);
+  if (speech && typeof speech.voiceURI === 'string') out.voiceURI = speech.voiceURI;
+  return out;
+}
 
-    /** Оставлено для обратной совместимости: переключает свет/тьму явно. */
-    const toggleMode = (): void => {
-        setThemeMode(isDarkMode.value ? ThemeType.Light : ThemeType.Dark);
-    };
+function load(): AppSettings {
+  const stored = getStorageJSON<Partial<AppSettings> | null>(STORAGE_KEY, null);
+  const raw = stored ?? readLegacy();
+  const base = defaults();
+  return {
+    theme: raw.theme === 'light' || raw.theme === 'dark' ? raw.theme : 'system',
+    sound: typeof raw.sound === 'boolean' ? raw.sound : base.sound,
+    haptics: typeof raw.haptics === 'boolean' ? raw.haptics : base.haptics,
+    hearts: typeof raw.hearts === 'boolean' ? raw.hearts : base.hearts,
+    listening: typeof raw.listening === 'boolean' ? raw.listening : base.listening,
+    voiceURI: typeof raw.voiceURI === 'string' ? raw.voiceURI : null,
+    speechRate: typeof raw.speechRate === 'number' && raw.speechRate >= 0.5 && raw.speechRate <= 1.5 ? raw.speechRate : base.speechRate,
+  };
+}
 
-    const setMode = (theme: ThemeType): void => {
-        setThemeMode(theme);
-    };
+export const useSettingsStore = defineStore('settings', () => {
+  const settings = ref<AppSettings>(load());
 
-    const initSettings = (): void => {
-        if (window.speechSynthesis) {
-            window.speechSynthesis.speak(new SpeechSynthesisUtterance(''));
-        }
+  /* Ссылку на MediaQueryList нужно удерживать: созданный на лету
+     объект может собрать сборщик мусора вместе с подпиской, и смена
+     системной темы перестанет отслеживаться. */
+  const darkQuery: MediaQueryList | null = typeof window !== 'undefined' && window.matchMedia
+    ? window.matchMedia('(prefers-color-scheme: dark)')
+    : null;
+  const systemDark = ref(darkQuery?.matches ?? false);
+  darkQuery?.addEventListener('change', (e) => {
+    systemDark.value = e.matches;
+  });
 
-        const stored = getStorageItem(STORAGE_KEY_THEME);
+  const isDark = computed(() => settings.value.theme === 'dark' || (settings.value.theme === 'system' && systemDark.value));
 
-        /* Раньше здесь хранилось только 'light' | 'dark' — оба значения
-           остаются валидными, поэтому выбор существующих пользователей
-           сохраняется. Всё остальное трактуем как «как в системе». */
-        const isKnownMode = Object.values(ThemeType).includes(stored as ThemeType);
-        themeMode.value = isKnownMode ? (stored as ThemeType) : ThemeType.System;
-        applyTheme();
+  const applyTheme = (): void => {
+    const root = document.documentElement;
+    root.classList.toggle('ion-palette-dark', isDark.value);
+    root.classList.toggle('ion-palette-light', !isDark.value);
+    root.dataset.theme = isDark.value ? 'dark' : 'light';
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', isDark.value ? '#131022' : '#FFFFFF');
+    applyStatusBarTheme(isDark.value);
+  };
 
-        /* В режиме «как в системе» реагируем на смену темы устройства
-           на лету, без перезапуска приложения. */
-        darkMediaQuery?.addEventListener('change', () => {
-            if (themeMode.value === ThemeType.System) applyTheme();
-        });
+  watch(isDark, applyTheme);
+  watch(settings, (value) => setStorageJSON(STORAGE_KEY, value), { deep: true });
 
-        setVoiceSpeech(getStorageJSON<SpeechSynthesisVoice | null>(STORAGE_KEY_SPEECH, null));
-    };
+  const init = (): void => {
+    applyTheme();
+    setStorageJSON(STORAGE_KEY, settings.value);
+  };
 
-    const setVoiceSpeech = (speech: SpeechSynthesisVoice | null): void => {
-        if (speech) voiceSpeech.value = {
-            voiceURI: speech.voiceURI,
-            name: speech.name,
-            lang: speech.lang,
-            localService: speech.localService,
-            default: speech.default
-        };
-        setStorageJSON(STORAGE_KEY_SPEECH, voiceSpeech.value);
-    }
+  const update = <K extends keyof AppSettings>(key: K, value: AppSettings[K]): void => {
+    settings.value = { ...settings.value, [key]: value };
+  };
 
-    const speakText = (text: string): void => {
-        speak(text, voiceSpeech.value);
-    }
-
-    const isSystemMode = computed((): boolean => themeMode.value === ThemeType.System);
-
-    return {
-        themeMode,
-        isDarkMode,
-        isSystemMode,
-        voiceSpeech,
-        initSettings,
-        toggleMode,
-        setMode,
-        setThemeMode,
-        setVoiceSpeech,
-        speakText
-    };
+  return { settings, isDark, init, update };
 });

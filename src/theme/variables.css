@@ -1,240 +1,144 @@
 /* ============================================================
-   Слова.Day — дизайн-система
+   Слова.Day — дизайн-токены
    ------------------------------------------------------------
-   :root                — тёмная тема (приложение стартует в ней)
-   .ion-palette-light   — светлая тема, переопределяет только токены
+   Игровая палитра (фиолетовый бренд, зелёный «верно», красный
+   «ошибка», золото, огонь серии) одинакова в обеих темах —
+   это цвета смыслов. Меняются только поверхности и текст.
 
-   Правило: компоненты стилизуются ТОЛЬКО через семантические
-   токены (--app-*). Ни один цвет не задаётся литералом в компоненте,
-   иначе он сломается в одной из тем.
+   Компоненты берут цвета только из токенов. Ionic получает
+   их через мост внизу файла.
    ============================================================ */
 
 :root {
-    /* ——— Бренд ————————————————————————————————————— */
-    --ion-color-primary: #6366f1;
-    --ion-color-primary-rgb: 99, 102, 241;
+    --font: 'Nunito Variable', 'Nunito', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+    /* ——— Игровые цвета ——————————————————————————————— */
+    --violet: #7C5CFF;
+    --violet-shade: #5B3BE0;
+    --green: #58CC02;
+    --green-shade: #46A302;
+    --red: #FF4B4B;
+    --red-shade: #E02E2E;
+    --blue: #1CB0F6;
+    --blue-shade: #1590CC;
+    --gold: #FFC800;
+    --gold-shade: #E5A800;
+    --orange: #FF9600;
+    --orange-shade: #E07F00;
+    --pink: #FF6FB5;
+    --teal: #00C2A8;
+
+    /* ——— Поверхности (светлая тема) ——————————————————— */
+    --bg: #FFFFFF;
+    --surface: #FFFFFF;
+    --surface-2: #F6F5FB;
+    --surface-3: #ECEAF5;
+    --line: #E6E4F0;
+    --line-strong: #D3D0E3;
+
+    --text: #2E2A44;
+    --text-muted: #6B6585;
+    --text-subtle: #8F8AA8;
+    --on-color: #FFFFFF;
+
+    --violet-soft: #EFEBFF;
+    --violet-ink: #5B3BE0;
+    --green-soft: #DDFFC4;
+    --green-ink: #3A8500;
+    --red-soft: #FFE3E3;
+    --red-ink: #CC1F1F;
+    --blue-soft: #DDF4FF;
+    --blue-ink: #0F7DB3;
+    --gold-soft: #FFF6CF;
+    --gold-ink: #9A6B00;
+    --orange-soft: #FFF0DB;
+    --orange-ink: #B85C00;
+
+    --overlay: rgba(23, 18, 48, 0.55);
+    --elev: 0 12px 32px -12px rgba(40, 24, 110, 0.28);
+
+    /* ——— Форма и движение ————————————————————————————— */
+    --r-sm: 10px;
+    --r-md: 14px;
+    --r-lg: 18px;
+    --r-xl: 24px;
+    --r-pill: 999px;
+    --tap: 44px;
+    --page-max: 600px;
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+    /* ——— Мост в Ionic ————————————————————————————————— */
+    --ion-font-family: var(--font);
+    --ion-background-color: var(--bg);
+    --ion-background-color-rgb: 255, 255, 255;
+    --ion-text-color: var(--text);
+    --ion-text-color-rgb: 46, 42, 68;
+    --ion-toolbar-background: var(--bg);
+    --ion-item-background: var(--surface);
+    --ion-card-background: var(--surface);
+    --ion-color-primary: #7C5CFF;
+    --ion-color-primary-rgb: 124, 92, 255;
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 255, 255, 255;
-    --ion-color-primary-shade: #5457d4;
-    --ion-color-primary-tint: #7c7ef3;
+    --ion-color-primary-shade: #5B3BE0;
+    --ion-color-primary-tint: #8A6CFF;
+    --ion-color-success: #58CC02;
+    --ion-color-danger: #FF4B4B;
+    --ion-color-warning: #FF9600;
 
-    --ion-color-secondary: #8b5cf6;
-    --ion-color-secondary-rgb: 139, 92, 246;
-    --ion-color-secondary-contrast: #ffffff;
-    --ion-color-secondary-contrast-rgb: 255, 255, 255;
-    --ion-color-secondary-shade: #7a51d8;
-    --ion-color-secondary-tint: #9c74f7;
-
-    --ion-color-tertiary: #06b6d4;
-    --ion-color-tertiary-rgb: 6, 182, 212;
-    --ion-color-tertiary-contrast: #ffffff;
-    --ion-color-tertiary-contrast-rgb: 255, 255, 255;
-    --ion-color-tertiary-shade: #059bb5;
-    --ion-color-tertiary-tint: #22c1db;
-
-    /* ——— Семантика состояний ——————————————————————— */
-    --ion-color-success: #10b981;
-    --ion-color-success-rgb: 16, 185, 129;
-    --ion-color-success-contrast: #ffffff;
-    --ion-color-success-contrast-rgb: 255, 255, 255;
-    --ion-color-success-shade: #0e9e6e;
-    --ion-color-success-tint: #2bc593;
-
-    --ion-color-warning: #f59e0b;
-    --ion-color-warning-rgb: 245, 158, 11;
-    --ion-color-warning-contrast: #1a1205;
-    --ion-color-warning-contrast-rgb: 26, 18, 5;
-    --ion-color-warning-shade: #d88b0a;
-    --ion-color-warning-tint: #f7ac2b;
-
-    --ion-color-danger: #ef4444;
-    --ion-color-danger-rgb: 239, 68, 68;
-    --ion-color-danger-contrast: #ffffff;
-    --ion-color-danger-contrast-rgb: 255, 255, 255;
-    --ion-color-danger-shade: #d23b3b;
-    --ion-color-danger-tint: #f15757;
-
-    /* ——— Поверхности: тёмная тема ——————————————————
-       Нейтрали слегка смещены в индиго, чтобы не читались
-       как «грязный серый» рядом с брендовым цветом. */
-    --app-bg: #0b0b13;
-    --app-surface: #14141f;
-    --app-surface-2: #1c1c2a;
-    --app-surface-3: #242434;
-    --app-border: rgba(255, 255, 255, 0.08);
-    --app-border-strong: rgba(255, 255, 255, 0.14);
-
-    /* ——— Текст ————————————————————————————————————
-       Три уровня. Ниже --app-text-subtle не опускаться:
-       контраст уйдёт под 4.5:1. */
-    --app-text: #f2f1f7;
-    --app-text-muted: #a3a1b8;
-    --app-text-subtle: #9694ab; /* ≈6:1 на --app-surface, проходит AA */
-    --app-text-on-accent: #ffffff;
-
-    /* ——— Подложки акцентов (для «мягких» плашек) ————— */
-    --app-tint-primary: rgba(99, 102, 241, 0.16);
-    --app-tint-success: rgba(16, 185, 129, 0.16);
-    --app-tint-warning: rgba(245, 158, 11, 0.16);
-    --app-tint-danger: rgba(239, 68, 68, 0.16);
-
-    /* Читаемые версии акцентов поверх тёмного фона */
-    --app-accent-ink: #a5a7fb;
-    --app-success-ink: #4ade9f;
-    --app-warning-ink: #fbbf4d;
-    --app-danger-ink: #f87b7b;
-
-    /* ——— Высоты (elevation) ————————————————————————
-       В тёмной теме тень почти не видна, поэтому глубину
-       несёт --app-surface-2, а тень лишь отделяет от фона. */
-    --app-e1: 0 1px 2px rgba(0, 0, 0, 0.28);
-    --app-e2: 0 2px 6px -1px rgba(0, 0, 0, 0.36), 0 1px 2px rgba(0, 0, 0, 0.24);
-    --app-e3: 0 8px 24px -8px rgba(0, 0, 0, 0.52), 0 2px 6px -2px rgba(0, 0, 0, 0.32);
-    --app-e-accent: 0 6px 18px -8px rgba(99, 102, 241, 0.7);
-
-    /* ——— Радиусы ——————————————————————————————————— */
-    --app-r-xs: 8px;
-    --app-r-sm: 12px;
-    --app-r-md: 16px;
-    --app-r-lg: 20px;
-    --app-r-xl: 28px;
-    --app-r-pill: 999px;
-
-    /* ——— Отступы ——————————————————————————————————— */
-    --app-sp-1: 4px;
-    --app-sp-2: 8px;
-    --app-sp-3: 12px;
-    --app-sp-4: 16px;
-    --app-sp-5: 20px;
-    --app-sp-6: 24px;
-    --app-sp-7: 32px;
-    --app-sp-8: 40px;
-
-    /* ——— Типографика ——————————————————————————————— */
-    --app-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI Variable',
-                'Segoe UI', Roboto, 'Helvetica Neue', system-ui, sans-serif;
-    --app-fs-display: 1.75rem;   /* 28px */
-    --app-fs-h1: 1.375rem;       /* 22px */
-    --app-fs-h2: 1.125rem;       /* 18px */
-    --app-fs-body: 0.9375rem;    /* 15px */
-    --app-fs-sm: 0.8125rem;      /* 13px */
-    --app-fs-caption: 0.6875rem; /* 11px */
-
-    /* ——— Движение ——————————————————————————————————
-       Никаких transition: all — только конкретные свойства. */
-    --app-dur-fast: 140ms;
-    --app-dur-base: 220ms;
-    --app-dur-slow: 320ms;
-    --app-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-    --app-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-
-    /* ——— Минимальная зона нажатия (WCAG 2.5.8) ————— */
-    --app-tap: 44px;
-
-    /* ——— Ionic-мостик ——————————————————————————————
-       Ionic ждёт эти имена; отдаём им наши поверхности. */
-    --ion-background-color: var(--app-bg);
-    --ion-background-color-rgb: 11, 11, 19;
-    --ion-text-color: var(--app-text);
-    --ion-text-color-rgb: 242, 241, 247;
-    --ion-toolbar-background: var(--app-bg);
-    --ion-item-background: var(--app-surface);
-    --ion-card-background: var(--app-surface);
-
-    --ion-color-light: #1c1c2a;
-    --ion-color-light-rgb: 28, 28, 42;
-    --ion-color-light-contrast: #f2f1f7;
-    --ion-color-light-contrast-rgb: 242, 241, 247;
-    --ion-color-light-shade: #191926;
-    --ion-color-light-tint: #333344;
-
-    --ion-color-medium: #78768f;
-    --ion-color-medium-rgb: 120, 118, 143;
-    --ion-color-medium-contrast: #ffffff;
-    --ion-color-medium-contrast-rgb: 255, 255, 255;
-    --ion-color-medium-shade: #6a687e;
-    --ion-color-medium-tint: #86849a;
-
-    --ion-color-dark: #f2f1f7;
-    --ion-color-dark-rgb: 242, 241, 247;
-    --ion-color-dark-contrast: #0b0b13;
-    --ion-color-dark-contrast-rgb: 11, 11, 19;
-    --ion-color-dark-shade: #d5d4d9;
-    --ion-color-dark-tint: #f3f2f8;
+    /* ——— Совместимость со статьями и старыми экранами ——— */
+    --app-bg: var(--bg);
+    --app-surface: var(--surface);
+    --app-surface-2: var(--surface-2);
+    --app-surface-3: var(--surface-3);
+    --app-border: var(--line);
+    --app-border-strong: var(--line-strong);
+    --app-text: var(--text);
+    --app-text-muted: var(--text-muted);
+    --app-text-subtle: var(--text-subtle);
+    --app-tint-primary: var(--violet-soft);
+    --app-accent-ink: var(--violet-ink);
+    --app-r-md: var(--r-md);
+    --app-r-lg: var(--r-lg);
+    --app-font: var(--font);
 }
 
-/* Тёмная палитра Ionic объявлена как :root.ion-palette-dark и по
-   специфичности бьёт наш :root, подменяя фон на свой #121212.
-   Повторяем мост с той же специфичностью, чтобы выиграть. */
+/* Тёмная тема. Палитра Ionic объявлена как :root.ion-palette-dark
+   и перебила бы наш :root — повторяем ту же специфичность. */
 :root.ion-palette-dark {
-    --ion-background-color: var(--app-bg);
-    --ion-background-color-rgb: 11, 11, 19;
-    --ion-text-color: var(--app-text);
-    --ion-text-color-rgb: 242, 241, 247;
-    --ion-toolbar-background: var(--app-bg);
-    --ion-item-background: var(--app-surface);
-    --ion-card-background: var(--app-surface);
-}
+    --bg: #131022;
+    --surface: #1B172E;
+    --surface-2: #231E3A;
+    --surface-3: #2D2749;
+    --line: #322B52;
+    --line-strong: #453D6E;
 
-/* ============================================================
-   Светлая тема
-   ============================================================ */
-:root.ion-palette-light,
-.ion-palette-light {
-    --app-bg: #f6f7fb;
-    --app-surface: #ffffff;
-    --app-surface-2: #f0f1f7;
-    --app-surface-3: #e7e8f1;
-    --app-border: rgba(17, 17, 34, 0.09);
-    --app-border-strong: rgba(17, 17, 34, 0.16);
+    --text: #F2EFFF;
+    --text-muted: #B1AACF;
+    --text-subtle: #8780A8;
 
-    --app-text: #16162a;
-    --app-text-muted: #5a5872;
-    --app-text-subtle: #7d7b93;
-    --app-text-on-accent: #ffffff;
+    --violet-soft: rgba(124, 92, 255, 0.18);
+    --violet-ink: #B9A8FF;
+    --green-soft: rgba(88, 204, 2, 0.16);
+    --green-ink: #86E83A;
+    --red-soft: rgba(255, 75, 75, 0.16);
+    --red-ink: #FF8A8A;
+    --blue-soft: rgba(28, 176, 246, 0.16);
+    --blue-ink: #6FD0FF;
+    --gold-soft: rgba(255, 200, 0, 0.14);
+    --gold-ink: #FFD54D;
+    --orange-soft: rgba(255, 150, 0, 0.16);
+    --orange-ink: #FFB34D;
 
-    --app-tint-primary: rgba(99, 102, 241, 0.10);
-    --app-tint-success: rgba(16, 185, 129, 0.12);
-    --app-tint-warning: rgba(245, 158, 11, 0.14);
-    --app-tint-danger: rgba(239, 68, 68, 0.10);
+    --overlay: rgba(6, 4, 18, 0.72);
+    --elev: 0 16px 40px -14px rgba(0, 0, 0, 0.7);
 
-    /* Акценты затемнены: исходные оттенки не дают 4.5:1 на белом */
-    --app-accent-ink: #4f46e5;
-    --app-success-ink: #047857;
-    --app-warning-ink: #b45309;
-    --app-danger-ink: #dc2626;
-
-    --app-e1: 0 1px 2px rgba(20, 20, 43, 0.06);
-    --app-e2: 0 2px 6px -1px rgba(20, 20, 43, 0.08), 0 1px 2px rgba(20, 20, 43, 0.05);
-    --app-e3: 0 10px 28px -10px rgba(20, 20, 43, 0.16), 0 2px 6px -2px rgba(20, 20, 43, 0.08);
-    --app-e-accent: 0 8px 20px -10px rgba(99, 102, 241, 0.6);
-
-    --ion-background-color: var(--app-bg);
-    --ion-background-color-rgb: 246, 247, 251;
-    --ion-text-color: var(--app-text);
-    --ion-text-color-rgb: 22, 22, 42;
-    --ion-toolbar-background: var(--app-bg);
-    --ion-item-background: var(--app-surface);
-    --ion-card-background: var(--app-surface);
-
-    --ion-color-light: #f0f1f7;
-    --ion-color-light-rgb: 240, 241, 247;
-    --ion-color-light-contrast: #16162a;
-    --ion-color-light-contrast-rgb: 22, 22, 42;
-    --ion-color-light-shade: #d3d4d9;
-    --ion-color-light-tint: #f2f3f8;
-
-    --ion-color-medium: #7d7b93;
-    --ion-color-medium-rgb: 125, 123, 147;
-    --ion-color-medium-contrast: #ffffff;
-    --ion-color-medium-contrast-rgb: 255, 255, 255;
-    --ion-color-medium-shade: #6e6c81;
-    --ion-color-medium-tint: #8a889e;
-
-    --ion-color-dark: #16162a;
-    --ion-color-dark-rgb: 22, 22, 42;
-    --ion-color-dark-contrast: #ffffff;
-    --ion-color-dark-contrast-rgb: 255, 255, 255;
-    --ion-color-dark-shade: #131325;
-    --ion-color-dark-tint: #2d2d3f;
+    --ion-background-color: var(--bg);
+    --ion-background-color-rgb: 19, 16, 34;
+    --ion-text-color: var(--text);
+    --ion-text-color-rgb: 242, 239, 255;
+    --ion-toolbar-background: var(--bg);
+    --ion-item-background: var(--surface);
+    --ion-card-background: var(--surface);
 }

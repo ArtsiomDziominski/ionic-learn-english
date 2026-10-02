@@ -2,95 +2,55 @@
 import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
 
-const years = new Date().getFullYear();
+const year = new Date().getFullYear();
 
-const openLink = async (url: string) => {
-  // В мобильном приложении открываем в системном браузере
+const openLink = async (url: string): Promise<void> => {
+  // В приложении открываем в системном браузере, в вебе — новой вкладкой
   if (Capacitor.isNativePlatform()) {
-    await Browser.open({
-      url,
-      presentationStyle: 'fullscreen'
-    });
+    await Browser.open({ url: `https://www.learnenglisheasy.ru${url}`, presentationStyle: 'fullscreen' });
   } else {
-    // В веб-версии открываем в новой вкладке
-    window.open(url, '_blank');
+    window.open(url, '_blank', 'noopener');
   }
 };
 </script>
 
 <template>
-  <div class="app-footer">
-    <div class="footer-content">
-      <div class="footer-links">
-        <a href="#" @click.prevent="openLink('/privacy-policy.html')" class="footer-link">
-          Политика конфиденциальности
-        </a>
-        <span class="footer-separator">/</span>
-        <a href="#" @click.prevent="openLink('/terms-of-service.html')" class="footer-link">
-          Условия использования
-        </a>
-      </div>
-      <p class="footer-copyright">© {{ years }} Слова.Day</p>
-    </div>
-  </div>
+  <footer class="footer">
+    <nav class="footer__links" aria-label="Правовая информация">
+      <a href="/privacy-policy.html" @click.prevent="openLink('/privacy-policy.html')">Политика конфиденциальности</a>
+      <span aria-hidden="true">·</span>
+      <a href="/terms-of-service.html" @click.prevent="openLink('/terms-of-service.html')">Условия использования</a>
+    </nav>
+    <p class="footer__copy">© {{ year }} Слова.Day</p>
+  </footer>
 </template>
 
-<style scoped lang="scss">
-.app-footer {
-  padding: 20px;
-  margin-top: 40px;
+<style scoped>
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 24px 0 8px;
+  color: var(--text-subtle);
+  font-size: 0.82rem;
   text-align: center;
 }
 
-.footer-content {
+.footer__links {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: center;
-}
-
-.footer-links {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   flex-wrap: wrap;
   justify-content: center;
+  gap: 6px;
 }
 
-.footer-link {
-  color: var(--app-text-muted);
+.footer__links a {
+  color: var(--text-muted);
+  font-weight: 700;
   text-decoration: none;
-  font-size: 0.9rem;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: var(--app-text);
-  }
 }
 
-.footer-separator {
-  color: var(--app-text-subtle);
-  font-size: 0.9rem;
-}
-
-.footer-copyright {
-  color: var(--app-text-subtle);
-  font-size: 0.85rem;
-  margin: 0;
-}
-
-@media (max-width: 480px) {
-  .app-footer {
-    padding: 16px;
-    margin-top: 32px;
-  }
-
-  .footer-link {
-    font-size: 0.85rem;
-  }
-
-  .footer-copyright {
-    font-size: 0.8rem;
-  }
+.footer__links a:hover {
+  text-decoration: underline;
 }
 </style>

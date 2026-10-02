@@ -1,130 +1,225 @@
 /* ============================================================
    Слова.Day — базовые стили
    ------------------------------------------------------------
-   Здесь НЕТ глобальных перебивок цвета текста и иконок
-   (p/span/div/h1-h6/ion-icon). Раньше они форсировали белый на
-   всём приложении и делали светлую тему невозможной.
-   Цвет наследуется от --ion-text-color; исключения задаются точечно.
+   Шрифт Nunito встроен в сборку (@fontsource) — работает и без
+   сети в мобильном приложении. Кнопки и карточки «объёмные»:
+   нижняя грань — тень цвета на тон темнее, при нажатии элемент
+   проседает на неё. Это главный тактильный приём интерфейса.
    ============================================================ */
 
-/* Шрифт — системный: на iOS это SF Pro, на Android Roboto.
-   Загружать веб-шрифт в Capacitor-приложении нельзя: без сети он
-   не приедет, а старт задержится на сетевом запросе. */
-
-/* Отключаем горизонтальный свайп-назад, чтобы не конфликтовал
-   с навигацией Ionic */
 html, body {
     overscroll-behavior-x: none;
     touch-action: pan-y pinch-zoom;
 }
 
 body {
-    font-family: var(--app-font);
+    font-family: var(--font);
+    font-weight: 600;
+    color: var(--text);
+    background: var(--bg);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
 }
 
-ion-app {
-    background: var(--app-bg);
-    overscroll-behavior-x: none;
-}
-
+ion-app,
 ion-page {
-    background: var(--app-bg);
+    background: var(--bg);
 }
 
 ion-content {
-    --background: var(--app-bg);
+    --background: var(--bg);
     overscroll-behavior-x: contain;
 }
 
-/* ============================================================
-   Типографика
-   ============================================================ */
-
-h1, h2, h3, h4, h5, h6 {
-    color: var(--app-text);
-    font-weight: 700;
-    line-height: 1.25;
-    letter-spacing: -0.02em;
-    text-wrap: balance;
+h1, h2, h3, h4 {
     margin: 0;
+    color: var(--text);
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
 }
-
-h1 { font-size: var(--app-fs-h1); }
-h2 { font-size: var(--app-fs-h2); }
-h3 { font-size: var(--app-fs-body); }
 
 p {
     margin: 0;
-    line-height: 1.6;
+    line-height: 1.5;
 }
 
-/* Утилиты текста */
-.app-text-muted { color: var(--app-text-muted); }
-.app-text-subtle { color: var(--app-text-subtle); }
+button {
+    font: inherit;
+    color: inherit;
+}
 
-.app-caption {
-    font-size: var(--app-fs-caption);
-    font-weight: 600;
+/* ——— Раскладка ——————————————————————————————————————————— */
+
+.page {
+    width: 100%;
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: 16px 16px 32px;
+}
+
+.stack { display: flex; flex-direction: column; gap: 12px; }
+.row { display: flex; align-items: center; gap: 12px; }
+.grow { flex: 1; min-width: 0; }
+
+.eyebrow {
+    font-size: 0.78rem;
+    font-weight: 800;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--app-text-subtle);
+    color: var(--text-subtle);
 }
 
-/* Цифры в колонках не должны «прыгать» */
-.app-nums { font-variant-numeric: tabular-nums; }
+.muted { color: var(--text-muted); }
+.nums { font-variant-numeric: tabular-nums; }
 
-/* ============================================================
-   Поверхности
-   ============================================================ */
-
-.app-card {
-    background: var(--app-surface);
-    border: 1px solid var(--app-border);
-    border-radius: var(--app-r-lg);
-    box-shadow: var(--app-e1);
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
-/* Кликабельная карточка: приподнимается на наведении,
-   проседает на нажатии — тактильная обратная связь */
-.app-card-interactive {
+/* ——— Объёмные кнопки ——————————————————————————————————— */
+
+.btn {
+    --btn-bg: var(--violet);
+    --btn-shade: var(--violet-shade);
+    --btn-fg: var(--on-color);
+    --btn-border: transparent;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 50px;
+    padding: 12px 20px;
+    border: 2px solid var(--btn-border);
+    border-radius: var(--r-lg);
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    box-shadow: 0 4px 0 var(--btn-shade);
+    font-family: var(--font);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     cursor: pointer;
-    transition: transform var(--app-dur-base) var(--app-ease),
-                box-shadow var(--app-dur-base) var(--app-ease),
-                border-color var(--app-dur-base) var(--app-ease);
+    user-select: none;
+    transform: translateY(0);
+    transition: transform 90ms ease, box-shadow 90ms ease, filter 150ms ease, background-color 150ms ease;
 }
 
-.app-card-interactive:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--app-e3);
-    border-color: var(--app-border-strong);
+.btn:hover:not(:disabled) { filter: brightness(1.06); }
+
+.btn:active:not(:disabled) {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 var(--btn-shade);
 }
 
-.app-card-interactive:active {
-    transform: translateY(0) scale(0.985);
-    box-shadow: var(--app-e1);
+.btn:disabled {
+    --btn-bg: var(--surface-3);
+    --btn-shade: var(--line-strong);
+    --btn-fg: var(--text-subtle);
+    cursor: not-allowed;
 }
 
-/* ============================================================
-   Доступность
-   ============================================================ */
+.btn--block { width: 100%; }
+.btn--sm { min-height: 40px; padding: 8px 14px; font-size: 0.82rem; border-radius: var(--r-md); }
+.btn--lg { min-height: 56px; font-size: 1.02rem; }
 
-/* Раньше фокус-состояний не было вовсе — навигация с клавиатуры
-   и с внешнего пульта была невозможна */
+.btn--green { --btn-bg: var(--green); --btn-shade: var(--green-shade); }
+.btn--red { --btn-bg: var(--red); --btn-shade: var(--red-shade); }
+.btn--blue { --btn-bg: var(--blue); --btn-shade: var(--blue-shade); }
+.btn--gold { --btn-bg: var(--gold); --btn-shade: var(--gold-shade); --btn-fg: #4A3500; }
+.btn--orange { --btn-bg: var(--orange); --btn-shade: var(--orange-shade); }
+
+.btn--secondary {
+    --btn-bg: var(--surface);
+    --btn-shade: var(--line);
+    --btn-fg: var(--violet-ink);
+    --btn-border: var(--line);
+}
+
+.btn--ghost {
+    --btn-bg: transparent;
+    --btn-shade: transparent;
+    --btn-fg: var(--violet-ink);
+    box-shadow: none;
+}
+.btn--ghost:active:not(:disabled) { transform: none; background: var(--violet-soft); }
+
+/* На цветном фоне панели обратной связи */
+.btn--on-green { --btn-bg: var(--green); --btn-shade: var(--green-shade); }
+.btn--on-red { --btn-bg: var(--red); --btn-shade: var(--red-shade); }
+
+/* ——— Карточки ———————————————————————————————————————————— */
+
+.card {
+    background: var(--surface);
+    border: 2px solid var(--line);
+    border-radius: var(--r-xl);
+    padding: 16px;
+}
+
+.card--press {
+    box-shadow: 0 4px 0 var(--line);
+    cursor: pointer;
+    transition: transform 90ms ease, box-shadow 90ms ease, border-color 150ms ease, background-color 150ms ease;
+}
+.card--press:active { transform: translateY(4px); box-shadow: 0 0 0 var(--line); }
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--r-pill);
+    background: var(--surface-2);
+    border: 2px solid var(--line);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 800;
+}
+
+.chip--active {
+    background: var(--violet-soft);
+    border-color: var(--violet);
+    color: var(--violet-ink);
+}
+
+/* ——— Поля ввода ————————————————————————————————————————— */
+
+.field {
+    width: 100%;
+    min-height: 50px;
+    padding: 12px 16px;
+    border: 2px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--surface-2);
+    color: var(--text);
+    font: 700 1rem var(--font);
+    outline: none;
+    transition: border-color 150ms ease, background-color 150ms ease;
+}
+.field::placeholder { color: var(--text-subtle); font-weight: 600; }
+.field:focus { border-color: var(--blue); background: var(--surface); }
+
+/* ——— Доступность ————————————————————————————————————————— */
+
 :focus-visible {
-    outline: 2px solid var(--ion-color-primary);
+    outline: 3px solid var(--blue);
     outline-offset: 2px;
-    border-radius: var(--app-r-xs);
+    border-radius: var(--r-sm);
 }
 
-ion-button:focus-visible,
-ion-tab-button:focus-visible {
-    outline: 2px solid var(--ion-color-primary);
-    outline-offset: -2px;
-}
-
-/* Уважаем системную настройку «меньше движения» */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -136,51 +231,12 @@ ion-tab-button:focus-visible {
     }
 }
 
-/* ============================================================
-   Ionic-компоненты
-   ============================================================ */
-
-ion-button {
-    --border-radius: var(--app-r-md);
-    --box-shadow: none;
-    font-family: var(--app-font);
-    font-weight: 600;
-    letter-spacing: 0;
-    text-transform: none;
-    cursor: pointer;
-    transition: transform var(--app-dur-fast) var(--app-ease);
-}
-
-ion-button::part(native) {
-    transition: background-color var(--app-dur-base) var(--app-ease);
-}
-
-ion-button:active {
-    transform: scale(0.97);
-}
-
-/* Основное действие на экране — единственная заметная кнопка */
-ion-button.app-btn-primary {
-    --background: var(--ion-color-primary);
-    --background-hover: var(--ion-color-primary-tint);
-    --background-activated: var(--ion-color-primary-shade);
-    --color: var(--app-text-on-accent);
-    --padding-top: 18px;
-    --padding-bottom: 18px;
-    --box-shadow: var(--app-e-accent);
-    font-size: var(--app-fs-body);
-}
-
-ion-button.app-btn-quiet {
-    --background: var(--app-surface-2);
-    --background-hover: var(--app-surface-3);
-    --color: var(--app-text);
-}
+/* ——— Ionic ——————————————————————————————————————————————— */
 
 ion-toolbar {
-    --background: var(--app-bg);
-    --color: var(--app-text);
-    --border-color: var(--app-border);
+    --background: var(--bg);
+    --color: var(--text);
+    --border-color: var(--line);
     --min-height: 56px;
 }
 
@@ -188,76 +244,39 @@ ion-header {
     box-shadow: none;
 }
 
-/* Ionic по умолчанию рисует под заголовком жирную линию-тень */
 ion-header.header-md::after,
 ion-header.header-ios::after {
     display: none;
 }
 
-ion-item {
-    --background: var(--app-surface);
-    --background-hover: var(--app-surface-2);
-    --color: var(--app-text);
-    --border-color: var(--app-border);
-    --min-height: var(--app-tap);
-}
-
-ion-list {
-    background: transparent;
-    padding: 0;
-}
-
-ion-progress-bar {
-    --background: var(--app-surface-3);
-    --progress-background: var(--ion-color-primary);
-    height: 6px;
-    border-radius: var(--app-r-pill);
-    overflow: hidden;
-}
-
 ion-toggle {
-    --track-background: var(--app-surface-3);
-    --track-background-checked: var(--ion-color-primary);
-    --handle-background: #ffffff;
-    --handle-background-checked: #ffffff;
-    --handle-box-shadow: var(--app-e1);
-    padding: 8px 0;
+    --track-background: var(--surface-3);
+    --track-background-checked: var(--green);
+    --handle-background: #fff;
+    --handle-background-checked: #fff;
 }
 
-ion-modal {
-    --background: var(--app-surface);
-    --border-radius: var(--app-r-xl) var(--app-r-xl) 0 0;
+/* ——— Появление ———————————————————————————————————————————— */
+
+.enter {
+    animation: enter 320ms var(--ease) both;
 }
 
-ion-alert,
-ion-action-sheet {
-    --background: var(--app-surface);
-    --color: var(--app-text);
-}
-
-ion-input,
-ion-textarea,
-ion-select,
-ion-searchbar {
-    --background: var(--app-surface-2);
-    --color: var(--app-text);
-    --placeholder-color: var(--app-text-subtle);
-    --border-radius: var(--app-r-md);
-}
-
-/* ============================================================
-   Появление контента
-   ------------------------------------------------------------
-   Стартуем с видимого состояния и лишь слегка сдвигаем: если
-   анимация не отработает, контент останется на экране, а не
-   застрянет в opacity: 0.
-   ============================================================ */
-
-.app-enter {
-    animation: appEnter var(--app-dur-slow) var(--app-ease) both;
-}
-
-@keyframes appEnter {
-    from { opacity: 0; transform: translateY(8px); }
+@keyframes enter {
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pop {
+    0% { transform: scale(0.6); opacity: 0; }
+    60% { transform: scale(1.08); opacity: 1; }
+    100% { transform: scale(1); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
 }
