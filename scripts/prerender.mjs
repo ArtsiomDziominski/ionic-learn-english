@@ -9,9 +9,10 @@
  * исходного HTML — сильный сигнал, а Yandex JS почти не исполняет.
  *
  * Скрипт кладёт рядом с index.html по файлу на маршрут с настоящими
- * title / description / canonical / OG, а для статей ещё и вставляет
- * их текст в #app — Vue заменит его при монтировании, поэтому для
- * пользователя ничего не меняется, а робот без JS видит содержимое.
+ * title / description / canonical / OG, а для статей и страницы «О сайте»
+ * ещё и вставляет их текст в #app — Vue заменит его при монтировании,
+ * поэтому для пользователя ничего не меняется, а робот без JS видит
+ * содержимое.
  *
  * Мета здесь должны совпадать с тем, что ставит useSEO на клиенте:
  * расхождение поисковики трактуют как подмену контента.
@@ -24,6 +25,7 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(root, 'dist');
 const ARTICLES = join(root, 'public', 'articles');
+const ABOUT = join(root, 'src', 'content', 'about.json');
 const ORIGIN = 'https://www.learnenglisheasy.ru';
 
 const escapeAttr = (value) =>
@@ -103,15 +105,82 @@ function writePage(routePath, html) {
   return target;
 }
 
+/**
+ * «О сайте»: и Vue-страница, и этот скрипт читают один about.json,
+ * поэтому текст для роботов не может разойтись с тем, что видит человек.
+ */
+function renderAboutBody(about) {
+  const sections = about.sections.map((s) =>
+    [
+      `<section id="${escapeAttr(s.id)}">`,
+      `<h2>${escapeAttr(s.heading)}</h2>`,
+      ...(s.paragraphs ?? []).map((text) => `<p>${escapeAttr(text)}</p>`),
+      s.items
+        ? `<ul>${s.items.map((i) => `<li><strong>${escapeAttr(i.title)}.</strong> ${escapeAttr(i.text)}</li>`).join('')}</ul>`
+        : '',
+      ...(s.questions ?? []).map((i) => `<h3>${escapeAttr(i.q)}</h3><p>${escapeAttr(i.a)}</p>`),
+      '</section>',
+    ].filter(Boolean).join('\n')
+  );
+
+  const actions = about.actions.map((a) => `<a href="${escapeAttr(a.href)}">${escapeAttr(a.text)}</a>`);
+
+  return [
+    '<article class="page">',
+    `<h1>${escapeAttr(about.heading)}</h1>`,
+    `<p>${escapeAttr(about.lead)}</p>`,
+    ...sections,
+    `<nav aria-label="Куда дальше">${actions.join(' · ')}</nav>`,
+    '<p><a href="/privacy-policy.html">Политика конфиденциальности</a> · <a href="/terms-of-service.html">Условия использования</a></p>',
+    '</article>',
+  ].join('\n');
+}
+
+function aboutJsonLd(about) {
+  const url = toUrl(about.path);
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'AboutPage',
+        '@id': `${url}#webpage`,
+        url,
+        name: about.heading,
+        description: about.description,
+        inLanguage: 'ru',
+        isPartOf: { '@type': 'WebSite', name: 'Слова.Day', url: `${ORIGIN}/` },
+        about: {
+          '@type': 'WebApplication',
+          name: 'Слова.Day',
+          url: `${ORIGIN}/`,
+          applicationCategory: 'EducationalApplication',
+          operatingSystem: 'Any',
+          inLanguage: 'ru',
+          offers: { '@type': 'Offer', price: '0', priceCurrency: 'RUB' },
+        },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Главная', item: `${ORIGIN}/` },
+          { '@type': 'ListItem', position: 2, name: about.heading, item: url },
+        ],
+      },
+    ],
+  };
+}
+
 function main() {
   const indexPath = join(DIST, 'index.html');
   if (!existsSync(indexPath)) {
     throw new Error('dist/index.html не найден — сначала нужно выполнить сборку');
   }
   const template = readFileSync(indexPath, 'utf8');
+  const about = JSON.parse(readFileSync(ABOUT, 'utf8'));
 
   /* Тексты продублированы из useSEO в соответствующих экранах.
-     При изменении там нужно поправить и здесь. */
+     При изменении там нужно поправить и здесь. Исключение — «О сайте»:
+     его тексты общие с экраном и лежат в about.json. */
   const pages = [
     {
       path: '/',
@@ -136,6 +205,15 @@ function main() {
       title: 'Статьи для изучения английского языка | Слова.Day',
       description: 'Узнайте лучшие статьи и ресурсы для изучения английского языка. Полезные советы, методы и рекомендации для всех уровней. Эффективные способы запоминания слов, грамматика и практические упражнения.',
       keywords: 'английский язык, изучение английского, статьи, ресурсы, советы по изучению английского, методы изучения, как учить английский',
+    },
+    {
+      path: about.path,
+      title: about.title,
+      description: about.description,
+      keywords: about.keywords,
+      priority: '0.5',
+      bodyHtml: renderAboutBody(about),
+      jsonLd: aboutJsonLd(about),
     },
   ];
 
@@ -203,7 +281,7 @@ function writeSitemap(pages, articleSlugs) {
       loc: toUrl(page.path),
       lastmod: fileDate(join(DIST, 'index.html')),
       changefreq: page.path === '/' || page.path === '/words' ? 'weekly' : 'monthly',
-      priority: page.path === '/' ? '1.0' : '0.8',
+      priority: page.priority ?? (page.path === '/' ? '1.0' : '0.8'),
     });
   }
 

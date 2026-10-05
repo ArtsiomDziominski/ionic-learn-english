@@ -1,8 +1,16 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+import { useIonRouter } from '@ionic/vue';
 import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
 
 const year = new Date().getFullYear();
+const route = useRoute();
+const router = useIonRouter();
+
+// На самой странице «О сайте» ссылка на неё же не нужна; /about/ со слэшем — тот же экран
+const showAbout = computed(() => route.path.replace(/\/+$/, '') !== '/about');
 
 const openLink = async (url: string): Promise<void> => {
   // В приложении открываем в системном браузере, в вебе — новой вкладкой
@@ -16,7 +24,11 @@ const openLink = async (url: string): Promise<void> => {
 
 <template>
   <footer class="footer">
-    <nav class="footer__links" aria-label="Правовая информация">
+    <nav class="footer__links" aria-label="О сайте и правовая информация">
+      <template v-if="showAbout">
+        <a href="/about" @click.prevent="router.push('/about')">О сайте</a>
+        <span aria-hidden="true">·</span>
+      </template>
       <a href="/privacy-policy.html" @click.prevent="openLink('/privacy-policy.html')">Политика конфиденциальности</a>
       <span aria-hidden="true">·</span>
       <a href="/terms-of-service.html" @click.prevent="openLink('/terms-of-service.html')">Условия использования</a>

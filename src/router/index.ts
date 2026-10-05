@@ -4,8 +4,8 @@ import TabsPage from '@/views/TabsPage.vue';
 import LearnPage from '@/views/LearnPage.vue';
 
 /*
- * Адреса /words, /vocabulary и /article индексируются поисковиками
- * (см. scripts/prerender.mjs) — их не меняем. Урок открывается на
+ * Адреса /words, /vocabulary, /article и /about индексируются
+ * поисковиками (см. scripts/prerender.mjs) — их не меняем. Урок открывается на
  * отдельном экране без вкладок: /lesson/<id урока> или
  * /lesson/practice-<режим> для тренировок.
  */
@@ -33,6 +33,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/settings',
     component: () => import('@/views/SettingsPage.vue'),
+  },
+  {
+    path: '/about',
+    component: () => import('@/views/AboutPage.vue'),
   },
   /* Ловим всё остальное: без этого маршрута неизвестный адрес
      внутри приложения показывал пустой экран */
