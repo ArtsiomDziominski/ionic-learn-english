@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { computed, ref, watch } from 'vue';
 import { applyStatusBarTheme } from '@/utils/statusBar';
 import { getStorageItem, getStorageJSON, setStorageJSON } from '@/utils/util';
+import { trackEvent } from '@/utils/analytics';
 
 export type ThemeMode = 'system' | 'light' | 'dark';
 
@@ -88,7 +89,11 @@ export const useSettingsStore = defineStore('settings', () => {
   };
 
   const update = <K extends keyof AppSettings>(key: K, value: AppSettings[K]): void => {
+    const changed = settings.value[key] !== value;
     settings.value = { ...settings.value, [key]: value };
+    if (!changed) return;
+    // Название голоса не отправляем: оно длинное и ничего не говорит о поведении
+    trackEvent('setting_change', { setting: key, setting_value: key === 'voiceURI' ? (value ? 'custom' : 'auto') : String(value) });
   };
 
   return { settings, isDark, init, update };

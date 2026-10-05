@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, type Component } from 'vue';
-import { IonContent, IonPage, onIonViewWillEnter, useBackButton, useIonRouter } from '@ionic/vue';
+import { IonContent, IonPage, onIonViewDidLeave, onIonViewWillEnter, useBackButton, useIonRouter } from '@ionic/vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useLessonStore, type CheckResult } from '@/store/lesson';
@@ -8,6 +8,7 @@ import { REFILL_COST, useProgressStore } from '@/store/progress';
 import { useToastStore } from '@/store/toast';
 import { useSound } from '@/composables/useSound';
 import { hapticError, hapticSuccess } from '@/composables/useHaptics';
+import { trackEvent } from '@/utils/analytics';
 import type { ExerciseType, PracticeMode } from '@/core/lessonBuilder';
 import LessonHeader from '@/components/lesson/LessonHeader.vue';
 import LessonFooter from '@/components/lesson/LessonFooter.vue';
@@ -60,6 +61,7 @@ function start(): void {
 }
 
 function exit(): void {
+  lesson.abandon(heartsOpen.value ? 'out_of_hearts' : 'quit');
   quitOpen.value = false;
   heartsOpen.value = false;
   lesson.reset();
@@ -90,6 +92,7 @@ function onAutoSubmit(r: CheckResult): void {
 function proceed(): void {
   if (phase.value === 'wrong' && lesson.outOfHearts) {
     heartsOpen.value = true;
+    trackEvent('out_of_hearts', { place: 'lesson' });
     return;
   }
   ready.value = false;
@@ -130,6 +133,8 @@ onMounted(() => window.addEventListener('keydown', onKey));
 onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
 
 onIonViewWillEnter(start);
+// Ушли без «Выйти» (браузерная «назад», жест): урок остался незаконченным
+onIonViewDidLeave(() => lesson.abandon('left'));
 
 // Аппаратная «назад» на Android во время урока спрашивает подтверждение
 useBackButton(50, () => askQuit());

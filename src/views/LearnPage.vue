@@ -11,6 +11,7 @@ import { biomeAt, edgeArt, sceneArt, seedOf } from '@/art/scenery';
 import { useProgressStore } from '@/store/progress';
 import { useSound } from '@/composables/useSound';
 import { hapticTap } from '@/composables/useHaptics';
+import { trackEvent } from '@/utils/analytics';
 import { useSEO } from '@/composables/useSEO';
 import { useWebApplicationSchema } from '@/composables/useStructuredData';
 import LearnTopBar from '@/components/learn/LearnTopBar.vue';
@@ -224,6 +225,7 @@ const start = (node: PathNodeT): void => {
   if (heartsEnabled.value && hearts.value <= 0) {
     heartsReason.value = 'Чтобы начать урок, нужна хотя бы одна жизнь.';
     panel.value = 'hearts';
+    trackEvent('out_of_hearts', { place: 'path' });
     return;
   }
   selected.value = null;
@@ -234,11 +236,13 @@ const openPanel = (p: Panel): void => {
   heartsReason.value = undefined;
   selected.value = null;
   panel.value = p;
+  if (p) trackEvent('panel_open', { panel: p });
 };
 
 const openGuide = (unit: CourseUnit): void => {
   guideUnit.value = unit;
   panel.value = 'words';
+  trackEvent('panel_open', { panel: 'words' });
 };
 
 /** Клик мимо узла закрывает карточку урока. */

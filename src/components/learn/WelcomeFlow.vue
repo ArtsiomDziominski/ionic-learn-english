@@ -4,6 +4,7 @@ import { useProgressStore } from '@/store/progress';
 import { useTransfer } from '@/composables/useTransfer';
 import { useSound } from '@/composables/useSound';
 import { DAILY_GOALS } from '@/core/progress';
+import { trackEvent } from '@/utils/analytics';
 import type { LexiMood, LexiView } from '@/art/lexi';
 import LexiMascot from '@/components/ui/LexiMascot.vue';
 import SpeechBubble from '@/components/ui/SpeechBubble.vue';
@@ -35,6 +36,7 @@ const turn = ref(0);
 let timer = 0;
 
 onMounted(() => {
+  trackEvent('tutorial_begin');
   const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   if (reduced) {
     turn.value = TURN.length - 1;
@@ -75,6 +77,7 @@ const LEVELS = [
 const next = (): void => {
   play('tap');
   step.value++;
+  trackEvent('tutorial_step', { step: step.value });
   if (step.value === 3) play('complete');
 };
 

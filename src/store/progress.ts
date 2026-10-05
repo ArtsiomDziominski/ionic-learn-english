@@ -17,6 +17,7 @@ import type { ExerciseType, PracticeMode } from '@/core/lessonBuilder';
 import { getStorageItem, getStorageJSON } from '@/utils/util';
 import { useSettingsStore } from './settings';
 import { speechAvailable } from '@/composables/useSpeech';
+import { trackEvent } from '@/utils/analytics';
 
 const STORAGE_KEY = 'slovaday.progress.v1';
 
@@ -328,6 +329,7 @@ export const useProgressStore = defineStore('progress', () => {
     state.value.gems -= REFILL_COST;
     state.value.hearts = { count: MAX_HEARTS, updatedAt: Date.now() };
     touch();
+    trackEvent('shop_purchase', { item: 'hearts', cost: REFILL_COST });
     return true;
   };
 
@@ -336,6 +338,7 @@ export const useProgressStore = defineStore('progress', () => {
     state.value.gems -= FREEZE_COST;
     state.value.streak = { ...state.value.streak, freezes: state.value.streak.freezes + 1 };
     touch();
+    trackEvent('shop_purchase', { item: 'streak_freeze', cost: FREEZE_COST });
     return true;
   };
 
@@ -345,6 +348,7 @@ export const useProgressStore = defineStore('progress', () => {
     state.value.chests.push(id);
     state.value.gems += amount;
     touch();
+    trackEvent('chest_open', { amount });
     return amount;
   };
 
@@ -354,6 +358,7 @@ export const useProgressStore = defineStore('progress', () => {
     quest.claimed = true;
     state.value.gems += quest.reward;
     touch();
+    trackEvent('quest_claim', { quest: quest.id, gems: quest.reward });
     return quest.reward;
   };
 
@@ -366,6 +371,7 @@ export const useProgressStore = defineStore('progress', () => {
     if (index >= 0) list.splice(index, 1);
     else list.push(id);
     touch();
+    trackEvent('favorite_toggle', { action: index < 0 ? 'add' : 'remove' });
     return index < 0;
   };
 
@@ -383,11 +389,13 @@ export const useProgressStore = defineStore('progress', () => {
   const setDailyGoal = (goal: number): void => {
     state.value.dailyGoal = goal;
     touch();
+    trackEvent('daily_goal_change', { goal });
   };
 
   const setSection = (id: string): void => {
     state.value.sectionId = getSection(id).id;
     touch();
+    trackEvent('section_change', { section: state.value.sectionId });
   };
 
   const completeOnboarding = (opts: { goal: number; sectionId: string }): void => {
@@ -395,6 +403,7 @@ export const useProgressStore = defineStore('progress', () => {
     state.value.sectionId = getSection(opts.sectionId).id;
     state.value.onboarded = true;
     touch();
+    trackEvent('tutorial_complete', { goal: opts.goal, section: state.value.sectionId });
   };
 
   /* ——— Перенос ——————————————————————————————————————————————— */
@@ -428,6 +437,7 @@ export const useProgressStore = defineStore('progress', () => {
     streakNotice.value = null;
     ensureQuests();
     saveNow();
+    trackEvent('progress_reset');
   };
 
   return {
