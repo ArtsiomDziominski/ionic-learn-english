@@ -1,0 +1,1272 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Стиль C — Ступени</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script>
+  const t = new URLSearchParams(location.search).get('theme');
+  document.documentElement.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+</script>
+<style>
+/* ============================================================
+   Анимации Лекси
+   ------------------------------------------------------------
+   Разметку персонажа рисует src/art/lexi.ts; части тела помечены
+   классами lx-*. Здесь только движение. transform-box: fill-box
+   задаёт точку вращения относительно самой детали (основание
+   хвоста, плечо), а не всего холста.
+
+   Анимации включаются классом .lexi--animated на обёртке и
+   глушатся системной настройкой «меньше движения» (style.css).
+   ============================================================ */
+
+.lexi svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.lexi--animated .lx-root,
+.lexi--animated .lx-head,
+.lexi--animated .lx-tail,
+.lexi--animated .lx-arm,
+.lexi--animated .lx-blink,
+.lexi--animated .lx-mouth,
+.lexi--animated .lx-fx,
+.lexi--animated .lx-leg,
+.lexi--animated .lx-shadow {
+    transform-box: fill-box;
+}
+
+/* ——— Покой: дыхание, лёгкий наклон головы, хвост, моргание ——— */
+
+.lexi--animated .lx-root {
+    transform-origin: 50% 100%;
+    animation: lx-breathe 3.4s ease-in-out infinite;
+}
+
+.lexi--animated .lx-head {
+    transform-origin: 50% 92%;
+    animation: lx-head 4.2s ease-in-out infinite;
+}
+
+.lexi--animated .lx-tail {
+    transform-origin: 12% 88%;
+    animation: lx-wag 2.4s ease-in-out infinite;
+}
+
+.lexi--animated .lx--threeQuarter .lx-tail,
+.lexi--animated .lx--side .lx-tail {
+    transform-origin: 90% 85%;
+    animation-name: lx-wag-left;
+}
+
+.lexi--animated .lx--back .lx-tail {
+    transform-origin: 8% 92%;
+    animation-duration: 1.8s;
+}
+
+.lexi--animated .lx-blink {
+    transform-origin: 50% 50%;
+    animation: lx-blink 4.8s infinite;
+}
+
+/* ——— Жесты ———————————————————————————————————————————————— */
+
+.lexi--animated .lx-arm-wave {
+    transform-origin: 50% 8%;
+    animation: lx-wave 1s ease-in-out infinite;
+}
+
+.lexi--animated .lx-arm-point {
+    transform-origin: 50% 8%;
+    animation: lx-point 2.4s ease-in-out infinite;
+}
+
+.lexi--animated .lx-talk {
+    transform-origin: 50% 30%;
+    animation: lx-talk 0.36s ease-in-out infinite alternate;
+}
+
+/* Радость: прыжок с приседанием и тень, которая сжимается в полёте */
+.lexi--animated .lx--cheer .lx-root {
+    animation: lx-jump 0.9s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+.lexi--animated .lx--cheer .lx-shadow {
+    transform-origin: 50% 50%;
+    animation: lx-shadow 0.9s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+.lexi--animated .lx--cheer .lx-arm-up {
+    transform-origin: 50% 8%;
+    animation: lx-cheer-arm 0.45s ease-in-out infinite alternate;
+}
+
+.lexi--animated .lx--happy .lx-root {
+    animation: lx-hop 1.6s ease-in-out infinite;
+}
+
+.lexi--animated .lx--sad .lx-root {
+    animation: lx-sway 3s ease-in-out infinite;
+}
+
+.lexi--animated .lx--think .lx-head {
+    animation: lx-tilt 3.6s ease-in-out infinite;
+}
+
+.lexi--animated .lx--sleep .lx-root {
+    animation: lx-breathe 4.6s ease-in-out infinite;
+}
+
+/* Бег в профиль */
+.lexi--animated .lx--run .lx-root {
+    animation: lx-run-bob 0.36s ease-in-out infinite alternate;
+}
+.lexi--animated .lx-leg {
+    transform-origin: 50% 0%;
+}
+.lexi--animated .lx-leg-near {
+    animation: lx-leg 0.36s ease-in-out infinite alternate;
+}
+.lexi--animated .lx-leg-far {
+    animation: lx-leg 0.36s ease-in-out infinite alternate-reverse;
+}
+.lexi--animated .lx-arm-swing {
+    transform-origin: 50% 8%;
+    animation: lx-swing 0.36s ease-in-out infinite alternate;
+}
+
+/* ——— Эффекты ———————————————————————————————————————————— */
+
+.lexi--animated .lx-sparkle {
+    transform-origin: 50% 50%;
+    animation: lx-twinkle 1.4s ease-in-out infinite;
+}
+.lexi--animated .lx-sparkle-2 { animation-delay: 0.35s; }
+.lexi--animated .lx-sparkle-3 { animation-delay: 0.7s; }
+.lexi--animated .lx-sparkle-4 { animation-delay: 1.05s; }
+
+.lexi--animated .lx-zzz {
+    animation: lx-zzz 2.8s ease-in-out infinite;
+}
+
+.lexi--animated .lx-tear {
+    animation: lx-tear 2.2s ease-in infinite;
+}
+
+.lexi--animated .lx-question {
+    animation: lx-float 2.2s ease-in-out infinite;
+}
+
+/* ——— Ключевые кадры ——————————————————————————————————————— */
+
+@keyframes lx-breathe {
+    0%, 100% { transform: scale(1, 1); }
+    50% { transform: scale(1.012, 0.988) translateY(1px); }
+}
+
+@keyframes lx-head {
+    0%, 100% { transform: rotate(-1.5deg); }
+    50% { transform: rotate(1.5deg); }
+}
+
+@keyframes lx-tilt {
+    0%, 100% { transform: rotate(-7deg); }
+    50% { transform: rotate(-3deg); }
+}
+
+@keyframes lx-wag {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(7deg); }
+}
+
+@keyframes lx-wag-left {
+    0%, 100% { transform: rotate(5deg); }
+    50% { transform: rotate(-7deg); }
+}
+
+@keyframes lx-blink {
+    0%, 91%, 97%, 100% { transform: scaleY(1); }
+    94% { transform: scaleY(0.08); }
+}
+
+@keyframes lx-wave {
+    0%, 100% { transform: rotate(-14deg); }
+    50% { transform: rotate(16deg); }
+}
+
+@keyframes lx-point {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-8deg); }
+}
+
+@keyframes lx-talk {
+    from { transform: scaleY(1); }
+    to { transform: scaleY(0.35); }
+}
+
+@keyframes lx-jump {
+    0%, 100% { transform: translateY(0) scale(1.06, 0.94); }
+    15% { transform: translateY(0) scale(1, 1); }
+    45% { transform: translateY(-22px) scale(0.97, 1.04); }
+    75% { transform: translateY(0) scale(1, 1); }
+    85% { transform: translateY(0) scale(1.06, 0.94); }
+}
+
+@keyframes lx-shadow {
+    0%, 100%, 75% { transform: scale(1); opacity: 0.14; }
+    45% { transform: scale(0.7); opacity: 0.08; }
+}
+
+@keyframes lx-cheer-arm {
+    from { transform: rotate(-10deg); }
+    to { transform: rotate(12deg); }
+}
+
+@keyframes lx-hop {
+    0%, 60%, 100% { transform: translateY(0); }
+    70% { transform: translateY(-8px); }
+    80% { transform: translateY(0); }
+    88% { transform: translateY(-4px); }
+}
+
+@keyframes lx-sway {
+    0%, 100% { transform: rotate(-1.5deg); }
+    50% { transform: rotate(1.5deg); }
+}
+
+@keyframes lx-run-bob {
+    from { transform: translateY(0); }
+    to { transform: translateY(-5px); }
+}
+
+@keyframes lx-leg {
+    from { transform: rotate(-28deg); }
+    to { transform: rotate(28deg); }
+}
+
+@keyframes lx-swing {
+    from { transform: rotate(-30deg); }
+    to { transform: rotate(30deg); }
+}
+
+@keyframes lx-twinkle {
+    0%, 100% { transform: scale(0.4) rotate(0deg); opacity: 0.3; }
+    50% { transform: scale(1.15) rotate(20deg); opacity: 1; }
+}
+
+@keyframes lx-zzz {
+    0% { transform: translate(0, 6px); opacity: 0; }
+    30% { opacity: 1; }
+    100% { transform: translate(6px, -10px); opacity: 0; }
+}
+
+@keyframes lx-tear {
+    0%, 30% { transform: translateY(0); opacity: 0; }
+    40% { opacity: 1; }
+    100% { transform: translateY(26px); opacity: 0; }
+}
+
+@keyframes lx-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+button { font: inherit; color: inherit; }
+p, h1, h2, h3 { margin: 0; }
+.lexi { display: inline-block; line-height: 0; flex-shrink: 0; }
+.app { display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
+.scroll { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; }
+.scroll::-webkit-scrollbar { display: none; }
+.page { width: 100%; max-width: 600px; margin: 0 auto; padding: 16px 16px 40px; display: flex; flex-direction: column; gap: 18px; }
+.unit-block { display: flex; flex-direction: column; gap: 26px; }
+.unit-sticky { position: sticky; top: 8px; z-index: 6; }
+.path { position: relative; margin-top: 30px; }
+.path__row { position: relative; display: flex; justify-content: center; align-items: center; height: 104px; }
+.path__row--open { z-index: 5; }
+.path__mascot { position: absolute; width: 120px; height: 120px; pointer-events: none; z-index: 1; }
+.path__trail { position: absolute; top: 0; left: 50%; width: 320px; margin-left: -160px; pointer-events: none; overflow: visible; }
+.slot { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; }
+.slot:has(.is-selected) .note, .slot:has(.is-selected) .hint { visibility: hidden; }
+.path__pop { position: absolute; top: calc(50% + 46px); left: 50%; z-index: 7; transform: translateX(-50%); }
+.grow { flex: 1; min-width: 0; }
+.nums { font-variant-numeric: tabular-nums; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+:root {
+  --bg-1: #EDF1FF;
+  --bg-2: #F8F1FA;
+  --ink: #24203F;
+  --muted: #6D688C;
+  --subtle: #A29EBE;
+  --clay: #FFFFFF;
+  --clay-2: #F2F0FA;
+  --press: #ECE9F6;
+  --grid: rgba(92, 80, 180, 0.075);
+  --clay-shadow: 0 18px 32px -20px rgba(74, 60, 150, 0.5), 0 3px 8px -4px rgba(74, 60, 150, 0.16), inset 0 -3px 0 rgba(74, 60, 150, 0.06), inset 0 2px 0 rgba(255, 255, 255, 0.95);
+  --hi: rgba(255, 255, 255, 0.55);
+  --red: #FF5A6E;
+
+  --u1-t: #52D8AA; --u1-l: #2FC08F; --u1-r: #1E9C72; --u1-soft: #E3F9F0; --u1-soft2: #D0F3E3; --u1-ink: #0F7553;
+  --u2-t: #A291FF; --u2-l: #8671F6; --u2-r: #6650DA; --u2-soft: #EFECFF; --u2-soft2: #E1DBFF; --u2-ink: #4B37C2;
+  --u3-t: #FF9888; --u3-l: #FA7A67; --u3-r: #DB5C49; --u3-soft: #FFEEEA; --u3-soft2: #FFE0DA; --u3-ink: #B5402E;
+  --lk-t: #E6E4F2; --lk-l: #D4D1E6; --lk-r: #BEBAD6; --lk-ink: #A6A2C2;
+  --au-t: #FFD36B; --au-l: #F5B83F; --au-r: #D9991E;
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  --bg-1: #12142C;
+  --bg-2: #1A1530;
+  --ink: #F1EFFF;
+  --muted: #AAA5CE;
+  --subtle: #6E6995;
+  --clay: #232040;
+  --clay-2: #2B2750;
+  --press: #1A1833;
+  --grid: rgba(255, 255, 255, 0.04);
+  --clay-shadow: 0 20px 34px -20px rgba(0, 0, 0, 0.85), inset 0 -3px 0 rgba(0, 0, 0, 0.22), inset 0 1.5px 0 rgba(255, 255, 255, 0.07);
+  --hi: rgba(255, 255, 255, 0.35);
+
+  --u1-t: #3CCB98; --u1-l: #25A87A; --u1-r: #17845E; --u1-soft: #1E3A3A; --u1-soft2: #1C3036; --u1-ink: #7EE8C1;
+  --u2-t: #9381FF; --u2-l: #735EF0; --u2-r: #5541CC; --u2-soft: #2C2759; --u2-soft2: #26224D; --u2-ink: #BEB2FF;
+  --u3-t: #FF8C7A; --u3-l: #EE6C58; --u3-r: #C9503D; --u3-soft: #3B2534; --u3-soft2: #33202F; --u3-ink: #FFB2A5;
+  --lk-t: #353156; --lk-l: #2A2747; --lk-r: #211E3A; --lk-ink: #6E6A98;
+  --au-t: #FFC94D; --au-l: #E6A92E; --au-r: #C28816;
+  color-scheme: dark;
+}
+html, body { color: var(--ink); font-family: 'Rubik', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+body { background: linear-gradient(180deg, var(--bg-1), var(--bg-2)) fixed; }
+.page { position: relative; isolation: isolate; }
+.grid { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; pointer-events: none; -webkit-mask: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); mask: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent); }
+.clay { background: var(--clay); box-shadow: var(--clay-shadow); }
+.eyebrow { color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+
+/* Наборы граней */
+.set-u1 { --t: var(--u1-t); --l: var(--u1-l); --r: var(--u1-r); }
+.set-u2 { --t: var(--u2-t); --l: var(--u2-l); --r: var(--u2-r); }
+.set-u3 { --t: var(--u3-t); --l: var(--u3-l); --r: var(--u3-r); }
+.set-lock { --t: var(--lk-t); --l: var(--lk-l); --r: var(--lk-r); }
+.set-gold { --t: var(--au-t); --l: var(--au-l); --r: var(--au-r); }
+.f-t { fill: var(--t); stroke: var(--t); }
+.f-l { fill: var(--l); stroke: var(--l); }
+.f-r { fill: var(--r); stroke: var(--r); }
+.f-t, .f-l, .f-r { stroke-width: 2.5; stroke-linejoin: round; }
+.f-hi { fill: none; stroke: var(--hi); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.decal { color: #fff; }
+.decal-shadow { color: rgba(0, 0, 0, 0.16); }
+.set-lock .decal { color: var(--lk-ink); }
+.set-lock .decal-shadow { color: transparent; }
+
+/* Верхняя панель */
+.top { position: relative; z-index: 10; background: var(--bg-1); box-shadow: 0 10px 22px -18px rgba(74, 60, 150, 0.45); }
+.top__in { max-width: 600px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; }
+.course { display: inline-flex; align-items: center; gap: 8px; height: 44px; min-width: 0; padding: 0 12px 0 5px; border: 0; border-radius: 16px; cursor: pointer; }
+.course__badge { display: grid; place-items: center; width: 34px; height: 34px; flex-shrink: 0; border-radius: 11px; background: linear-gradient(160deg, var(--u2-t), var(--u2-r)); color: #fff; font-size: 13px; font-weight: 800; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.4), inset 0 -3px 0 rgba(0, 0, 0, 0.14); }
+.course__title { overflow: hidden; font-weight: 700; font-size: 15px; white-space: nowrap; text-overflow: ellipsis; }
+.course .glyph { flex-shrink: 0; color: var(--muted); }
+.stats { display: flex; align-items: center; height: 44px; flex-shrink: 0; padding: 0 3px; border-radius: 16px; }
+.stat { display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 8px; border: 0; background: none; font-weight: 700; font-size: 15px; cursor: pointer; }
+.stat--muted { color: var(--subtle); }
+@media (max-width: 370px) { .course__title { display: none; } }
+
+/* Цель дня */
+.daily { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 24px; }
+.ring { position: relative; display: grid; place-items: center; width: 64px; height: 64px; flex-shrink: 0; border-radius: 50%; background: var(--clay-2); box-shadow: inset 0 3px 6px rgba(74, 60, 150, 0.14); }
+[data-theme="dark"] .ring { box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.35); }
+.ring svg { position: absolute; inset: 0; }
+.ring__track { fill: none; stroke: transparent; stroke-width: 8; }
+.ring__arc { fill: none; stroke: var(--u1-l); stroke-width: 8; stroke-linecap: round; }
+.ring__icon { position: relative; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--clay); box-shadow: 0 6px 12px -6px rgba(74, 60, 150, 0.45), inset 0 1.5px 0 rgba(255, 255, 255, 0.9); line-height: 0; }
+[data-theme="dark"] .ring__icon { box-shadow: 0 6px 12px -6px rgba(0, 0, 0, 0.7), inset 0 1.5px 0 rgba(255, 255, 255, 0.08); }
+.daily__value { margin-top: 1px; font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+.daily__line { color: var(--muted); font-size: 13.5px; line-height: 1.3; }
+.quests { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 62px; padding: 9px 10px; border: 0; border-radius: 18px; color: var(--muted); font-weight: 700; font-size: 13px; cursor: pointer; }
+
+/* Шапка юнита — мягкая плитка в цвете юнита */
+.unit { display: flex; align-items: center; gap: 12px; padding: 12px 12px 12px 12px; border-radius: 26px; }
+.unit { background: linear-gradient(160deg, var(--soft), var(--soft2)); box-shadow: 0 18px 30px -20px var(--ul), 0 3px 8px -4px rgba(74, 60, 150, 0.14), inset 0 -3px 0 rgba(0, 0, 0, 0.04), inset 0 2px 0 rgba(255, 255, 255, 0.85); }
+[data-theme="dark"] .unit { box-shadow: 0 18px 30px -20px rgba(0, 0, 0, 0.9), inset 0 -3px 0 rgba(0, 0, 0, 0.2), inset 0 1.5px 0 rgba(255, 255, 255, 0.07); }
+.unit__cube { flex-shrink: 0; overflow: visible; filter: drop-shadow(0 8px 8px rgba(40, 30, 100, 0.18)); }
+.cube__num { fill: #fff; font: 800 17px 'Rubik', sans-serif; text-anchor: middle; dominant-baseline: central; }
+.unit__eyebrow { color: var(--uink); font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.85; }
+.unit__title { margin-top: 2px; font-size: 21px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.15; }
+.unit__sub { margin-top: 1px; overflow: hidden; color: var(--muted); font-size: 14px; font-weight: 500; white-space: nowrap; text-overflow: ellipsis; }
+.unit__pips { display: flex; align-items: center; gap: 1px; margin-top: 7px; }
+.unit__pips .pip { overflow: visible; }
+.unit__pips span { margin-left: 6px; color: var(--uink); font-size: 12px; font-weight: 700; }
+.unit__guide { display: grid; place-items: center; width: 48px; height: 48px; flex-shrink: 0; border: 0; border-radius: 16px; background: var(--clay); color: var(--uink); box-shadow: 0 8px 14px -8px rgba(74, 60, 150, 0.5), inset 0 -2px 0 rgba(74, 60, 150, 0.08), inset 0 1.5px 0 rgba(255, 255, 255, 0.9); cursor: pointer; }
+[data-theme="dark"] .unit__guide { box-shadow: 0 8px 14px -8px rgba(0, 0, 0, 0.8), inset 0 -2px 0 rgba(0, 0, 0, 0.2), inset 0 1.5px 0 rgba(255, 255, 255, 0.07); }
+
+/* Блоки-ступени */
+.blk { position: relative; display: grid; place-items: center; width: 92px; height: 92px; padding: 0; border: 0; background: none; cursor: pointer; }
+.blk .iso { display: block; overflow: visible; filter: drop-shadow(0 10px 8px rgba(50, 40, 120, 0.16)); transition: transform 160ms ease; }
+[data-theme="dark"] .blk .iso { filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.45)); }
+.blk:active .iso, .blk.is-selected .iso { transform: translateY(4px); }
+.slot--current { width: 104px; height: 104px; display: grid; place-items: center; }
+.blk--current { width: 104px; height: 104px; }
+.blk__float { animation: float 2.4s ease-in-out infinite; }
+.blk__shadow { fill: rgba(50, 40, 120, 0.2); animation: shadow 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+[data-theme="dark"] .blk__shadow { fill: rgba(0, 0, 0, 0.45); }
+@keyframes float { 0%, 100% { transform: translateY(-6px); } 50% { transform: translateY(-14px); } }
+@keyframes shadow { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.8); opacity: 0.6; } }
+
+.hint { position: absolute; bottom: calc(50% + 40px); left: 50%; z-index: 3; padding: 7px 14px; border-radius: 14px; background: var(--clay); color: var(--u1-ink); font-size: 14px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; box-shadow: 0 12px 20px -12px rgba(74, 60, 150, 0.6), inset 0 -2px 0 rgba(74, 60, 150, 0.08), inset 0 1.5px 0 rgba(255, 255, 255, 0.9); transform: translateX(calc(-50% + var(--shift, 0px))); animation: hint-bob 1.8s ease-in-out infinite; }
+[data-theme="dark"] .hint { box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.8), inset 0 1.5px 0 rgba(255, 255, 255, 0.08); }
+.hint::after { content: ''; position: absolute; left: calc(50% - var(--shift, 0px)); bottom: -5px; width: 12px; height: 12px; margin-left: -6px; border-radius: 0 0 3px 0; background: var(--clay); transform: rotate(45deg); }
+@keyframes hint-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -5px; } }
+
+.chest__icon { position: absolute; left: 50%; top: 50%; margin: -50px 0 0 -28px; line-height: 0; }
+.chest__icon .gi { display: block; filter: drop-shadow(0 4px 3px rgba(80, 50, 0, 0.25)); }
+.chest--open .chest__closed .gi { animation: chest-wiggle 2.4s ease-in-out infinite; transform-origin: 50% 90%; }
+.chest__opened, .chest.is-claimed .chest__closed { display: none; }
+.chest.is-claimed .chest__opened { display: block; }
+@keyframes chest-wiggle { 0%, 70%, 100% { transform: rotate(0); } 75% { transform: rotate(-8deg); } 80% { transform: rotate(8deg); } 85% { transform: rotate(-6deg); } 90% { transform: rotate(4deg); } }
+
+.podium__cup { position: absolute; left: 50%; top: 50%; margin: -48px 0 0 -20px; line-height: 0; }
+.podium__cup .gi { display: block; }
+
+/* Лекси на плитке */
+.mascot__tile { position: absolute; left: 20px; top: 98px; overflow: visible; filter: drop-shadow(0 8px 6px rgba(50, 40, 120, 0.15)); }
+
+/* Карточка урока */
+.pop { position: relative; width: min(300px, calc(100vw - 48px)); padding: 16px; border-radius: 22px; background: var(--clay); box-shadow: var(--clay-shadow), 0 24px 40px -24px rgba(74, 60, 150, 0.5); text-align: left; animation: pop-in 240ms cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.pop::before { content: ''; position: absolute; top: -7px; left: calc(50% + var(--arrow, 0px)); width: 14px; height: 14px; margin-left: -7px; border-radius: 3px 0 0 0; background: var(--clay); transform: rotate(45deg); }
+.pop__title { font-size: 17px; font-weight: 800; }
+.pop__words { margin-top: 3px; color: var(--pop); font-size: 15px; font-weight: 700; }
+.pop__text { margin-top: 4px; color: var(--muted); font-size: 14px; line-height: 1.4; }
+.pop__btn { width: 100%; height: 48px; margin-top: 14px; border: 0; border-radius: 16px; background: linear-gradient(180deg, var(--pop), var(--pop2, var(--pop))); color: #fff; font-size: 15px; font-weight: 800; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.12), 0 12px 20px -12px var(--pop2, var(--pop)); cursor: pointer; }
+@keyframes pop-in { from { opacity: 0; transform: translateY(-6px) scale(0.96); } }
+
+/* Конец раздела */
+.end { display: flex; align-items: center; gap: 12px; margin-top: 8px; padding: 16px; border-radius: 24px; }
+.end h3 { font-size: 17px; font-weight: 800; }
+.end p { margin-top: 2px; color: var(--muted); font-size: 14px; }
+.end__btn { height: 42px; margin-top: 10px; padding: 0 18px; border: 0; border-radius: 14px; background: linear-gradient(180deg, var(--u2-t), var(--u2-l)); color: #fff; font-weight: 800; font-size: 14px; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.12), 0 12px 20px -12px var(--u2-r); cursor: pointer; }
+
+/* Нижние вкладки */
+.tabs { position: relative; z-index: 10; }
+.tabs__in { max-width: 600px; margin: 0 auto; display: flex; justify-content: space-around; padding: 8px 8px 10px; border-radius: 26px 26px 0 0; background: var(--clay); box-shadow: 0 -12px 28px -18px rgba(74, 60, 150, 0.45), inset 0 1.5px 0 rgba(255, 255, 255, 0.9); }
+[data-theme="dark"] .tabs__in { box-shadow: 0 -12px 28px -18px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.06); }
+.tab { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 72px; padding: 4px 0 2px; border-radius: 16px; color: var(--subtle); font-size: 11.5px; font-weight: 600; text-decoration: none; cursor: pointer; }
+.tab__icon { position: relative; display: grid; place-items: center; width: 54px; height: 36px; }
+.tab--on { background: var(--press); color: var(--ink); font-weight: 700; box-shadow: inset 0 3px 6px rgba(74, 60, 150, 0.16), inset 0 -1px 0 rgba(255, 255, 255, 0.8); }
+[data-theme="dark"] .tab--on { box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.45), inset 0 -1px 0 rgba(255, 255, 255, 0.04); }
+.tab__dot { position: absolute; top: 2px; right: 8px; width: 10px; height: 10px; border: 2px solid var(--clay); border-radius: 50%; background: var(--red); }
+
+</style>
+</head>
+<body>
+<div class="app">
+  
+<header class="top">
+  <div class="top__in">
+    <button type="button" class="course clay" aria-label="Раздел: Начальный. Сменить">
+      <span class="course__badge">A1</span>
+      <span class="course__title">Начальный</span>
+      <svg class="glyph" viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <div class="stats clay">
+      <button type="button" class="stat stat--muted" aria-label="Серия: 1"><svg class="gi" viewBox="0 0 32 32" width="22" height="22" style="filter:grayscale(1);opacity:.45" aria-hidden="true"><path d="M16 2.5c.9 3.6 3.3 5.9 5.6 8.4 2.4 2.6 4.4 5.4 4.4 9.3 0 5.4-4.4 9.3-10 9.3S6 25.6 6 20.2c0-3.6 1.8-6.4 3.9-8.2.3 2.4 1.4 4 3 4.8C12.6 11.1 14 6.4 16 2.5z" fill="#FF9600"/><path d="M16 14.5c3.2 2.6 5.2 5 5.2 8.2 0 3.3-2.3 5.8-5.2 5.8s-5.2-2.5-5.2-5.8c0-2.2 1.1-3.8 2.4-4.9.2 1.4.9 2.4 1.9 2.8-.3-2.3.1-4.3.9-6.1z" fill="#FFC800"/><path d="M16 21.5c1.4 1.1 2.3 2.2 2.3 3.6 0 1.4-1 2.5-2.3 2.5s-2.3-1.1-2.3-2.5c0-1.4.9-2.5 2.3-3.6z" fill="#FFF3B0"/></svg><span class="nums">1</span></button>
+      <button type="button" class="stat" aria-label="Кристаллы: 115"><svg class="gi" viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"><path d="M9 5h14l6 8-13 15L3 13z" fill="#1CB0F6"/><path d="M3 13h9l4 15z" fill="#1590CC"/><path d="M29 13h-9l-4 15z" fill="#36BEFF"/><path d="M12 13h8l-4 15z" fill="#5CCBFF"/><path d="M9 5h14l-3 8h-8z" fill="#8FDEFF"/><path d="M9 5l3 8H3zM23 5l-3 8h9z" fill="#4FC8FF"/><path d="M11 7.5l1.2 3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".8"/></svg><span class="nums">115</span></button>
+      <button type="button" class="stat" aria-label="Жизни: 5"><svg class="gi" viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"><path d="M16 28.5S2.5 20.6 2.5 11.6C2.5 7.3 5.8 4 10 4c2.6 0 4.8 1.4 6 3.5C17.2 5.4 19.4 4 22 4c4.2 0 7.5 3.3 7.5 7.6 0 9-13.5 16.9-13.5 16.9z" fill="#FF4B4B"/><path d="M16 28.5S2.5 20.6 2.5 11.6c0-.4 0-.8.1-1.2C4 18.3 16 25 16 25s12-6.7 13.4-14.6c.1.4.1.8.1 1.2 0 9-13.5 16.9-13.5 16.9z" fill="#E02E2E"/><ellipse cx="9.6" cy="10" rx="3.2" ry="2" transform="rotate(-32 9.6 10)" fill="#fff" opacity=".6"/></svg><span class="nums">5</span></button>
+    </div>
+  </div>
+</header>
+  <main class="scroll" id="scroll">
+    <div class="page">
+      <svg class="grid" aria-hidden="true"><defs><pattern id="iso-grid" width="56" height="32.33" patternUnits="userSpaceOnUse"><path d="M0 0 L56 32.33 M0 32.33 L56 0" style="stroke:var(--grid)" stroke-width="1" fill="none"/></pattern></defs><rect width="100%" height="100%" fill="url(#iso-grid)"/></svg>
+      
+<section class="daily clay">
+  <div class="ring" aria-hidden="true">
+    <svg viewBox="0 0 64 64">
+      <circle cx="32" cy="32" r="25" class="ring__track"/>
+      
+    </svg>
+    <span class="ring__icon"><svg class="gi" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true"><path d="M18.5 2 6 18.2h9.2L12.6 30 26 13.4h-9.4z" fill="#FFC800"/><path d="M18.5 2 6 18.2h4.6L18 6.6z" fill="#FFE066"/><path d="M26 13.4 12.6 30l2.6-11.8h3.4z" fill="#F2A900"/></svg></span>
+  </div>
+  <div class="grow">
+    <p class="eyebrow">Цель дня</p>
+    <p class="daily__value nums">0 / 20 XP</p>
+    <p class="daily__line">Пройдите урок, чтобы продлить серию</p>
+  </div>
+  <button type="button" class="quests clay" aria-label="Задания дня"><svg class="gi" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true"><circle cx="16" cy="16" r="13.5" fill="#FF4B4B"/><circle cx="16" cy="16" r="9.5" fill="#fff"/><circle cx="16" cy="16" r="5.5" fill="#FF4B4B"/><circle cx="16" cy="16" r="2" fill="#fff"/></svg><span class="nums">0/3</span></button>
+</section>
+      
+<section class="unit-block" style="--soft:var(--u1-soft);--soft2:var(--u1-soft2);--uink:var(--u1-ink);--ul:var(--u1-l)">
+  <div class="unit-sticky">
+<header class="unit clay">
+  <svg class="unit__cube set-u1" viewBox="-24 -15 48 52" width="48" height="52" aria-hidden="true">
+    <g class="">
+    <path class="f-l" d="M-21 0 L0 12.12 L0 33.12 L-21 21Z"/>
+    <path class="f-r" d="M0 12.12 L21 0 L21 21 L0 33.12Z"/>
+    <path class="f-t" d="M0 -12.12 L21 0 L0 12.12 L-21 0Z"/>
+    <path class="f-hi" d="M-17 0.2 L0 -9.72 L17 0.2"/>
+    
+  </g>
+    <text class="cube__num" transform="matrix(0.866 0.5 0 1 -10.5 17.56)">1</text>
+  </svg>
+  <div class="grow">
+    <p class="unit__eyebrow">Раздел 1 · A1, юнит 1</p>
+    <h2 class="unit__title">Юнит 1</h2>
+    <p class="unit__sub">you, he, she…</p>
+    <div class="unit__pips" aria-label="Пройдено 3 из 7"><svg class="pip set-u1" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-u1" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-u1" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><span class="nums">3/7</span></div>
+  </div>
+  <button type="button" class="unit__guide" aria-label="Слова юнита"><svg class="glyph" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true"><path d="M6 6.5A2.5 2.5 0 0 1 8.5 4H25v20H8.5A2.5 2.5 0 0 0 6 26.5zM6 26.5A2.5 2.5 0 0 0 8.5 29H25v-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M11 10h9M11 15h6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+</header></div>
+  <div class="path" style="height:832px">
+    <svg class="path__trail" viewBox="-160 0 320 832" height="832" aria-hidden="true"><g class="set-u1">
+    <path class="f-l" d="M18.12 117.32 L27.12 122.51 L27.12 126.01 L18.12 120.82Z"/>
+    <path class="f-r" d="M27.12 122.51 L36.12 117.32 L36.12 120.82 L27.12 126.01Z"/>
+    <path class="f-t" d="M27.12 112.12 L36.12 117.32 L27.12 122.51 L18.12 117.32Z"/>
+    <path class="f-hi" d="M22.12 117.52 L27.12 114.52 L32.12 117.52"/>
+    
+  </g><g class="set-u1">
+    <path class="f-l" d="M53.51 221.32 L62.51 226.51 L62.51 230.01 L53.51 224.82Z"/>
+    <path class="f-r" d="M62.51 226.51 L71.51 221.32 L71.51 224.82 L62.51 230.01Z"/>
+    <path class="f-t" d="M62.51 216.12 L71.51 221.32 L62.51 226.51 L53.51 221.32Z"/>
+    <path class="f-hi" d="M57.51 221.52 L62.51 218.52 L67.51 221.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M9.88 429.32 L18.88 434.51 L18.88 438.01 L9.88 432.82Z"/>
+    <path class="f-r" d="M18.88 434.51 L27.88 429.32 L27.88 432.82 L18.88 438.01Z"/>
+    <path class="f-t" d="M18.88 424.12 L27.88 429.32 L18.88 434.51 L9.88 429.32Z"/>
+    <path class="f-hi" d="M13.88 429.52 L18.88 426.52 L23.88 429.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M-36.12 533.32 L-27.12 538.51 L-27.12 542.01 L-36.12 536.82Z"/>
+    <path class="f-r" d="M-27.12 538.51 L-18.12 533.32 L-18.12 536.82 L-27.12 542.01Z"/>
+    <path class="f-t" d="M-27.12 528.12 L-18.12 533.32 L-27.12 538.51 L-36.12 533.32Z"/>
+    <path class="f-hi" d="M-32.12 533.52 L-27.12 530.52 L-22.12 533.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M-71.51 637.32 L-62.51 642.51 L-62.51 646.01 L-71.51 640.82Z"/>
+    <path class="f-r" d="M-62.51 642.51 L-53.51 637.32 L-53.51 640.82 L-62.51 646.01Z"/>
+    <path class="f-t" d="M-62.51 632.12 L-53.51 637.32 L-62.51 642.51 L-71.51 637.32Z"/>
+    <path class="f-hi" d="M-67.51 637.52 L-62.51 634.52 L-57.51 637.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M-66.49 741.32 L-57.49 746.51 L-57.49 750.01 L-66.49 744.82Z"/>
+    <path class="f-r" d="M-57.49 746.51 L-48.49 741.32 L-48.49 744.82 L-57.49 750.01Z"/>
+    <path class="f-t" d="M-57.49 736.12 L-48.49 741.32 L-57.49 746.51 L-66.49 741.32Z"/>
+    <path class="f-hi" d="M-62.49 741.52 L-57.49 738.52 L-52.49 741.52"/>
+    
+  </g></svg>
+    <div class="path__row" id="node-u1-l1"><div class="slot" style="transform:translateX(0px)">
+    <button type="button" class="blk blk--done" data-node="" data-kind="lesson" data-state="done" data-offset="0" data-index="1" data-words="you, he, she, it" aria-label="Урок 1, пройден" data-color="var(--u1-l)" data-color2="var(--u1-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-u1">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(1 0.58) translate(-16 -16)"><path d="M7 16.5l6 5.8L25.5 10" fill="none" stroke="currentColor" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(1 0.58) translate(-16 -16)"><path d="M7 16.5l6 5.8L25.5 10" fill="none" stroke="currentColor" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u1-l2"><div class="slot" style="transform:translateX(46px)">
+    <button type="button" class="blk blk--done" data-node="" data-kind="lesson" data-state="done" data-offset="46" data-index="2" data-words="we, they, me, him" aria-label="Урок 2, пройден" data-color="var(--u1-l)" data-color2="var(--u1-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-u1">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(1 0.58) translate(-16 -16)"><path d="M7 16.5l6 5.8L25.5 10" fill="none" stroke="currentColor" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(1 0.58) translate(-16 -16)"><path d="M7 16.5l6 5.8L25.5 10" fill="none" stroke="currentColor" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u1-l3"><div class="slot" style="transform:translateX(74px)">
+    <button type="button" class="blk blk--done" data-node="" data-kind="lesson" data-state="done" data-offset="74" data-index="3" data-words="her, us, them, my" aria-label="Урок 3, пройден" data-color="var(--u1-l)" data-color2="var(--u1-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-u1">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(1 0.58) translate(-16 -16)"><path d="M7 16.5l6 5.8L25.5 10" fill="none" stroke="currentColor" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(1 0.58) translate(-16 -16)"><path d="M7 16.5l6 5.8L25.5 10" fill="none" stroke="currentColor" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u1-chest"><div class="slot" style="transform:translateX(46px)">
+      <button type="button" class="blk chest chest--open" data-node="" data-kind="chest" data-state="open" data-offset="46" data-index="" data-words="" aria-label="Сундук с кристаллами" data-color="var(--u1-l)" data-color2="var(--u1-r)">
+        <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-gold">
+    <path class="f-l" d="M-28 8 L0 24.17 L0 33.17 L-28 17Z"/>
+    <path class="f-r" d="M0 24.17 L28 8 L28 17 L0 33.17Z"/>
+    <path class="f-t" d="M0 -8.17 L28 8 L0 24.17 L-28 8Z"/>
+    <path class="f-hi" d="M-24 8.2 L0 -5.77 L24 8.2"/>
+    
+  </g></svg>
+        <span class="chest__icon chest__closed"><svg class="gi" viewBox="0 0 32 32" width="56" height="56" aria-hidden="true"><path d="M4 13.5a5.5 5.5 0 0 1 5.5-5.5h13a5.5 5.5 0 0 1 5.5 5.5v2H4z" fill="#D9843F"/><rect x="4" y="15" width="24" height="12.5" rx="2.6" fill="#B5652A"/><rect x="4" y="14" width="24" height="3.2" fill="#FFC800"/><path d="M8.5 8.4v19M23.5 8.4v19" stroke="#FFC800" stroke-width="2.2"/><rect x="13.5" y="12" width="5" height="7.5" rx="1.6" fill="#FFE066"/><rect x="15.2" y="14.6" width="1.6" height="2.8" rx=".8" fill="#8A4B19"/></svg></span>
+        <span class="chest__icon chest__opened"><svg class="gi" viewBox="0 0 32 32" width="56" height="56" aria-hidden="true"><path d="M16 1l1.6 3.4L21 6l-3.4 1.6L16 11l-1.6-3.4L11 6l3.4-1.6z" fill="#FFE066"/><path d="M5 9.5 7.5 3h17L27 9.5z" fill="#D9843F"/><path d="M6 9.5h20l-1.3-4H7.3z" fill="#8A4B19" opacity=".35"/><rect x="4" y="15" width="24" height="12.5" rx="2.6" fill="#B5652A"/><path d="M4 12h24v4H4z" fill="#7A3F14"/><circle cx="11" cy="13.5" r="2.4" fill="#1CB0F6"/><circle cx="16.5" cy="12.8" r="2.6" fill="#FFC800"/><circle cx="21.5" cy="13.6" r="2.2" fill="#FF4B4B"/><rect x="4" y="15.5" width="24" height="3" fill="#FFC800"/><path d="M8.5 15.5v12M23.5 15.5v12" stroke="#FFC800" stroke-width="2.2"/></svg></span>
+      </button></div></div><div class="path__row" id="node-u1-l4"><div class="slot slot--current" style="transform:translateX(0px)">
+      <div class="hint" style="--shift:-14px" aria-hidden="true">Начать</div>
+      <button type="button" class="blk blk--current" data-node="" data-kind="lesson" data-state="current" data-offset="0" data-index="4" data-words="your, his, our, their" aria-label="Урок 4, текущий" data-color="var(--u1-l)" data-color2="var(--u1-r)">
+        <svg class="iso" viewBox="-52 -52 104 104" width="104" height="104" aria-hidden="true"><ellipse class="blk__shadow" cx="0" cy="46" rx="30" ry="9"/><g class="blk__float"><g class="set-u1">
+    <path class="f-l" d="M-38 0 L0 21.94 L0 41.94 L-38 20Z"/>
+    <path class="f-r" d="M0 21.94 L38 0 L38 20 L0 41.94Z"/>
+    <path class="f-t" d="M0 -21.94 L38 0 L0 21.94 L-38 0Z"/>
+    <path class="f-hi" d="M-34 0.2 L0 -19.54 L34 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(1.08 0.62) translate(-16 -16)"><path d="M16 3.5l3.7 7.6 8.3 1.2-6 5.9 1.4 8.3L16 22.6l-7.4 3.9 1.4-8.3-6-5.9 8.3-1.2z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></g><g class="decal" transform="scale(1.08 0.62) translate(-16 -16)"><path d="M16 3.5l3.7 7.6 8.3 1.2-6 5.9 1.4 8.3L16 22.6l-7.4 3.9 1.4-8.3-6-5.9 8.3-1.2z" fill="currentColor" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></g>
+  </g></g></svg>
+      </button></div></div><div class="path__row" id="node-u1-l5"><div class="slot" style="transform:translateX(-46px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="-46" data-index="5" data-words="this, that, these, those" aria-label="Урок 5, закрыт" data-color="var(--u1-l)" data-color2="var(--u1-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u1-l6"><div class="slot" style="transform:translateX(-74px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="-74" data-index="6" data-words="a, about, after, again" aria-label="Урок 6, закрыт" data-color="var(--u1-l)" data-color2="var(--u1-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u1-review"><div class="slot" style="transform:translateX(-46px)">
+      <button type="button" class="blk podium podium--locked" data-node="" data-kind="review" data-state="locked" data-offset="-46" data-index="" data-words="" aria-label="Повторение юнита, закрыт" data-color="var(--u1-l)" data-color2="var(--u1-r)">
+        <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-36 14 L0 34.78 L0 44.78 L-36 24Z"/>
+    <path class="f-r" d="M0 34.78 L36 14 L36 24 L0 44.78Z"/>
+    <path class="f-t" d="M0 -6.78 L36 14 L0 34.78 L-36 14Z"/>
+    <path class="f-hi" d="M-32 14.2 L0 -4.38 L32 14.2"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M-24 -2 L0 11.86 L0 27.86 L-24 14Z"/>
+    <path class="f-r" d="M0 11.86 L24 -2 L24 14 L0 27.86Z"/>
+    <path class="f-t" d="M0 -15.86 L24 -2 L0 11.86 L-24 -2Z"/>
+    <path class="f-hi" d="M-20 -1.8 L0 -13.46 L20 -1.8"/>
+    
+  </g></svg>
+        <span class="podium__cup"><svg class="gi" viewBox="0 0 32 32" width="40" height="40" style="filter:grayscale(1);opacity:.45" aria-hidden="true"><path d="M9 7H5.6A2.6 2.6 0 0 0 3 9.6C3 13.3 5.6 16 9.8 16.2M23 7h3.4A2.6 2.6 0 0 1 29 9.6c0 3.7-2.6 6.4-6.8 6.6" fill="none" stroke="#F2A900" stroke-width="2.8" stroke-linecap="round"/><path d="M8.5 3.5h15V12a7.5 7.5 0 0 1-15 0z" fill="#FFC800"/><path d="M13.8 18.8h4.4v4.4h-4.4z" fill="#E5A800"/><rect x="8.5" y="23" width="15" height="5.5" rx="2.2" fill="#E5A800"/><rect x="11.5" y="25" width="9" height="1.8" rx=".9" fill="#FFE066"/><path d="M12.5 6.5v6" stroke="#FFF3B0" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+      </button></div></div>
+    
+<div class="path__mascot" style="top:200px;left:calc(50% + -108px - 60px)" aria-hidden="true">
+  <svg class="mascot__tile set-lock" viewBox="-40 -14 80 40" width="80" height="40"><g class="">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 26.63 L-34 7Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 7 L0 26.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    
+  </g></svg>
+  <span class="lexi lexi--animated " style="width:120px;height:120px" role="img" aria-label="Лекси"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -10 248 250" class="lx lx--threeQuarter lx--idle"><defs>
+    <linearGradient id="lx11-fur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFB46A"/>
+      <stop offset="0.5" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#EC6A2B"/>
+    </linearGradient>
+    <linearGradient id="lx11-arm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#D95A22"/>
+    </linearGradient>
+    <linearGradient id="lx11-tail" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#D95A22"/>
+      <stop offset="0.55" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#FFB46A"/>
+    </linearGradient>
+    <linearGradient id="lx11-cream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF8EE"/>
+      <stop offset="1" stop-color="#F7E1C8"/>
+    </linearGradient>
+    <linearGradient id="lx11-scarf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9B7BFF"/>
+      <stop offset="1" stop-color="#5B3BE0"/>
+    </linearGradient>
+  </defs><ellipse cx="120" cy="229" rx="56" ry="7" fill="#1B0F35" class="lx-shadow" opacity="0.14"/><g class="lx-root"><g class="lx-body-wrap"><g class="lx-tail"><clipPath id="lx11-tailtq"><path d="M 94 214 C 58 225 18 211 9 180 C 4 164 6 148 16 134 C 18 152 27 166 42 173 C 58 180 76 184 90 190 Z" fill="#000"/></clipPath><path d="M 94 214 C 58 225 18 211 9 180 C 4 164 6 148 16 134 C 18 152 27 166 42 173 C 58 180 76 184 90 190 Z" fill="url(#lx11-tail)"/><path d="M 44 96 L -8 96 L -8 156 L 0 153 L 5 160 L 11 153 L 17 160 L 23 153 L 29 160 L 35 153 L 44 156 Z" fill="url(#lx11-cream)" clip-path="url(#lx11-tailtq)"/></g><g transform="translate(158 168) rotate(-18)"><g class="lx-arm lx-arm-r"><rect x="-6" y="-2" width="17" height="36" rx="8.5" fill="#B9471A" opacity="0.32"/><rect x="-8.5" y="-6" width="17" height="36" rx="8.5" fill="url(#lx11-arm)"/><ellipse cx="0" cy="32" rx="9.8" ry="9.2" fill="#3A2219"/><ellipse cx="-2.6" cy="29.4" rx="2.8" ry="1.7" fill="#fff" opacity="0.2"/></g></g><g class="lx-feet"><ellipse cx="106" cy="221" rx="17" ry="9" fill="#3A2219"/><ellipse cx="142" cy="219.8" rx="14.96" ry="7.92" fill="#5B3526"/><ellipse cx="101" cy="218" rx="6" ry="2.4" fill="#fff" opacity="0.16"/><ellipse cx="137" cy="218" rx="5.28" ry="2.4" fill="#fff" opacity="0.16"/></g><path d="M120 138 C 151 138 167 166 167 192 C 167 212 149 223 120 223 C 91 223 73 212 73 192 C 73 166 89 138 120 138 Z" fill="url(#lx11-fur)" transform="translate(4 0)"/><path d="M120 163 C 138 163 149 178 149 195 C 149 209 137 217 120 217 C 103 217 91 209 91 195 C 91 178 102 163 120 163 Z" fill="url(#lx11-cream)" transform="translate(132 0) scale(0.92 1) translate(-120 0)"/><g class="lx-scarf"><path d="M79 145 C 98 159 142 159 161 145 C 165 150 167 155 167 160 C 147 176 93 176 73 160 C 73 155 75 150 79 145 Z" fill="url(#lx11-scarf)"/><path d="M76 153 C 96 167 144 167 164 153" fill="none" stroke="#FFC83D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><g class="lx-scarf-end"><path d="M142 166 L 156 164 L 165 198 C 160 202 152 204 147 201 Z" fill="#5B3BE0"/><path d="M149 188 L 162 185" fill="none" stroke="#FFC83D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M148 201 L 147 206 M 154 203 L 154 208 M 160 202 L 162 207" fill="none" stroke="#5B3BE0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g><ellipse cx="149" cy="166" rx="8" ry="7" fill="url(#lx11-scarf)"/></g><g transform="translate(92 168) rotate(20)"><g class="lx-arm lx-arm-l"><rect x="-6" y="-2" width="17" height="36" rx="8.5" fill="#B9471A" opacity="0.32"/><rect x="-8.5" y="-6" width="17" height="36" rx="8.5" fill="url(#lx11-arm)"/><ellipse cx="0" cy="32" rx="9.8" ry="9.2" fill="#3A2219"/><ellipse cx="-2.6" cy="29.4" rx="2.8" ry="1.7" fill="#fff" opacity="0.2"/></g></g><g class="lx-head"><g class="lx-ear lx-ear-r" transform="translate(38 5) scale(0.8 0.95)"><clipPath id="lx11-ear-r"><path d="M 183 76 C 193 52 195 26 187 6 C 166 11 144 28 133 47 Z" fill="#000"/></clipPath><path d="M 183 76 C 193 52 195 26 187 6 C 166 11 144 28 133 47 Z" fill="url(#lx11-fur)"/><rect x="124" y="0" width="80" height="24" fill="#3A2219" clip-path="url(#lx11-ear-r)"/><path d="M 174 64 C 179 46 180 31 178 20 C 164 27 152 38 144 49 Z" fill="#7A3B26"/><path d="M 172 63 C 170 54 164 48 156 46 C 160 52 161 57 160 64 Z" fill="#FFF8EE"/></g><g class="lx-ear lx-ear-l" transform="translate(5 0)"><clipPath id="lx11-ear-l"><path d="M57 76 C 47 52 45 26 53 6 C 74 11 96 28 107 47 Z" fill="#000"/></clipPath><path d="M57 76 C 47 52 45 26 53 6 C 74 11 96 28 107 47 Z" fill="url(#lx11-fur)"/><rect x="36" y="0" width="80" height="24" fill="#3A2219" clip-path="url(#lx11-ear-l)"/><path d="M66 64 C 61 46 60 31 62 20 C 76 27 88 38 96 49 Z" fill="#7A3B26"/><path d="M68 63 C 70 54 76 48 84 46 C 80 52 79 57 80 64 Z" fill="#FFF8EE"/></g><clipPath id="lx11-headtq"><path d="M118 34 C 152 34 184 50 192 84 C 196 98 199 108 205 116 C 197 120 189 125 182 130 C 170 147 148 157 124 157 C 98 157 74 147 61 131 C 52 127 40 124 25 122 C 36 112 41 100 45 84 C 53 51 85 34 118 34 Z" fill="#000"/></clipPath><path d="M118 34 C 152 34 184 50 192 84 C 196 98 199 108 205 116 C 197 120 189 125 182 130 C 170 147 148 157 124 157 C 98 157 74 147 61 131 C 52 127 40 124 25 122 C 36 112 41 100 45 84 C 53 51 85 34 118 34 Z" fill="url(#lx11-fur)"/><path d="M16 120 C 42 108 72 106 100 114 C 116 118 134 120 146 111 C 152 118 160 118 168 114 C 182 108 198 108 222 116 L 222 176 L 16 176 Z" fill="url(#lx11-cream)" clip-path="url(#lx11-headtq)"/><ellipse cx="98" cy="52" rx="18" ry="8" fill="#fff" opacity="0.2" transform="rotate(-18 98 52)"/><ellipse cx="84" cy="121" rx="9.5" ry="5.5" fill="#FF6F8E" opacity="0.5"/><ellipse cx="178" cy="119" rx="6.5" ry="4.8" fill="#FF6F8E" opacity="0.45"/><g class="lx-eyes lx-blink"><ellipse cx="108" cy="100" rx="12" ry="14.5" fill="#2A170F"/><ellipse cx="112.5" cy="94.5" rx="4.8" ry="4.8" fill="#fff"/><ellipse cx="104" cy="106.5" rx="2.2" ry="2.2" fill="#fff" opacity="0.9"/><ellipse cx="162" cy="100" rx="9.120000000000001" ry="14.5" fill="#2A170F"/><ellipse cx="165.42" cy="94.5" rx="3.6479999999999997" ry="4.8" fill="#fff"/><ellipse cx="158.96" cy="106.5" rx="1.6720000000000002" ry="2.2" fill="#fff" opacity="0.9"/></g><path d="M140.5 118 C 140.5 114 155.5 114 155.5 118 C 155.5 122 150 126 148 126 C 146 126 140.5 122 140.5 118 Z" fill="#3A2219"/><ellipse cx="145.5" cy="117.8" rx="2.4" ry="1.3" fill="#fff" opacity="0.45"/><path d="M136 132 C 139 137 144 137 146 131 C 148 137 153 137 156 132" fill="none" stroke="#2A170F" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/></g></g></g></svg></span>
+</div>
+  </div>
+</section>
+<section class="unit-block" style="--soft:var(--u2-soft);--soft2:var(--u2-soft2);--uink:var(--u2-ink);--ul:var(--u2-l)">
+  <div class="unit-sticky">
+<header class="unit clay">
+  <svg class="unit__cube set-u2" viewBox="-24 -15 48 52" width="48" height="52" aria-hidden="true">
+    <g class="">
+    <path class="f-l" d="M-21 0 L0 12.12 L0 33.12 L-21 21Z"/>
+    <path class="f-r" d="M0 12.12 L21 0 L21 21 L0 33.12Z"/>
+    <path class="f-t" d="M0 -12.12 L21 0 L0 12.12 L-21 0Z"/>
+    <path class="f-hi" d="M-17 0.2 L0 -9.72 L17 0.2"/>
+    
+  </g>
+    <text class="cube__num" transform="matrix(0.866 0.5 0 1 -10.5 17.56)">2</text>
+  </svg>
+  <div class="grow">
+    <p class="unit__eyebrow">Раздел 1 · A1, юнит 2</p>
+    <h2 class="unit__title">Юнит 2</h2>
+    <p class="unit__sub">all, also, and…</p>
+    <div class="unit__pips" aria-label="Пройдено 0 из 7"><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><span class="nums">0/7</span></div>
+  </div>
+  <button type="button" class="unit__guide" aria-label="Слова юнита"><svg class="glyph" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true"><path d="M6 6.5A2.5 2.5 0 0 1 8.5 4H25v20H8.5A2.5 2.5 0 0 0 6 26.5zM6 26.5A2.5 2.5 0 0 0 8.5 29H25v-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M11 10h9M11 15h6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+</header></div>
+  <div class="path" style="height:832px">
+    <svg class="path__trail" viewBox="-160 0 320 832" height="832" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M18.12 117.32 L27.12 122.51 L27.12 126.01 L18.12 120.82Z"/>
+    <path class="f-r" d="M27.12 122.51 L36.12 117.32 L36.12 120.82 L27.12 126.01Z"/>
+    <path class="f-t" d="M27.12 112.12 L36.12 117.32 L27.12 122.51 L18.12 117.32Z"/>
+    <path class="f-hi" d="M22.12 117.52 L27.12 114.52 L32.12 117.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M53.51 221.32 L62.51 226.51 L62.51 230.01 L53.51 224.82Z"/>
+    <path class="f-r" d="M62.51 226.51 L71.51 221.32 L71.51 224.82 L62.51 230.01Z"/>
+    <path class="f-t" d="M62.51 216.12 L71.51 221.32 L62.51 226.51 L53.51 221.32Z"/>
+    <path class="f-hi" d="M57.51 221.52 L62.51 218.52 L67.51 221.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M9.88 429.32 L18.88 434.51 L18.88 438.01 L9.88 432.82Z"/>
+    <path class="f-r" d="M18.88 434.51 L27.88 429.32 L27.88 432.82 L18.88 438.01Z"/>
+    <path class="f-t" d="M18.88 424.12 L27.88 429.32 L18.88 434.51 L9.88 429.32Z"/>
+    <path class="f-hi" d="M13.88 429.52 L18.88 426.52 L23.88 429.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M-36.12 533.32 L-27.12 538.51 L-27.12 542.01 L-36.12 536.82Z"/>
+    <path class="f-r" d="M-27.12 538.51 L-18.12 533.32 L-18.12 536.82 L-27.12 542.01Z"/>
+    <path class="f-t" d="M-27.12 528.12 L-18.12 533.32 L-27.12 538.51 L-36.12 533.32Z"/>
+    <path class="f-hi" d="M-32.12 533.52 L-27.12 530.52 L-22.12 533.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M-71.51 637.32 L-62.51 642.51 L-62.51 646.01 L-71.51 640.82Z"/>
+    <path class="f-r" d="M-62.51 642.51 L-53.51 637.32 L-53.51 640.82 L-62.51 646.01Z"/>
+    <path class="f-t" d="M-62.51 632.12 L-53.51 637.32 L-62.51 642.51 L-71.51 637.32Z"/>
+    <path class="f-hi" d="M-67.51 637.52 L-62.51 634.52 L-57.51 637.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M-66.49 741.32 L-57.49 746.51 L-57.49 750.01 L-66.49 744.82Z"/>
+    <path class="f-r" d="M-57.49 746.51 L-48.49 741.32 L-48.49 744.82 L-57.49 750.01Z"/>
+    <path class="f-t" d="M-57.49 736.12 L-48.49 741.32 L-57.49 746.51 L-66.49 741.32Z"/>
+    <path class="f-hi" d="M-62.49 741.52 L-57.49 738.52 L-52.49 741.52"/>
+    
+  </g></svg>
+    <div class="path__row" id="node-u2-l1"><div class="slot" style="transform:translateX(0px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="0" data-index="1" data-words="all, also, and, animal" aria-label="Урок 1, закрыт" data-color="var(--u2-l)" data-color2="var(--u2-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u2-l2"><div class="slot" style="transform:translateX(46px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="46" data-index="2" data-words="apple, area, away, back" aria-label="Урок 2, закрыт" data-color="var(--u2-l)" data-color2="var(--u2-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u2-l3"><div class="slot" style="transform:translateX(74px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="74" data-index="3" data-words="bad, ball, be, big" aria-label="Урок 3, закрыт" data-color="var(--u2-l)" data-color2="var(--u2-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u2-chest"><div class="slot" style="transform:translateX(46px)">
+      <button type="button" class="blk chest chest--locked" data-node="" data-kind="chest" data-state="locked" data-offset="46" data-index="" data-words="" aria-label="Сундук с кристаллами" data-color="var(--u2-l)" data-color2="var(--u2-r)">
+        <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-28 8 L0 24.17 L0 33.17 L-28 17Z"/>
+    <path class="f-r" d="M0 24.17 L28 8 L28 17 L0 33.17Z"/>
+    <path class="f-t" d="M0 -8.17 L28 8 L0 24.17 L-28 8Z"/>
+    <path class="f-hi" d="M-24 8.2 L0 -5.77 L24 8.2"/>
+    
+  </g></svg>
+        <span class="chest__icon chest__closed"><svg class="gi" viewBox="0 0 32 32" width="56" height="56" style="filter:grayscale(1);opacity:.45" aria-hidden="true"><path d="M4 13.5a5.5 5.5 0 0 1 5.5-5.5h13a5.5 5.5 0 0 1 5.5 5.5v2H4z" fill="#D9843F"/><rect x="4" y="15" width="24" height="12.5" rx="2.6" fill="#B5652A"/><rect x="4" y="14" width="24" height="3.2" fill="#FFC800"/><path d="M8.5 8.4v19M23.5 8.4v19" stroke="#FFC800" stroke-width="2.2"/><rect x="13.5" y="12" width="5" height="7.5" rx="1.6" fill="#FFE066"/><rect x="15.2" y="14.6" width="1.6" height="2.8" rx=".8" fill="#8A4B19"/></svg></span>
+        <span class="chest__icon chest__opened"><svg class="gi" viewBox="0 0 32 32" width="56" height="56" aria-hidden="true"><path d="M16 1l1.6 3.4L21 6l-3.4 1.6L16 11l-1.6-3.4L11 6l3.4-1.6z" fill="#FFE066"/><path d="M5 9.5 7.5 3h17L27 9.5z" fill="#D9843F"/><path d="M6 9.5h20l-1.3-4H7.3z" fill="#8A4B19" opacity=".35"/><rect x="4" y="15" width="24" height="12.5" rx="2.6" fill="#B5652A"/><path d="M4 12h24v4H4z" fill="#7A3F14"/><circle cx="11" cy="13.5" r="2.4" fill="#1CB0F6"/><circle cx="16.5" cy="12.8" r="2.6" fill="#FFC800"/><circle cx="21.5" cy="13.6" r="2.2" fill="#FF4B4B"/><rect x="4" y="15.5" width="24" height="3" fill="#FFC800"/><path d="M8.5 15.5v12M23.5 15.5v12" stroke="#FFC800" stroke-width="2.2"/></svg></span>
+      </button></div></div><div class="path__row" id="node-u2-l4"><div class="slot" style="transform:translateX(0px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="0" data-index="4" data-words="book, boy, bread, brother" aria-label="Урок 4, закрыт" data-color="var(--u2-l)" data-color2="var(--u2-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u2-l5"><div class="slot" style="transform:translateX(-46px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="-46" data-index="5" data-words="but, by, can, car" aria-label="Урок 5, закрыт" data-color="var(--u2-l)" data-color2="var(--u2-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u2-l6"><div class="slot" style="transform:translateX(-74px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="-74" data-index="6" data-words="cat, city, class, come" aria-label="Урок 6, закрыт" data-color="var(--u2-l)" data-color2="var(--u2-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u2-review"><div class="slot" style="transform:translateX(-46px)">
+      <button type="button" class="blk podium podium--locked" data-node="" data-kind="review" data-state="locked" data-offset="-46" data-index="" data-words="" aria-label="Повторение юнита, закрыт" data-color="var(--u2-l)" data-color2="var(--u2-r)">
+        <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-36 14 L0 34.78 L0 44.78 L-36 24Z"/>
+    <path class="f-r" d="M0 34.78 L36 14 L36 24 L0 44.78Z"/>
+    <path class="f-t" d="M0 -6.78 L36 14 L0 34.78 L-36 14Z"/>
+    <path class="f-hi" d="M-32 14.2 L0 -4.38 L32 14.2"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M-24 -2 L0 11.86 L0 27.86 L-24 14Z"/>
+    <path class="f-r" d="M0 11.86 L24 -2 L24 14 L0 27.86Z"/>
+    <path class="f-t" d="M0 -15.86 L24 -2 L0 11.86 L-24 -2Z"/>
+    <path class="f-hi" d="M-20 -1.8 L0 -13.46 L20 -1.8"/>
+    
+  </g></svg>
+        <span class="podium__cup"><svg class="gi" viewBox="0 0 32 32" width="40" height="40" style="filter:grayscale(1);opacity:.45" aria-hidden="true"><path d="M9 7H5.6A2.6 2.6 0 0 0 3 9.6C3 13.3 5.6 16 9.8 16.2M23 7h3.4A2.6 2.6 0 0 1 29 9.6c0 3.7-2.6 6.4-6.8 6.6" fill="none" stroke="#F2A900" stroke-width="2.8" stroke-linecap="round"/><path d="M8.5 3.5h15V12a7.5 7.5 0 0 1-15 0z" fill="#FFC800"/><path d="M13.8 18.8h4.4v4.4h-4.4z" fill="#E5A800"/><rect x="8.5" y="23" width="15" height="5.5" rx="2.2" fill="#E5A800"/><rect x="11.5" y="25" width="9" height="1.8" rx=".9" fill="#FFE066"/><path d="M12.5 6.5v6" stroke="#FFF3B0" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+      </button></div></div>
+    
+<div class="path__mascot" style="top:200px;left:calc(50% + -108px - 60px)" aria-hidden="true">
+  <svg class="mascot__tile set-lock" viewBox="-40 -14 80 40" width="80" height="40"><g class="">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 26.63 L-34 7Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 7 L0 26.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    
+  </g></svg>
+  <span class="lexi lexi--animated " style="width:120px;height:120px" role="img" aria-label="Лекси"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -10 248 250" class="lx lx--side lx--run"><defs>
+    <linearGradient id="lx12-fur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFB46A"/>
+      <stop offset="0.5" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#EC6A2B"/>
+    </linearGradient>
+    <linearGradient id="lx12-arm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#D95A22"/>
+    </linearGradient>
+    <linearGradient id="lx12-tail" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#D95A22"/>
+      <stop offset="0.55" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#FFB46A"/>
+    </linearGradient>
+    <linearGradient id="lx12-cream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF8EE"/>
+      <stop offset="1" stop-color="#F7E1C8"/>
+    </linearGradient>
+    <linearGradient id="lx12-scarf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9B7BFF"/>
+      <stop offset="1" stop-color="#5B3BE0"/>
+    </linearGradient>
+  </defs><ellipse cx="120" cy="229" rx="56" ry="7" fill="#1B0F35" class="lx-shadow" opacity="0.14"/><g class="lx-root"><g class="lx-body-wrap"><g class="lx-tail"><clipPath id="lx12-tails"><path d="M88 206 C 58 215 24 204 15 177 C 10 161 12 146 21 132 C 24 149 34 161 50 167 C 64 172 78 176 92 186 Z" fill="#000"/></clipPath><path d="M88 206 C 58 215 24 204 15 177 C 10 161 12 146 21 132 C 24 149 34 161 50 167 C 64 172 78 176 92 186 Z" fill="url(#lx12-tail)"/><path d="M-8 100 L 60 100 L 60 152 L 52 149 L 46 156 L 40 149 L 34 156 L 28 149 L 22 156 L 16 149 L 10 156 L -8 152 Z" fill="url(#lx12-cream)" clip-path="url(#lx12-tails)"/></g><g class="lx-legs"><g transform="translate(102 200)"><g class="lx-leg lx-leg-far"><rect x="-6" y="-2" width="12" height="20" rx="6" fill="#5B3526"/><ellipse cx="5" cy="18" rx="13" ry="7" fill="#5B3526"/></g></g><g transform="translate(124 201)"><g class="lx-leg lx-leg-near"><rect x="-6.5" y="-2" width="13" height="20" rx="6.5" fill="#3A2219"/><ellipse cx="5" cy="19" rx="14" ry="7.5" fill="#3A2219"/></g></g></g><path d="M106 140 C 134 140 149 166 149 192 C 149 211 134 222 112 222 C 90 222 78 211 78 192 C 78 166 84 140 106 140 Z" fill="url(#lx12-fur)"/><path d="M126 160 C 140 168 147 182 146 198 C 145 210 136 218 124 219 C 130 204 131 180 126 160 Z" fill="url(#lx12-cream)"/><g class="lx-scarf"><path d="M78 148 C 96 160 128 160 146 146 C 150 151 151 156 150 161 C 130 176 96 176 76 162 C 75 157 76 152 78 148 Z" fill="url(#lx12-scarf)"/><path d="M77 155 C 97 168 129 168 148 154" fill="none" stroke="#FFC83D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><g class="lx-scarf-end"><path d="M82 152 C 66 150 50 144 36 133 L 31 146 C 47 156 64 162 80 165 Z" fill="#5B3BE0"/><path d="M60 150 L 52 158" fill="none" stroke="#FFC83D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g></g><g class="lx-head"><path d="M60 58 C 54 38 56 21 64 8 C 77 18 87 31 91 45 Z" fill="#D95A22"/><clipPath id="lx12-ears"><path d="M78 54 C 70 32 72 14 82 0 C 98 11 112 27 118 44 Z" fill="#000"/></clipPath><path d="M78 54 C 70 32 72 14 82 0 C 98 11 112 27 118 44 Z" fill="url(#lx12-fur)"/><rect x="60" y="-4" width="70" height="22" fill="#3A2219" clip-path="url(#lx12-ears)"/><path d="M86 46 C 82 32 84 20 88 12 C 98 20 106 30 110 40 Z" fill="#7A3B26"/><clipPath id="lx12-heads"><path d="M84 40 C 116 30 150 42 163 68 C 170 82 182 94 198 101 C 208 106 209 119 198 122 C 180 128 160 132 144 140 C 127 149 106 153 88 151 C 76 151 66 147 57 141 C 47 139 39 137 30 133 C 40 125 45 117 47 107 C 45 77 57 49 84 40 Z" fill="#000"/></clipPath><path d="M84 40 C 116 30 150 42 163 68 C 170 82 182 94 198 101 C 208 106 209 119 198 122 C 180 128 160 132 144 140 C 127 149 106 153 88 151 C 76 151 66 147 57 141 C 47 139 39 137 30 133 C 40 125 45 117 47 107 C 45 77 57 49 84 40 Z" fill="url(#lx12-fur)"/><path d="M198 122 C 180 128 160 132 144 140 C 127 149 106 153 88 151 C 76 151 66 147 57 141 C 47 139 39 137 30 133 C 52 127 76 125 100 124 C 128 122 156 114 174 104 C 184 110 192 115 198 122 Z" fill="url(#lx12-cream)" clip-path="url(#lx12-heads)"/><ellipse cx="92" cy="56" rx="18" ry="8" fill="#fff" opacity="0.2" transform="rotate(-14 92 56)"/><ellipse cx="128" cy="114" rx="9" ry="5" fill="#FF6F8E" opacity="0.45"/><g class="lx-eyes lx-blink"><ellipse cx="139" cy="90" rx="9.5" ry="13.5" fill="#2A170F"/><ellipse cx="142.5" cy="84.5" rx="4" ry="4" fill="#fff"/><ellipse cx="136" cy="96" rx="1.8" ry="1.8" fill="#fff" opacity="0.9"/></g><path d="M192 104 C 196 100 205 101 207 107 C 209 113 203 117 198 116 C 193 115 190 108 192 104 Z" fill="#3A2219"/><path d="M190 122 C 184 132 172 134 166 128 C 174 128 182 126 190 122 Z" fill="#7C2633"/></g><g transform="translate(116 166) rotate(-40)"><g class="lx-arm lx-arm-r lx-arm-swing"><rect x="-6" y="-2" width="17" height="36" rx="8.5" fill="#B9471A" opacity="0.32"/><rect x="-8.5" y="-6" width="17" height="36" rx="8.5" fill="url(#lx12-arm)"/><ellipse cx="0" cy="32" rx="9.8" ry="9.2" fill="#3A2219"/><ellipse cx="-2.6" cy="29.4" rx="2.8" ry="1.7" fill="#fff" opacity="0.2"/></g></g></g></g></svg></span>
+</div>
+  </div>
+</section>
+<section class="unit-block" style="--soft:var(--u3-soft);--soft2:var(--u3-soft2);--uink:var(--u3-ink);--ul:var(--u3-l)">
+  <div class="unit-sticky">
+<header class="unit clay">
+  <svg class="unit__cube set-u3" viewBox="-24 -15 48 52" width="48" height="52" aria-hidden="true">
+    <g class="">
+    <path class="f-l" d="M-21 0 L0 12.12 L0 33.12 L-21 21Z"/>
+    <path class="f-r" d="M0 12.12 L21 0 L21 21 L0 33.12Z"/>
+    <path class="f-t" d="M0 -12.12 L21 0 L0 12.12 L-21 0Z"/>
+    <path class="f-hi" d="M-17 0.2 L0 -9.72 L17 0.2"/>
+    
+  </g>
+    <text class="cube__num" transform="matrix(0.866 0.5 0 1 -10.5 17.56)">3</text>
+  </svg>
+  <div class="grow">
+    <p class="unit__eyebrow">Раздел 1 · A1, юнит 3</p>
+    <h2 class="unit__title">Юнит 3</h2>
+    <p class="unit__sub">computer, day, dog…</p>
+    <div class="unit__pips" aria-label="Пройдено 0 из 7"><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><svg class="pip set-lock" viewBox="-8 -6 16 13" width="16" height="13" aria-hidden="true"><g class="">
+    <path class="f-l" d="M-7 0 L0 4.04 L0 7.04 L-7 3Z"/>
+    <path class="f-r" d="M0 4.04 L7 0 L7 3 L0 7.04Z"/>
+    <path class="f-t" d="M0 -4.04 L7 0 L0 4.04 L-7 0Z"/>
+    <path class="f-hi" d="M-3 0.2 L0 -1.64 L3 0.2"/>
+    
+  </g></svg><span class="nums">0/7</span></div>
+  </div>
+  <button type="button" class="unit__guide" aria-label="Слова юнита"><svg class="glyph" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true"><path d="M6 6.5A2.5 2.5 0 0 1 8.5 4H25v20H8.5A2.5 2.5 0 0 0 6 26.5zM6 26.5A2.5 2.5 0 0 0 8.5 29H25v-5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M11 10h9M11 15h6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg></button>
+</header></div>
+  <div class="path" style="height:832px">
+    <svg class="path__trail" viewBox="-160 0 320 832" height="832" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M18.12 117.32 L27.12 122.51 L27.12 126.01 L18.12 120.82Z"/>
+    <path class="f-r" d="M27.12 122.51 L36.12 117.32 L36.12 120.82 L27.12 126.01Z"/>
+    <path class="f-t" d="M27.12 112.12 L36.12 117.32 L27.12 122.51 L18.12 117.32Z"/>
+    <path class="f-hi" d="M22.12 117.52 L27.12 114.52 L32.12 117.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M53.51 221.32 L62.51 226.51 L62.51 230.01 L53.51 224.82Z"/>
+    <path class="f-r" d="M62.51 226.51 L71.51 221.32 L71.51 224.82 L62.51 230.01Z"/>
+    <path class="f-t" d="M62.51 216.12 L71.51 221.32 L62.51 226.51 L53.51 221.32Z"/>
+    <path class="f-hi" d="M57.51 221.52 L62.51 218.52 L67.51 221.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M9.88 429.32 L18.88 434.51 L18.88 438.01 L9.88 432.82Z"/>
+    <path class="f-r" d="M18.88 434.51 L27.88 429.32 L27.88 432.82 L18.88 438.01Z"/>
+    <path class="f-t" d="M18.88 424.12 L27.88 429.32 L18.88 434.51 L9.88 429.32Z"/>
+    <path class="f-hi" d="M13.88 429.52 L18.88 426.52 L23.88 429.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M-36.12 533.32 L-27.12 538.51 L-27.12 542.01 L-36.12 536.82Z"/>
+    <path class="f-r" d="M-27.12 538.51 L-18.12 533.32 L-18.12 536.82 L-27.12 542.01Z"/>
+    <path class="f-t" d="M-27.12 528.12 L-18.12 533.32 L-27.12 538.51 L-36.12 533.32Z"/>
+    <path class="f-hi" d="M-32.12 533.52 L-27.12 530.52 L-22.12 533.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M-71.51 637.32 L-62.51 642.51 L-62.51 646.01 L-71.51 640.82Z"/>
+    <path class="f-r" d="M-62.51 642.51 L-53.51 637.32 L-53.51 640.82 L-62.51 646.01Z"/>
+    <path class="f-t" d="M-62.51 632.12 L-53.51 637.32 L-62.51 642.51 L-71.51 637.32Z"/>
+    <path class="f-hi" d="M-67.51 637.52 L-62.51 634.52 L-57.51 637.52"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M-66.49 741.32 L-57.49 746.51 L-57.49 750.01 L-66.49 744.82Z"/>
+    <path class="f-r" d="M-57.49 746.51 L-48.49 741.32 L-48.49 744.82 L-57.49 750.01Z"/>
+    <path class="f-t" d="M-57.49 736.12 L-48.49 741.32 L-57.49 746.51 L-66.49 741.32Z"/>
+    <path class="f-hi" d="M-62.49 741.52 L-57.49 738.52 L-52.49 741.52"/>
+    
+  </g></svg>
+    <div class="path__row" id="node-u3-l1"><div class="slot" style="transform:translateX(0px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="0" data-index="1" data-words="computer, day, dog, door" aria-label="Урок 1, закрыт" data-color="var(--u3-l)" data-color2="var(--u3-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u3-l2"><div class="slot" style="transform:translateX(46px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="46" data-index="2" data-words="down, drink, eat, egg" aria-label="Урок 2, закрыт" data-color="var(--u3-l)" data-color2="var(--u3-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u3-l3"><div class="slot" style="transform:translateX(74px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="74" data-index="3" data-words="evening, family, find, flower" aria-label="Урок 3, закрыт" data-color="var(--u3-l)" data-color2="var(--u3-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u3-chest"><div class="slot" style="transform:translateX(46px)">
+      <button type="button" class="blk chest chest--locked" data-node="" data-kind="chest" data-state="locked" data-offset="46" data-index="" data-words="" aria-label="Сундук с кристаллами" data-color="var(--u3-l)" data-color2="var(--u3-r)">
+        <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-28 8 L0 24.17 L0 33.17 L-28 17Z"/>
+    <path class="f-r" d="M0 24.17 L28 8 L28 17 L0 33.17Z"/>
+    <path class="f-t" d="M0 -8.17 L28 8 L0 24.17 L-28 8Z"/>
+    <path class="f-hi" d="M-24 8.2 L0 -5.77 L24 8.2"/>
+    
+  </g></svg>
+        <span class="chest__icon chest__closed"><svg class="gi" viewBox="0 0 32 32" width="56" height="56" style="filter:grayscale(1);opacity:.45" aria-hidden="true"><path d="M4 13.5a5.5 5.5 0 0 1 5.5-5.5h13a5.5 5.5 0 0 1 5.5 5.5v2H4z" fill="#D9843F"/><rect x="4" y="15" width="24" height="12.5" rx="2.6" fill="#B5652A"/><rect x="4" y="14" width="24" height="3.2" fill="#FFC800"/><path d="M8.5 8.4v19M23.5 8.4v19" stroke="#FFC800" stroke-width="2.2"/><rect x="13.5" y="12" width="5" height="7.5" rx="1.6" fill="#FFE066"/><rect x="15.2" y="14.6" width="1.6" height="2.8" rx=".8" fill="#8A4B19"/></svg></span>
+        <span class="chest__icon chest__opened"><svg class="gi" viewBox="0 0 32 32" width="56" height="56" aria-hidden="true"><path d="M16 1l1.6 3.4L21 6l-3.4 1.6L16 11l-1.6-3.4L11 6l3.4-1.6z" fill="#FFE066"/><path d="M5 9.5 7.5 3h17L27 9.5z" fill="#D9843F"/><path d="M6 9.5h20l-1.3-4H7.3z" fill="#8A4B19" opacity=".35"/><rect x="4" y="15" width="24" height="12.5" rx="2.6" fill="#B5652A"/><path d="M4 12h24v4H4z" fill="#7A3F14"/><circle cx="11" cy="13.5" r="2.4" fill="#1CB0F6"/><circle cx="16.5" cy="12.8" r="2.6" fill="#FFC800"/><circle cx="21.5" cy="13.6" r="2.2" fill="#FF4B4B"/><rect x="4" y="15.5" width="24" height="3" fill="#FFC800"/><path d="M8.5 15.5v12M23.5 15.5v12" stroke="#FFC800" stroke-width="2.2"/></svg></span>
+      </button></div></div><div class="path__row" id="node-u3-l4"><div class="slot" style="transform:translateX(0px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="0" data-index="4" data-words="food, for, friend, from" aria-label="Урок 4, закрыт" data-color="var(--u3-l)" data-color2="var(--u3-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u3-l5"><div class="slot" style="transform:translateX(-46px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="-46" data-index="5" data-words="fruit, girl, good, green" aria-label="Урок 5, закрыт" data-color="var(--u3-l)" data-color2="var(--u3-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u3-l6"><div class="slot" style="transform:translateX(-74px)">
+    <button type="button" class="blk blk--locked" data-node="" data-kind="lesson" data-state="locked" data-offset="-74" data-index="6" data-words="happy, hat, head, home" aria-label="Урок 6, закрыт" data-color="var(--u3-l)" data-color2="var(--u3-r)">
+      <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 36.63 L-34 17Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 17 L0 36.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    <g class="decal-shadow" transform="translate(0 1.6) scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g><g class="decal" transform="scale(0.8 0.46) translate(-16 -16)"><path d="M10.5 14.5V11a5.5 5.5 0 0 1 11 0v3.5M8 14h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+  </g></svg>
+    </button></div></div><div class="path__row" id="node-u3-review"><div class="slot" style="transform:translateX(-46px)">
+      <button type="button" class="blk podium podium--locked" data-node="" data-kind="review" data-state="locked" data-offset="-46" data-index="" data-words="" aria-label="Повторение юнита, закрыт" data-color="var(--u3-l)" data-color2="var(--u3-r)">
+        <svg class="iso" viewBox="-46 -46 92 92" width="92" height="92" aria-hidden="true"><g class="set-lock">
+    <path class="f-l" d="M-36 14 L0 34.78 L0 44.78 L-36 24Z"/>
+    <path class="f-r" d="M0 34.78 L36 14 L36 24 L0 44.78Z"/>
+    <path class="f-t" d="M0 -6.78 L36 14 L0 34.78 L-36 14Z"/>
+    <path class="f-hi" d="M-32 14.2 L0 -4.38 L32 14.2"/>
+    
+  </g><g class="set-lock">
+    <path class="f-l" d="M-24 -2 L0 11.86 L0 27.86 L-24 14Z"/>
+    <path class="f-r" d="M0 11.86 L24 -2 L24 14 L0 27.86Z"/>
+    <path class="f-t" d="M0 -15.86 L24 -2 L0 11.86 L-24 -2Z"/>
+    <path class="f-hi" d="M-20 -1.8 L0 -13.46 L20 -1.8"/>
+    
+  </g></svg>
+        <span class="podium__cup"><svg class="gi" viewBox="0 0 32 32" width="40" height="40" style="filter:grayscale(1);opacity:.45" aria-hidden="true"><path d="M9 7H5.6A2.6 2.6 0 0 0 3 9.6C3 13.3 5.6 16 9.8 16.2M23 7h3.4A2.6 2.6 0 0 1 29 9.6c0 3.7-2.6 6.4-6.8 6.6" fill="none" stroke="#F2A900" stroke-width="2.8" stroke-linecap="round"/><path d="M8.5 3.5h15V12a7.5 7.5 0 0 1-15 0z" fill="#FFC800"/><path d="M13.8 18.8h4.4v4.4h-4.4z" fill="#E5A800"/><rect x="8.5" y="23" width="15" height="5.5" rx="2.2" fill="#E5A800"/><rect x="11.5" y="25" width="9" height="1.8" rx=".9" fill="#FFE066"/><path d="M12.5 6.5v6" stroke="#FFF3B0" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+      </button></div></div>
+    
+<div class="path__mascot" style="top:200px;left:calc(50% + -108px - 60px)" aria-hidden="true">
+  <svg class="mascot__tile set-lock" viewBox="-40 -14 80 40" width="80" height="40"><g class="">
+    <path class="f-l" d="M-34 0 L0 19.63 L0 26.63 L-34 7Z"/>
+    <path class="f-r" d="M0 19.63 L34 0 L34 7 L0 26.63Z"/>
+    <path class="f-t" d="M0 -19.63 L34 0 L0 19.63 L-34 0Z"/>
+    <path class="f-hi" d="M-30 0.2 L0 -17.23 L30 0.2"/>
+    
+  </g></svg>
+  <span class="lexi lexi--animated " style="width:120px;height:120px" role="img" aria-label="Лекси"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -10 248 250" class="lx lx--front lx--read"><defs>
+    <linearGradient id="lx13-fur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFB46A"/>
+      <stop offset="0.5" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#EC6A2B"/>
+    </linearGradient>
+    <linearGradient id="lx13-arm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#D95A22"/>
+    </linearGradient>
+    <linearGradient id="lx13-tail" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#D95A22"/>
+      <stop offset="0.55" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#FFB46A"/>
+    </linearGradient>
+    <linearGradient id="lx13-cream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF8EE"/>
+      <stop offset="1" stop-color="#F7E1C8"/>
+    </linearGradient>
+    <linearGradient id="lx13-scarf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9B7BFF"/>
+      <stop offset="1" stop-color="#5B3BE0"/>
+    </linearGradient>
+  </defs><ellipse cx="120" cy="229" rx="56" ry="7" fill="#1B0F35" class="lx-shadow" opacity="0.14"/><g class="lx-root"><g class="lx-body-wrap"><g class="lx-tail"><clipPath id="lx13-tailclip"><path d="M146 214 C 182 225 222 211 231 180 C 236 164 234 148 224 134 C 222 152 213 166 198 173 C 182 180 164 184 150 190 Z" fill="#000"/></clipPath><path d="M146 214 C 182 225 222 211 231 180 C 236 164 234 148 224 134 C 222 152 213 166 198 173 C 182 180 164 184 150 190 Z" fill="url(#lx13-tail)"/><path d="M196 96 L 248 96 L 248 156 L 240 153 L 235 160 L 229 153 L 223 160 L 217 153 L 211 160 L 205 153 L 196 156 Z" fill="url(#lx13-cream)" clip-path="url(#lx13-tailclip)"/></g><g class="lx-feet"><ellipse cx="100" cy="221" rx="17" ry="9" fill="#3A2219"/><ellipse cx="140" cy="221" rx="17" ry="9" fill="#3A2219"/><ellipse cx="95" cy="218" rx="6" ry="2.4" fill="#fff" opacity="0.16"/><ellipse cx="135" cy="218" rx="6" ry="2.4" fill="#fff" opacity="0.16"/></g><path d="M120 138 C 151 138 167 166 167 192 C 167 212 149 223 120 223 C 91 223 73 212 73 192 C 73 166 89 138 120 138 Z" fill="url(#lx13-fur)"/><path d="M120 163 C 138 163 149 178 149 195 C 149 209 137 217 120 217 C 103 217 91 209 91 195 C 91 178 102 163 120 163 Z" fill="url(#lx13-cream)"/><g class="lx-scarf"><path d="M79 145 C 98 159 142 159 161 145 C 165 150 167 155 167 160 C 147 176 93 176 73 160 C 73 155 75 150 79 145 Z" fill="url(#lx13-scarf)"/><path d="M76 153 C 96 167 144 167 164 153" fill="none" stroke="#FFC83D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><g class="lx-scarf-end"><path d="M132 166 L 146 164 L 155 198 C 150 202 142 204 137 201 Z" fill="#5B3BE0"/><path d="M139 188 L 152 185" fill="none" stroke="#FFC83D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M138 201 L 137 206 M 144 203 L 144 208 M 150 202 L 152 207" fill="none" stroke="#5B3BE0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g><ellipse cx="139" cy="166" rx="8" ry="7" fill="url(#lx13-scarf)"/></g><g class="lx-book"><path d="M86 184 L 120 191 L 154 184 L 154 212 L 120 219 L 86 212 Z" fill="#1592D0"/><path d="M89 180 C 102 177 113 180 120 186 L 120 213 C 113 207 102 205 89 207 Z" fill="#FFFFFF"/><path d="M151 180 C 138 177 127 180 120 186 L 120 213 C 127 207 138 205 151 207 Z" fill="#EEF3FF"/><path d="M95 188 L 113 191 M 95 195 L 113 198 M 95 202 L 108 204" fill="none" stroke="#B9C6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M127 191 L 145 188 M 127 198 L 145 195" fill="none" stroke="#B9C6E6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g><g transform="translate(88 166) rotate(-32)"><g class="lx-arm lx-arm-l"><rect x="-6" y="-2" width="17" height="34" rx="8.5" fill="#B9471A" opacity="0.32"/><rect x="-8.5" y="-6" width="17" height="34" rx="8.5" fill="url(#lx13-arm)"/><ellipse cx="0" cy="30" rx="9.8" ry="9.2" fill="#3A2219"/></g></g><g transform="translate(152 166) rotate(32)"><g class="lx-arm lx-arm-r"><rect x="-6" y="-2" width="17" height="34" rx="8.5" fill="#B9471A" opacity="0.32"/><rect x="-8.5" y="-6" width="17" height="34" rx="8.5" fill="url(#lx13-arm)"/><ellipse cx="0" cy="30" rx="9.8" ry="9.2" fill="#3A2219"/></g></g><g class="lx-head"><g class="lx-ear lx-ear-l"><clipPath id="lx13-ear-l"><path d="M57 76 C 47 52 45 26 53 6 C 74 11 96 28 107 47 Z" fill="#000"/></clipPath><path d="M57 76 C 47 52 45 26 53 6 C 74 11 96 28 107 47 Z" fill="url(#lx13-fur)"/><rect x="36" y="0" width="80" height="24" fill="#3A2219" clip-path="url(#lx13-ear-l)"/><path d="M66 64 C 61 46 60 31 62 20 C 76 27 88 38 96 49 Z" fill="#7A3B26"/><path d="M68 63 C 70 54 76 48 84 46 C 80 52 79 57 80 64 Z" fill="#FFF8EE"/></g><g class="lx-ear lx-ear-r"><clipPath id="lx13-ear-r"><path d="M 183 76 C 193 52 195 26 187 6 C 166 11 144 28 133 47 Z" fill="#000"/></clipPath><path d="M 183 76 C 193 52 195 26 187 6 C 166 11 144 28 133 47 Z" fill="url(#lx13-fur)"/><rect x="124" y="0" width="80" height="24" fill="#3A2219" clip-path="url(#lx13-ear-r)"/><path d="M 174 64 C 179 46 180 31 178 20 C 164 27 152 38 144 49 Z" fill="#7A3B26"/><path d="M 172 63 C 170 54 164 48 156 46 C 160 52 161 57 160 64 Z" fill="#FFF8EE"/></g><clipPath id="lx13-head"><path d="M120 34 C 153 34 185 50 193 84 C 197 100 201 112 211 122 C 197 124 187 127 179 131 C 167 147 145 157 120 157 C 95 157 73 147 61 131 C 53 127 43 124 29 122 C 39 112 43 100 47 84 C 55 50 87 34 120 34 Z" fill="#000"/></clipPath><path d="M120 34 C 153 34 185 50 193 84 C 197 100 201 112 211 122 C 197 124 187 127 179 131 C 167 147 145 157 120 157 C 95 157 73 147 61 131 C 53 127 43 124 29 122 C 39 112 43 100 47 84 C 55 50 87 34 120 34 Z" fill="url(#lx13-fur)"/><path d="M22 120 C 44 108 70 105 92 113 C 104 117 112 118 120 110 C 128 118 136 117 148 113 C 170 105 196 108 218 120 L 218 176 L 22 176 Z" fill="url(#lx13-cream)" clip-path="url(#lx13-head)"/><ellipse cx="94" cy="52" rx="18" ry="8" fill="#fff" opacity="0.2" transform="rotate(-18 94 52)"/><ellipse cx="75" cy="121" rx="9.5" ry="5.5" fill="#FF6F8E" opacity="0.5"/><ellipse cx="165" cy="121" rx="9.5" ry="5.5" fill="#FF6F8E" opacity="0.5"/><g class="lx-eyes lx-blink"><ellipse cx="92" cy="100" rx="12" ry="14.5" fill="#2A170F"/><ellipse cx="96.5" cy="97.5" rx="4.8" ry="4.8" fill="#fff"/><ellipse cx="88" cy="109.5" rx="2.2" ry="2.2" fill="#fff" opacity="0.9"/><ellipse cx="148" cy="100" rx="12" ry="14.5" fill="#2A170F"/><ellipse cx="152.5" cy="97.5" rx="4.8" ry="4.8" fill="#fff"/><ellipse cx="144" cy="109.5" rx="2.2" ry="2.2" fill="#fff" opacity="0.9"/></g><path d="M112 118 C 112 114 128 114 128 118 C 128 122 122 126 120 126 C 118 126 112 122 112 118 Z" fill="#3A2219"/><ellipse cx="117.5" cy="117.8" rx="2.4" ry="1.3" fill="#fff" opacity="0.45"/><path d="M110 132 C 113 137 118 137 120 131 C 122 137 127 137 130 132" fill="none" stroke="#2A170F" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/></g></g></g></svg></span>
+</div>
+  </div>
+</section>
+      
+<section class="end clay">
+  <span class="lexi lexi--animated " style="width:96px;height:96px" role="img" aria-label="Лекси"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -10 248 250" class="lx lx--front lx--happy"><defs>
+    <linearGradient id="lx14-fur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFB46A"/>
+      <stop offset="0.5" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#EC6A2B"/>
+    </linearGradient>
+    <linearGradient id="lx14-arm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#D95A22"/>
+    </linearGradient>
+    <linearGradient id="lx14-tail" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#D95A22"/>
+      <stop offset="0.55" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#FFB46A"/>
+    </linearGradient>
+    <linearGradient id="lx14-cream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF8EE"/>
+      <stop offset="1" stop-color="#F7E1C8"/>
+    </linearGradient>
+    <linearGradient id="lx14-scarf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9B7BFF"/>
+      <stop offset="1" stop-color="#5B3BE0"/>
+    </linearGradient>
+  </defs><ellipse cx="120" cy="229" rx="56" ry="7" fill="#1B0F35" class="lx-shadow" opacity="0.14"/><g class="lx-root"><g class="lx-body-wrap"><g class="lx-tail"><clipPath id="lx14-tailclip"><path d="M146 214 C 182 225 222 211 231 180 C 236 164 234 148 224 134 C 222 152 213 166 198 173 C 182 180 164 184 150 190 Z" fill="#000"/></clipPath><path d="M146 214 C 182 225 222 211 231 180 C 236 164 234 148 224 134 C 222 152 213 166 198 173 C 182 180 164 184 150 190 Z" fill="url(#lx14-tail)"/><path d="M196 96 L 248 96 L 248 156 L 240 153 L 235 160 L 229 153 L 223 160 L 217 153 L 211 160 L 205 153 L 196 156 Z" fill="url(#lx14-cream)" clip-path="url(#lx14-tailclip)"/></g><g class="lx-feet"><ellipse cx="100" cy="221" rx="17" ry="9" fill="#3A2219"/><ellipse cx="140" cy="221" rx="17" ry="9" fill="#3A2219"/><ellipse cx="95" cy="218" rx="6" ry="2.4" fill="#fff" opacity="0.16"/><ellipse cx="135" cy="218" rx="6" ry="2.4" fill="#fff" opacity="0.16"/></g><path d="M120 138 C 151 138 167 166 167 192 C 167 212 149 223 120 223 C 91 223 73 212 73 192 C 73 166 89 138 120 138 Z" fill="url(#lx14-fur)"/><path d="M120 163 C 138 163 149 178 149 195 C 149 209 137 217 120 217 C 103 217 91 209 91 195 C 91 178 102 163 120 163 Z" fill="url(#lx14-cream)"/><g class="lx-scarf"><path d="M79 145 C 98 159 142 159 161 145 C 165 150 167 155 167 160 C 147 176 93 176 73 160 C 73 155 75 150 79 145 Z" fill="url(#lx14-scarf)"/><path d="M76 153 C 96 167 144 167 164 153" fill="none" stroke="#FFC83D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><g class="lx-scarf-end"><path d="M132 166 L 146 164 L 155 198 C 150 202 142 204 137 201 Z" fill="#5B3BE0"/><path d="M139 188 L 152 185" fill="none" stroke="#FFC83D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M138 201 L 137 206 M 144 203 L 144 208 M 150 202 L 152 207" fill="none" stroke="#5B3BE0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g><ellipse cx="139" cy="166" rx="8" ry="7" fill="url(#lx14-scarf)"/></g><g transform="translate(84 166) rotate(42)"><g class="lx-arm lx-arm-l"><rect x="-6" y="-2" width="17" height="36" rx="8.5" fill="#B9471A" opacity="0.32"/><rect x="-8.5" y="-6" width="17" height="36" rx="8.5" fill="url(#lx14-arm)"/><ellipse cx="0" cy="32" rx="9.8" ry="9.2" fill="#3A2219"/><ellipse cx="-2.6" cy="29.4" rx="2.8" ry="1.7" fill="#fff" opacity="0.2"/></g></g><g transform="translate(156 166) rotate(-42)"><g class="lx-arm lx-arm-r"><rect x="-6" y="-2" width="17" height="36" rx="8.5" fill="#B9471A" opacity="0.32"/><rect x="-8.5" y="-6" width="17" height="36" rx="8.5" fill="url(#lx14-arm)"/><ellipse cx="0" cy="32" rx="9.8" ry="9.2" fill="#3A2219"/><ellipse cx="-2.6" cy="29.4" rx="2.8" ry="1.7" fill="#fff" opacity="0.2"/></g></g><g class="lx-head"><g class="lx-ear lx-ear-l"><clipPath id="lx14-ear-l"><path d="M57 76 C 47 52 45 26 53 6 C 74 11 96 28 107 47 Z" fill="#000"/></clipPath><path d="M57 76 C 47 52 45 26 53 6 C 74 11 96 28 107 47 Z" fill="url(#lx14-fur)"/><rect x="36" y="0" width="80" height="24" fill="#3A2219" clip-path="url(#lx14-ear-l)"/><path d="M66 64 C 61 46 60 31 62 20 C 76 27 88 38 96 49 Z" fill="#7A3B26"/><path d="M68 63 C 70 54 76 48 84 46 C 80 52 79 57 80 64 Z" fill="#FFF8EE"/></g><g class="lx-ear lx-ear-r"><clipPath id="lx14-ear-r"><path d="M 183 76 C 193 52 195 26 187 6 C 166 11 144 28 133 47 Z" fill="#000"/></clipPath><path d="M 183 76 C 193 52 195 26 187 6 C 166 11 144 28 133 47 Z" fill="url(#lx14-fur)"/><rect x="124" y="0" width="80" height="24" fill="#3A2219" clip-path="url(#lx14-ear-r)"/><path d="M 174 64 C 179 46 180 31 178 20 C 164 27 152 38 144 49 Z" fill="#7A3B26"/><path d="M 172 63 C 170 54 164 48 156 46 C 160 52 161 57 160 64 Z" fill="#FFF8EE"/></g><clipPath id="lx14-head"><path d="M120 34 C 153 34 185 50 193 84 C 197 100 201 112 211 122 C 197 124 187 127 179 131 C 167 147 145 157 120 157 C 95 157 73 147 61 131 C 53 127 43 124 29 122 C 39 112 43 100 47 84 C 55 50 87 34 120 34 Z" fill="#000"/></clipPath><path d="M120 34 C 153 34 185 50 193 84 C 197 100 201 112 211 122 C 197 124 187 127 179 131 C 167 147 145 157 120 157 C 95 157 73 147 61 131 C 53 127 43 124 29 122 C 39 112 43 100 47 84 C 55 50 87 34 120 34 Z" fill="url(#lx14-fur)"/><path d="M22 120 C 44 108 70 105 92 113 C 104 117 112 118 120 110 C 128 118 136 117 148 113 C 170 105 196 108 218 120 L 218 176 L 22 176 Z" fill="url(#lx14-cream)" clip-path="url(#lx14-head)"/><ellipse cx="94" cy="52" rx="18" ry="8" fill="#fff" opacity="0.2" transform="rotate(-18 94 52)"/><ellipse cx="75" cy="121" rx="9.5" ry="5.5" fill="#FF6F8E" opacity="0.5"/><ellipse cx="165" cy="121" rx="9.5" ry="5.5" fill="#FF6F8E" opacity="0.5"/><g class="lx-eyes"><path d="M80 103 Q 92 88 104 103" fill="none" stroke="#2A170F" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M136 103 Q 148 88 160 103" fill="none" stroke="#2A170F" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/></g><path d="M112 118 C 112 114 128 114 128 118 C 128 122 122 126 120 126 C 118 126 112 122 112 118 Z" fill="#3A2219"/><ellipse cx="117.5" cy="117.8" rx="2.4" ry="1.3" fill="#fff" opacity="0.45"/><g class="lx-mouth"><path d="M109 130 C 111 146 129 146 131 130 C 124 133 116 133 109 130 Z" fill="#7C2633"/><path d="M114 140 C 117 136 123 136 126 140 C 123 143 117 143 114 140 Z" fill="#FF7F8F"/></g></g></g></g></svg></span>
+  <div class="grow">
+    <h3>Впереди ещё много интересного</h3>
+    <p>Следующий раздел — Элементарный.</p>
+    <button type="button" class="end__btn">Перейти: A2</button>
+  </div>
+</section>
+    </div>
+  </main>
+  
+<nav class="tabs" aria-label="Разделы приложения">
+  <div class="tabs__in">
+    <a class="tab tab--on" aria-current="page"><span class="tab__icon"><svg class="gi" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><path d="M4 15 16 4.5 28 15" fill="none" stroke="#FF4B4B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 14.5 16 7l9 7.5V26a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 7 26z" fill="#FFB14E"/><rect x="13" y="18.5" width="6" height="10" rx="1.6" fill="#B5652A"/><rect x="21" y="5.5" width="3.2" height="6" rx="1" fill="#FF4B4B"/></svg></span><span class="tab__label">Учёба</span></a>
+    <a class="tab"><span class="tab__icon"><svg class="gi" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect x="8" y="14" width="16" height="4" rx="2" fill="#B9BED0"/><rect x="4.5" y="8.5" width="6" height="15" rx="3" fill="#7C5CFF"/><rect x="21.5" y="8.5" width="6" height="15" rx="3" fill="#7C5CFF"/><rect x="1.5" y="12" width="4" height="8" rx="2" fill="#5B3BE0"/><rect x="26.5" y="12" width="4" height="8" rx="2" fill="#5B3BE0"/><rect x="6" y="10.5" width="2" height="5" rx="1" fill="#B3A3FF"/></svg><i class="tab__dot"></i></span><span class="tab__label">Практика</span></a>
+    <a class="tab"><span class="tab__icon"><svg class="gi" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect x="5" y="4" width="22" height="24" rx="3.5" fill="#1CB0F6"/><path d="M5 21.5h22V25a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z" fill="#1590CC"/><rect x="7.5" y="21.5" width="17" height="3.4" rx="1.4" fill="#fff"/><rect x="10" y="8.5" width="12" height="3" rx="1.5" fill="#DDF4FF"/><rect x="10" y="13.5" width="8" height="3" rx="1.5" fill="#DDF4FF"/></svg></span><span class="tab__label">Словарь</span></a>
+    <a class="tab"><span class="tab__icon"><span class="lexi " style="width:32px;height:32px" role="img" aria-label="Лекси"><svg xmlns="http://www.w3.org/2000/svg" viewBox="24 1 192 160" class="lx lx--front lx--idle"><defs>
+    <linearGradient id="lx15-fur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFB46A"/>
+      <stop offset="0.5" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#EC6A2B"/>
+    </linearGradient>
+    <linearGradient id="lx15-arm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#D95A22"/>
+    </linearGradient>
+    <linearGradient id="lx15-tail" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#D95A22"/>
+      <stop offset="0.55" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#FFB46A"/>
+    </linearGradient>
+    <linearGradient id="lx15-cream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF8EE"/>
+      <stop offset="1" stop-color="#F7E1C8"/>
+    </linearGradient>
+    <linearGradient id="lx15-scarf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9B7BFF"/>
+      <stop offset="1" stop-color="#5B3BE0"/>
+    </linearGradient>
+  </defs><g class="lx-root"><g class="lx-body-wrap"><g class="lx-head"><g class="lx-ear lx-ear-l"><clipPath id="lx15-ear-l"><path d="M57 76 C 47 52 45 26 53 6 C 74 11 96 28 107 47 Z" fill="#000"/></clipPath><path d="M57 76 C 47 52 45 26 53 6 C 74 11 96 28 107 47 Z" fill="url(#lx15-fur)"/><rect x="36" y="0" width="80" height="24" fill="#3A2219" clip-path="url(#lx15-ear-l)"/><path d="M66 64 C 61 46 60 31 62 20 C 76 27 88 38 96 49 Z" fill="#7A3B26"/><path d="M68 63 C 70 54 76 48 84 46 C 80 52 79 57 80 64 Z" fill="#FFF8EE"/></g><g class="lx-ear lx-ear-r"><clipPath id="lx15-ear-r"><path d="M 183 76 C 193 52 195 26 187 6 C 166 11 144 28 133 47 Z" fill="#000"/></clipPath><path d="M 183 76 C 193 52 195 26 187 6 C 166 11 144 28 133 47 Z" fill="url(#lx15-fur)"/><rect x="124" y="0" width="80" height="24" fill="#3A2219" clip-path="url(#lx15-ear-r)"/><path d="M 174 64 C 179 46 180 31 178 20 C 164 27 152 38 144 49 Z" fill="#7A3B26"/><path d="M 172 63 C 170 54 164 48 156 46 C 160 52 161 57 160 64 Z" fill="#FFF8EE"/></g><clipPath id="lx15-head"><path d="M120 34 C 153 34 185 50 193 84 C 197 100 201 112 211 122 C 197 124 187 127 179 131 C 167 147 145 157 120 157 C 95 157 73 147 61 131 C 53 127 43 124 29 122 C 39 112 43 100 47 84 C 55 50 87 34 120 34 Z" fill="#000"/></clipPath><path d="M120 34 C 153 34 185 50 193 84 C 197 100 201 112 211 122 C 197 124 187 127 179 131 C 167 147 145 157 120 157 C 95 157 73 147 61 131 C 53 127 43 124 29 122 C 39 112 43 100 47 84 C 55 50 87 34 120 34 Z" fill="url(#lx15-fur)"/><path d="M22 120 C 44 108 70 105 92 113 C 104 117 112 118 120 110 C 128 118 136 117 148 113 C 170 105 196 108 218 120 L 218 176 L 22 176 Z" fill="url(#lx15-cream)" clip-path="url(#lx15-head)"/><ellipse cx="94" cy="52" rx="18" ry="8" fill="#fff" opacity="0.2" transform="rotate(-18 94 52)"/><ellipse cx="75" cy="121" rx="9.5" ry="5.5" fill="#FF6F8E" opacity="0.5"/><ellipse cx="165" cy="121" rx="9.5" ry="5.5" fill="#FF6F8E" opacity="0.5"/><g class="lx-eyes lx-blink"><ellipse cx="92" cy="100" rx="12" ry="14.5" fill="#2A170F"/><ellipse cx="96.5" cy="94.5" rx="4.8" ry="4.8" fill="#fff"/><ellipse cx="88" cy="106.5" rx="2.2" ry="2.2" fill="#fff" opacity="0.9"/><ellipse cx="148" cy="100" rx="12" ry="14.5" fill="#2A170F"/><ellipse cx="152.5" cy="94.5" rx="4.8" ry="4.8" fill="#fff"/><ellipse cx="144" cy="106.5" rx="2.2" ry="2.2" fill="#fff" opacity="0.9"/></g><path d="M112 118 C 112 114 128 114 128 118 C 128 122 122 126 120 126 C 118 126 112 122 112 118 Z" fill="#3A2219"/><ellipse cx="117.5" cy="117.8" rx="2.4" ry="1.3" fill="#fff" opacity="0.45"/><path d="M110 132 C 113 137 118 137 120 131 C 122 137 127 137 130 132" fill="none" stroke="#2A170F" stroke-width="2.7" stroke-linecap="round" stroke-linejoin="round"/></g></g></g></svg></span></span><span class="tab__label">Профиль</span></a>
+  </div>
+</nav>
+</div>
+<script>
+(() => {
+  const scroller = document.getElementById('scroll');
+  const current = document.querySelector('[data-state="current"]');
+  if (current && scroller && !new URLSearchParams(location.search).has('top')) {
+    const row = current.closest('.path__row');
+    const top = row.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop;
+    scroller.scrollTop = Math.max(0, top - scroller.clientHeight * 0.4);
+  }
+  const sy = new URLSearchParams(location.search).get('y');
+  if (sy && scroller) scroller.scrollTop = +sy;
+  const plural = (n, a, b, c) => { const m10 = n % 10, m100 = n % 100; return m10 === 1 && m100 !== 11 ? a : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? b : c; };
+  let open = null;
+  const close = () => { if (!open) return; open.row.classList.remove('path__row--open'); open.btn.classList.remove('is-selected'); open.pop.remove(); open = null; };
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-node]');
+    if (!btn) { if (!e.target.closest('.pop')) close(); return; }
+    const row = btn.closest('.path__row');
+    if (open && open.btn === btn) { close(); return; }
+    close();
+    const d = btn.dataset;
+    if (d.kind === 'chest') { btn.classList.toggle('is-claimed'); return; }
+    const state = d.state;
+    const title = d.kind === 'review' ? 'Повторение юнита' : 'Урок ' + d.index + ' из 6';
+    const n = d.kind === 'review' ? 24 : 4;
+    const text = state === 'locked' ? 'Пройдите все уроки выше, чтобы открыть этот.'
+      : d.kind === 'review' ? 'Закрепите все 24 слова юнита и получите кубок.'
+      : state === 'done' ? 'Урок пройден. Повторите, чтобы закрепить слова.'
+      : n + ' ' + plural(n, 'новое слово', 'новых слова', 'новых слов') + ' и задания на запоминание.';
+    const action = state === 'locked' ? '' : state === 'done' ? 'Повторить +5 XP' : d.kind === 'review' ? 'Начать +20 XP' : 'Начать +10 XP';
+    const pop = document.createElement('div');
+    pop.className = 'path__pop';
+    pop.innerHTML = '<div class="pop' + (state === 'locked' ? ' pop--locked' : '') + '" style="--arrow:' + d.offset + 'px;' + (d.color ? '--pop:' + d.color + ';' : '') + (d.color2 ? '--pop2:' + d.color2 : '') + '" role="dialog">'
+      + '<h3 class="pop__title">' + title + '</h3>'
+      + (d.words && state !== 'locked' ? '<p class="pop__words">' + d.words + '</p>' : '')
+      + '<p class="pop__text">' + text + '</p>'
+      + (action ? '<button type="button" class="pop__btn">' + action + '</button>' : '')
+      + '</div>';
+    row.appendChild(pop);
+    row.classList.add('path__row--open');
+    btn.classList.add('is-selected');
+    open = { row, btn, pop };
+  });
+})();
+</script>
+</body>
+</html>
