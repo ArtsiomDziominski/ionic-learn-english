@@ -26,6 +26,8 @@ describe('адреса /words', () => {
 
   test('/words и всё под ним уходит на главную постоянным редиректом', () => {
     expect(redirects).toContainEqual({ source: '/words', destination: '/', permanent: true });
+    // со слэшем на конце Vercel правило «/words» не применяет и отдаёт 404
+    expect(redirects).toContainEqual({ source: '/words/', destination: '/', permanent: true });
     expect(redirects).toContainEqual({ source: '/words/:path*', destination: '/', permanent: true });
   });
 
