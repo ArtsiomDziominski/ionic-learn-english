@@ -9,8 +9,13 @@ const year = new Date().getFullYear();
 const route = useRoute();
 const router = useIonRouter();
 
-// На самой странице «О сайте» ссылка на неё же не нужна; /about/ со слэшем — тот же экран
-const showAbout = computed(() => route.path.replace(/\/+$/, '') !== '/about');
+const SECTIONS = [
+  { path: '/vocabulary', text: 'Словарь' },
+  { path: '/article', text: 'Статьи' },
+  { path: '/about', text: 'О сайте' },
+];
+const currentPath = computed(() => route.path.replace(/\/+$/, '') || '/');
+const sections = computed(() => SECTIONS.filter((s) => s.path !== currentPath.value));
 
 const openLink = async (url: string): Promise<void> => {
   // В приложении открываем в системном браузере, в вебе — новой вкладкой
@@ -24,9 +29,9 @@ const openLink = async (url: string): Promise<void> => {
 
 <template>
   <footer class="footer">
-    <nav class="footer__links" aria-label="О сайте и правовая информация">
-      <template v-if="showAbout">
-        <a href="/about" @click.prevent="router.push('/about')">О сайте</a>
+    <nav class="footer__links" aria-label="Разделы сайта и правовая информация">
+      <template v-for="link in sections" :key="link.path">
+        <a :href="link.path" @click.prevent="router.push(link.path)">{{ link.text }}</a>
         <span aria-hidden="true">·</span>
       </template>
       <a href="/privacy-policy.html" @click.prevent="openLink('/privacy-policy.html')">Политика конфиденциальности</a>

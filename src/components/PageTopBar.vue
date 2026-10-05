@@ -12,7 +12,7 @@ const router = useIonRouter();
 
 const goBack = (): void => {
   if (router.canGoBack()) router.back();
-  else router.navigate('/words', 'back', 'replace');
+  else router.navigate('/', 'back', 'replace');
 };
 </script>
 

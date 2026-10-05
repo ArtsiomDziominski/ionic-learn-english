@@ -68,7 +68,7 @@ const start = (card: Card): void => {
                 ? `В вашем словаре ${words(learnedCount)}. Тренировка укрепляет память и возвращает жизнь.`
                 : 'Пройдите первый урок на пути — и слова появятся здесь.' }}
             </p>
-            <button v-if="!learnedCount" type="button" class="btn btn--sm hero__btn" @click="router.push('/words')">К урокам</button>
+            <button v-if="!learnedCount" type="button" class="btn btn--sm hero__btn" @click="router.push('/')">К урокам</button>
           </div>
         </section>
 

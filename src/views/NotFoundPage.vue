@@ -21,7 +21,7 @@
           </p>
         </article>
         <div class="actions">
-          <button type="button" class="btn btn--block btn--lg" @click="router.navigate('/words', 'root', 'replace')">К урокам</button>
+          <button type="button" class="btn btn--block btn--lg" @click="router.navigate('/', 'root', 'replace')">К урокам</button>
           <button type="button" class="btn btn--block btn--secondary" @click="router.navigate('/vocabulary', 'root', 'replace')">Открыть словарь</button>
         </div>
       </div>

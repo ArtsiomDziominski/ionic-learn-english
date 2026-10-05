@@ -1,23 +1,3 @@
-/**
- * Пререндер статических страниц после `vite build`.
- *
- * Зачем: приложение — SPA, и до этого шага любой URL отдавал роботам
- * один и тот же index.html. В нём захардкожены заголовок главной и
- * `<link rel="canonical" href="https://www.learnenglisheasy.ru/">`,
- * то есть каждая страница сообщала поисковику «я дубликат главной».
- * Google дорисовывает мета через JS, но канонический адрес из
- * исходного HTML — сильный сигнал, а Yandex JS почти не исполняет.
- *
- * Скрипт кладёт рядом с index.html по файлу на маршрут с настоящими
- * title / description / canonical / OG, а для статей и страницы «О сайте»
- * ещё и вставляет их текст в #app — Vue заменит его при монтировании,
- * поэтому для пользователя ничего не меняется, а робот без JS видит
- * содержимое.
- *
- * Мета здесь должны совпадать с тем, что ставит useSEO на клиенте:
- * расхождение поисковики трактуют как подмену контента.
- */
-
 import { readFileSync, writeFileSync, mkdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -26,6 +6,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(root, 'dist');
 const ARTICLES = join(root, 'public', 'articles');
 const ABOUT = join(root, 'src', 'content', 'about.json');
+const WORDS = join(root, 'src', 'content', 'words_level.ts');
+const COURSE = join(root, 'src', 'core', 'course.ts');
 const ORIGIN = 'https://www.learnenglisheasy.ru';
 
 const escapeAttr = (value) =>
@@ -42,8 +24,10 @@ const escapeAttr = (value) =>
  * («…uchit'-slova») разошёлся бы с тем, что подставит useSEO из
  * window.location.href («…uchit%27-slova»).
  */
-const toUrl = (path) =>
-  ORIGIN + path.split('/').map((s) => encodeURIComponent(s).replace(/'/g, '%27')).join('/');
+const toHref = (path) =>
+  path.split('/').map((s) => encodeURIComponent(s).replace(/'/g, '%27')).join('/');
+
+const toUrl = (path) => ORIGIN + toHref(path);
 
 const replaceTag = (html, pattern, replacement) => {
   if (!pattern.test(html)) {
@@ -87,18 +71,15 @@ function renderPage(template, page) {
   }
 
   if (page.bodyHtml) {
-    /* Тело статьи содержит собственный <style> с правилами для body
-       (в том числе светлый фон). До монтирования Vue он успел бы
-       перекрасить страницу, поэтому вырезаем: роботам стили не нужны. */
     const content = page.bodyHtml.replace(/<style[\s\S]*?<\/style>/gi, '').trim();
-    html = html.replace('<div id="app"></div>', `<div id="app">${content}</div>`);
+    html = html.replace('<div id="app"></div>', () => `<div id="app">${content}</div>`);
   }
 
   return html;
 }
 
 function writePage(routePath, html) {
-  // "/" -> dist/index.html, "/words" -> dist/words/index.html
+  // "/" -> dist/index.html, "/vocabulary" -> dist/vocabulary/index.html
   const target = routePath === '/' ? join(DIST, 'index.html') : join(DIST, routePath, 'index.html');
   mkdirSync(dirname(target), { recursive: true });
   writeFileSync(target, html, 'utf8');
@@ -170,6 +151,157 @@ function aboutJsonLd(about) {
   };
 }
 
+/* ——— Тело страниц для роботов ————————————————————————————— */
+
+/**
+ * Ссылки на основные разделы. Приложение рисует навигацию скриптом, а робот
+ * без JS (Яндекс исполняет его лишь частично) иначе не нашёл бы ничего,
+ * кроме самой страницы: без ссылок остальные адреса остаются неизвестными.
+ */
+const SECTION_LINKS = [
+  { path: '/', text: 'Начать учиться' },
+  { path: '/vocabulary', text: 'Словарь английских слов' },
+  { path: '/article', text: 'Статьи об изучении английского' },
+  { path: '/about', text: 'О сайте' },
+];
+
+const renderSiteNav = (current) =>
+  `<nav aria-label="Разделы сайта">${SECTION_LINKS
+    .filter((link) => link.path !== current)
+    .map((link) => `<a href="${link.path}">${escapeAttr(link.text)}</a>`)
+    .join(' · ')}</nav>`;
+
+/** Главная: вступление и ссылки; текст общий со страницей «О сайте». */
+function renderHomeBody(about) {
+  return [
+    '<main class="page">',
+    '<h1>Слова.Day — бесплатный тренажёр английских слов</h1>',
+    `<p>${escapeAttr(about.lead)}</p>`,
+    renderSiteNav('/'),
+    '</main>',
+  ].join('\n');
+}
+
+/** Список статей: тексты те же, что показывает ArticlesPage. */
+function renderArticlesBody(articles) {
+  const items = articles.map(({ slug, article }) =>
+    [
+      '<li>',
+      `<h2><a href="${toHref(`/article/${slug}`)}">${escapeAttr(article.title)}</a></h2>`,
+      article.description ? `<p>${escapeAttr(article.description)}</p>` : '',
+      '</li>',
+    ].filter(Boolean).join('')
+  );
+
+  return [
+    '<article class="page">',
+    '<h1>Блог для изучения английского</h1>',
+    '<p>Полезные статьи, советы и ресурсы для эффективного изучения языка</p>',
+    `<ul>${items.join('\n')}</ul>`,
+    renderSiteNav('/article'),
+    '</article>',
+  ].join('\n');
+}
+
+/**
+ * Словарь хранится в TS-файле: одна запись на строку, каждая — валидный JSON.
+ * Разбираем построчно, чтобы не тянуть в Node компилятор и алиасы из src.
+ * Если формат изменится, сборка упадёт, а не выдаст пустую страницу.
+ */
+function readRawWords() {
+  const source = readFileSync(WORDS, 'utf8');
+  const raws = [...source.matchAll(/^\s*(\{.*\}),?\s*$/gm)].map((m) => JSON.parse(m[1]));
+  if (raws.length < 1000) {
+    throw new Error(`[prerender] словарь разобран неверно: ${raws.length} записей в ${WORDS}`);
+  }
+  return raws;
+}
+
+/** Уровни и темы читаем из course.ts, чтобы названия не разошлись с приложением. */
+function readCourseMeta() {
+  const source = readFileSync(COURSE, 'utf8');
+  const levels = [...source.matchAll(/\{ key: '([^']+)', title: '([^']+)', english: '([^']+)'/g)]
+    .map(([, key, title, english]) => ({ key, title, english }));
+  const topics = [...source.matchAll(/\{ key: '([^']+)', title: '([^']+)', subtitle: '[^']*' \}/g)]
+    .map(([, key, title]) => ({ key, title }));
+  if (levels.length !== 6 || topics.length < 10) {
+    throw new Error(`[prerender] не разобраны уровни (${levels.length}) или темы (${topics.length}) в ${COURSE}`);
+  }
+  return { levels, topics };
+}
+
+const pluralRu = (n, one, few, many) => {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return one;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
+  return many;
+};
+
+/**
+ * Словарь: все слова курса с переводом. Слово попадает в самый ранний
+ * уровень, а слова без уровня — в свою тему (так же, как в course.ts),
+ * поэтому каждое слово указано один раз.
+ */
+function renderVocabularyBody() {
+  const raws = readRawWords();
+  const { levels, topics } = readCourseMeta();
+
+  const meanings = (translation) => translation.split(/[,;]/).map((t) => t.trim()).filter(Boolean);
+  const bank = new Map();
+  for (const raw of raws) {
+    const id = raw.word.trim().toLowerCase();
+    if (!id) continue;
+    const entry = bank.get(id) ?? { word: raw.word.trim(), meanings: [] };
+    for (const m of meanings(raw.translation)) if (!entry.meanings.includes(m)) entry.meanings.push(m);
+    bank.set(id, entry);
+  }
+
+  const taken = new Set();
+  const collect = (key) => {
+    const ids = [];
+    for (const raw of raws) {
+      if (!raw.levels.includes(key)) continue;
+      const id = raw.word.trim().toLowerCase();
+      if (!id || taken.has(id)) continue;
+      taken.add(id);
+      ids.push(id);
+    }
+    return ids;
+  };
+
+  const renderList = (ids) =>
+    `<ul>${ids
+      .map((id) => {
+        const { word, meanings: tr } = bank.get(id);
+        return `<li><span lang="en">${escapeAttr(word)}</span> — ${escapeAttr(tr.join(', '))}</li>`;
+      })
+      .join('')}</ul>`;
+
+  const levelSections = levels
+    .map((level) => ({ ...level, ids: collect(level.key) }))
+    .filter((s) => s.ids.length)
+    .map((s) => `<section id="${s.key.toLowerCase()}"><h3>${escapeAttr(`${s.key} — ${s.title} (${s.english})`)}</h3>${renderList(s.ids)}</section>`);
+
+  const topicSections = topics
+    .map((topic) => ({ ...topic, ids: collect(topic.key) }))
+    .filter((s) => s.ids.length)
+    .map((s) => `<section id="topic-${escapeAttr(s.key)}"><h3>${escapeAttr(s.title)}</h3>${renderList(s.ids)}</section>`);
+
+  const total = bank.size;
+  return [
+    '<article class="page">',
+    '<h1>Словарь английских слов</h1>',
+    `<p>Все слова курса с переводом на русский: ${total} ${pluralRu(total, 'слово', 'слова', 'слов')} — шесть уровней от A1 до C2 и тематические наборы. В приложении слова можно искать, слушать произношение и отмечать сердечком сложные, чтобы повторить их в тренировке.</p>`,
+    renderSiteNav('/vocabulary'),
+    '<h2>Слова по уровням</h2>',
+    ...levelSections,
+    '<h2>Слова по темам</h2>',
+    ...topicSections,
+    '</article>',
+  ].join('\n');
+}
+
 function main() {
   const indexPath = join(DIST, 'index.html');
   if (!existsSync(indexPath)) {
@@ -177,6 +309,17 @@ function main() {
   }
   const template = readFileSync(indexPath, 'utf8');
   const about = JSON.parse(readFileSync(ABOUT, 'utf8'));
+
+  const slugs = JSON.parse(readFileSync(join(ARTICLES, 'list.json'), 'utf8'));
+  const articles = [];
+  for (const slug of slugs) {
+    const file = join(ARTICLES, `${slug}.json`);
+    if (!existsSync(file)) {
+      console.warn(`[prerender] пропущена статья без файла: ${slug}`);
+      continue;
+    }
+    articles.push({ slug, article: JSON.parse(readFileSync(file, 'utf8')) });
+  }
 
   /* Тексты продублированы из useSEO в соответствующих экранах.
      При изменении там нужно поправить и здесь. Исключение — «О сайте»:
@@ -187,24 +330,21 @@ function main() {
       title: 'Изучение английских слов онлайн тренажер бесплатно',
       description: 'Изучайте английские слова легко и эффективно с помощью интерактивных упражнений. Карточки, тесты и игры для быстрого запоминания слов. Бесплатный онлайн тренажер для всех уровней.',
       keywords: 'английские слова, изучение английского, тренажер слов, карточки английского, учить слова онлайн, vocabulary trainer, английский бесплатно',
-    },
-    {
-      path: '/words',
-      title: 'Изучение английских слов онлайн тренажер бесплатно',
-      description: 'Изучайте английские слова легко и эффективно с помощью интерактивных упражнений. Карточки, тесты и игры для быстрого запоминания слов. Бесплатный онлайн тренажер для всех уровней.',
-      keywords: 'английские слова, изучение английского, тренажер слов, карточки английского, учить слова онлайн, vocabulary trainer, английский бесплатно',
+      bodyHtml: renderHomeBody(about),
     },
     {
       path: '/vocabulary',
       title: 'Мой словарь английских слов | Слова.Day',
       description: 'Ваш персональный словарь для изучения английского языка. Отслеживайте прогресс, повторяйте слова и расширяйте свой словарный запас эффективно.',
       keywords: 'словарь английского, мой словарь, изученные слова, английский словарь, vocabulary list',
+      bodyHtml: renderVocabularyBody(),
     },
     {
       path: '/article',
       title: 'Статьи для изучения английского языка | Слова.Day',
       description: 'Узнайте лучшие статьи и ресурсы для изучения английского языка. Полезные советы, методы и рекомендации для всех уровней. Эффективные способы запоминания слов, грамматика и практические упражнения.',
       keywords: 'английский язык, изучение английского, статьи, ресурсы, советы по изучению английского, методы изучения, как учить английский',
+      bodyHtml: renderArticlesBody(articles),
     },
     {
       path: about.path,
@@ -225,14 +365,7 @@ function main() {
   }
 
   // Статьи
-  const list = JSON.parse(readFileSync(join(ARTICLES, 'list.json'), 'utf8'));
-  for (const slug of list) {
-    const file = join(ARTICLES, `${slug}.json`);
-    if (!existsSync(file)) {
-      console.warn(`[prerender] пропущена статья без файла: ${slug}`);
-      continue;
-    }
-    const article = JSON.parse(readFileSync(file, 'utf8'));
+  for (const { slug, article } of articles) {
     const path = `/article/${slug}`;
     const canonical = toUrl(path);
 
@@ -263,7 +396,7 @@ function main() {
     written.push(writePage(path, html));
   }
 
-  writeSitemap(pages, list);
+  writeSitemap(pages, articles.map((a) => a.slug));
   console.log(`[prerender] создано страниц: ${written.length}`);
 }
 
@@ -280,7 +413,7 @@ function writeSitemap(pages, articleSlugs) {
     entries.push({
       loc: toUrl(page.path),
       lastmod: fileDate(join(DIST, 'index.html')),
-      changefreq: page.path === '/' || page.path === '/words' ? 'weekly' : 'monthly',
+      changefreq: page.path === '/' ? 'weekly' : 'monthly',
       priority: page.priority ?? (page.path === '/' ? '1.0' : '0.8'),
     });
   }

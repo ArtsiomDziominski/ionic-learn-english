@@ -12,7 +12,7 @@ const { state, dueIds } = storeToRefs(progress);
 
 /* На главной вкладки в стиле мира Лекси — бумажная панель под травой */
 const route = useRoute();
-const forest = computed(() => route.path.startsWith('/words'));
+const forest = computed(() => route.path === '/');
 </script>
 
 <template>
@@ -20,11 +20,6 @@ const forest = computed(() => route.path.startsWith('/words'));
     <ion-tabs>
       <ion-router-outlet />
       <ion-tab-bar slot="bottom" class="tabs" :class="{ 'tabs--forest': forest }">
-        <ion-tab-button tab="words" href="/words" class="tab">
-          <span class="tab__icon"><GameIcon name="home" :size="30" /></span>
-          <ion-label class="tab__label">Учёба</ion-label>
-        </ion-tab-button>
-
         <ion-tab-button tab="practice" href="/practice" class="tab">
           <span class="tab__icon">
             <GameIcon name="dumbbell" :size="30" />
@@ -45,6 +40,13 @@ const forest = computed(() => route.path.startsWith('/words'));
           </span>
           <ion-label class="tab__label">Профиль</ion-label>
         </ion-tab-button>
+
+        <ion-tab-button tab="article" href="/article" class="tab tab--hidden" />
+
+        <ion-tab-button tab="words" href="/" class="tab tab--first">
+          <span class="tab__icon"><GameIcon name="home" :size="30" /></span>
+          <ion-label class="tab__label">Учёба</ion-label>
+        </ion-tab-button>
       </ion-tab-bar>
     </ion-tabs>
   </ion-page>
@@ -58,6 +60,14 @@ const forest = computed(() => route.path.startsWith('/words'));
   min-height: 68px;
   padding: 6px 8px;
   padding-bottom: max(6px, env(safe-area-inset-bottom));
+}
+
+.tab--first {
+  order: -1;
+}
+
+.tab--hidden {
+  display: none;
 }
 
 .tab {

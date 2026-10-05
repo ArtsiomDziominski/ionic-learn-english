@@ -246,12 +246,10 @@ const route = useRoute();
 const article = ref(null);
 
 onMounted(async () => {
-  // Загружаем статью
   const id = route.params.id;
   const response = await fetch(`/articles/${id}.json`);
   article.value = await response.json();
   
-  // Настраиваем SEO
   setupSEO();
 });
 
@@ -317,15 +315,13 @@ import { useSEO } from '@/composables/useSEO';
 import { useWebApplicationSchema } from '@/composables/useStructuredData';
 
 onMounted(() => {
-  // Мета-теги
   useSEO({
     title: 'Изучение английских слов онлайн | Слова.Day',
     description: 'Изучайте английские слова легко и эффективно с помощью интерактивных упражнений и карточек.',
     keywords: 'английские слова, учить английский, тренажер слов, карточки',
-    url: 'https://www.learnenglisheasy.ru/words'
+    url: 'https://www.learnenglisheasy.ru/'
   });
   
-  // Структурированные данные
   useWebApplicationSchema();
 });
 </script>
@@ -375,10 +371,10 @@ useSEO({ title: '...', description: '...' }); // вызов вне onMounted
 ### 4. URL должны быть полными
 ```typescript
 // ✅ Правильно
-url: 'https://www.learnenglisheasy.ru/words'
+url: 'https://www.learnenglisheasy.ru/'
 
 // ❌ Неправильно
-url: '/words'
+url: '/'
 ```
 
 ### 5. Даты в ISO 8601

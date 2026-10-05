@@ -4,9 +4,9 @@
 User-agent: *
 Allow: /
 
-# Экраны без самостоятельной ценности для поиска: одни требуют
-# состояния сессии, другие персональны и у каждого посетителя свои
-Disallow: /words/progress
+# Экраны без самостоятельной ценности для поиска: персональны
+# и у каждого посетителя свои. /words и /words/* отдают редирект
+# на «/» — они не закрыты, чтобы робот увидел его и склеил адреса
 Disallow: /profile
 Disallow: /settings
 Disallow: /vocabulary/list
@@ -22,7 +22,6 @@ Allow: /articles/
 # продублированы здесь целиком
 User-agent: Yandex
 Allow: /
-Disallow: /words/progress
 Disallow: /profile
 Disallow: /settings
 Disallow: /vocabulary/list

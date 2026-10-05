@@ -1,9 +1,17 @@
 {
-  "rewrites": [
+  "redirects": [
     {
-      "source": "/words/progress",
-      "destination": "/"
+      "source": "/words",
+      "destination": "/",
+      "permanent": true
     },
+    {
+      "source": "/words/:path*",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
     {
       "source": "/vocabulary/list",
       "destination": "/"

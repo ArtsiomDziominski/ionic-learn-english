@@ -3,21 +3,14 @@ import type { RouteRecordRaw } from 'vue-router';
 import TabsPage from '@/views/TabsPage.vue';
 import LearnPage from '@/views/LearnPage.vue';
 
-/*
- * Адреса /words, /vocabulary, /article и /about индексируются
- * поисковиками (см. scripts/prerender.mjs) — их не меняем. Урок открывается на
- * отдельном экране без вкладок: /lesson/<id урока> или
- * /lesson/practice-<режим> для тренировок.
- */
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     component: TabsPage,
     children: [
-      { path: '', redirect: '/words' },
-      { path: 'words', component: LearnPage },
-      // Старый адрес урока из прежней версии
-      { path: 'words/progress', redirect: '/words' },
+      { path: '', component: LearnPage },
+      { path: 'words', redirect: '/' },
+      { path: 'words/progress', redirect: '/' },
       { path: 'practice', component: () => import('@/views/PracticePage.vue') },
       { path: 'vocabulary', component: () => import('@/views/VocabularyPage.vue') },
       { path: 'vocabulary/list', redirect: '/vocabulary' },

@@ -66,7 +66,7 @@ function exit(): void {
   heartsOpen.value = false;
   lesson.reset();
   if (router.canGoBack()) router.back();
-  else router.navigate('/words', 'back', 'replace');
+  else router.navigate('/', 'back', 'replace');
 }
 
 const react = (r: CheckResult): void => {
