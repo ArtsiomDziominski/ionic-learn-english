@@ -9,6 +9,7 @@ import { contrastOutline, moonOutline, sunnyOutline, volumeHighOutline } from "i
 import { IonContent, IonIcon } from "@ionic/vue";
 import { Browser } from '@capacitor/browser';
 import { Capacitor } from '@capacitor/core';
+import { trackEvent } from '@/utils/analytics';
 
 const storeSettings = settingsStore();
 const { voiceSpeech, themeMode } = storeToRefs(storeSettings);
@@ -23,6 +24,7 @@ const themeOptions = [
 
 const setTheme = (mode: ThemeType): void => {
   storeSettings.setThemeMode(mode);
+  trackEvent('theme_change', { theme: mode });
 };
 
 const valueVoiceSpeech = computed(() => {

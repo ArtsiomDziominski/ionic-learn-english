@@ -6,6 +6,7 @@ import HeaderToolbarPages from "@/components/header/HeaderToolbarPages.vue";
 import AppFooter from "@/components/AppFooter.vue";
 import {useArticleSEO} from "@/composables/useSEO";
 import {useArticleSchema, useBreadcrumbSchema} from "@/composables/useStructuredData";
+import {trackEvent} from "@/utils/analytics";
 
 const route = useRoute();
 
@@ -16,6 +17,7 @@ onMounted(async () => {
   const response = await fetch(`/articles/${id}.json`);
   article.value = await response.json();
   setMeta();
+  trackEvent('article_view', {article_id: String(id), article_title: article.value?.title ?? ''});
 })
 
 const setMeta = () => {

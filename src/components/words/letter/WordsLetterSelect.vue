@@ -53,6 +53,7 @@ import {backspaceOutline, radioButtonOffOutline} from "ionicons/icons";
 import {IonIcon} from "@ionic/vue";
 import {settingsStore} from "@/store/settings";
 import {hapticError, hapticSuccess} from "@/composables/useHaptics";
+import {trackAnswer} from "@/utils/analytics";
 
 const storeWords = wordsStore();
 const {currentWord} = storeToRefs(storeWords);
@@ -121,6 +122,7 @@ const selectLetter = (letter: string): void => {
 
     if (currentWord.value.word === checkingWord) {
       hapticSuccess();
+      trackAnswer(storeWords.selectedCardView, true);
       isCardLetters.value = false;
       storeWords.setAnswer(currentWord.value, true);
       setTimeout(() => {
@@ -129,6 +131,7 @@ const selectLetter = (letter: string): void => {
       }, 3000);
     } else {
       hapticError();
+      trackAnswer(storeWords.selectedCardView, false);
       isCorrectTranslation.value = true;
     }
   }

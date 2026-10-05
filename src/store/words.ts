@@ -5,6 +5,7 @@ import {words} from "@/content/words_level";
 import {STORAGE_KEY_STUDIED_WORDS} from "@/const/const";
 import {notificationStore} from "@/store/notification";
 import {addUniqueElements, getStorageJSON} from "@/utils/util";
+import {trackEvent} from "@/utils/analytics";
 
 export const wordsStore = defineStore('wordsStore', () => {
     const storeNotification = notificationStore();
@@ -153,6 +154,7 @@ export const wordsStore = defineStore('wordsStore', () => {
         else wordsList.value = words.filter((word) => (word.levels.includes(flow)));
         setStudyCards();
         setRandom();
+        trackEvent('lesson_start', {flow});
     }
 
     const resetFlow = () => {

@@ -19,6 +19,7 @@ import {storeToRefs} from "pinia";
 import {wordsStore} from "@/store/words";
 import {settingsStore} from "@/store/settings";
 import {hapticError, hapticSuccess} from "@/composables/useHaptics";
+import {trackAnswer} from "@/utils/analytics";
 
 const storeWords = wordsStore();
 const {cards, currentWord} = storeToRefs(storeWords);
@@ -50,6 +51,7 @@ const selectWord = (word: COMMON.Word, index: number): void => {
   const isCorrect = currentWord.value.word === word.word;
   if (isCorrect) hapticSuccess();
   else hapticError();
+  trackAnswer(storeWords.selectedCardView, isCorrect);
   storeWords.setAnswer(word, isCorrect);
 
   setTimeout(() => {

@@ -51,6 +51,7 @@ import WordsStudyCompeted from "@/components/words/WordsStudyCompeted.vue";
 import HeaderToolbarPages from "@/components/header/HeaderToolbarPages.vue";
 import {vocabularyStore} from "@/store/vocabulary";
 import {statisticsStore} from "@/store/statistics";
+import {trackEvent} from "@/utils/analytics";
 
 const storeWords = wordsStore();
 const {
@@ -74,6 +75,14 @@ onIonViewDidEnter(() => {
 })
 
 onIonViewDidLeave(() => {
+  /* Экран итога сбрасывает урок до перехода, поэтому у него
+     studyWords уже пуст и ложного «ухода» не будет. */
+  if (studyWords.value.length && !isCompleted.value) {
+    trackEvent('lesson_abandon', {
+      exercise: selectedCardView.value,
+      progress: Math.round(progressPercent.value),
+    });
+  }
   storeWords.resetFlow();
 })
 
@@ -104,6 +113,7 @@ const speak = (): void => {
 
 const setFavorite = (): void => {
   if (!currentWord.value) return;
+  trackEvent('favorite_toggle', {action: isFavorite.value ? 'remove' : 'add'});
   if (isFavorite.value) storeVocabulary.deleteFavoritesWord(currentWord.value);
   else storeVocabulary.updateFavoritesWord(currentWord.value);
 }

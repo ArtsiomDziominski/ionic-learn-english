@@ -7,6 +7,7 @@ import {wordsStore} from "@/store/words";
 import {statisticsStore} from "@/store/statistics";
 import {pointsStore} from "@/store/points";
 import {storeToRefs} from "pinia";
+import {trackEvent} from "@/utils/analytics";
 
 const ionRouter = useIonRouter();
 const storeWords = wordsStore();
@@ -77,12 +78,14 @@ const addPointsWithAnimation = (): void => {
 
   storePoints.addPointsForStudyCompletion();
   animatePoints(pointsToAdd);
+  trackEvent('lesson_complete', {flow: currentFlow.value, points: pointsToAdd});
 };
 
 /* Баллы уже начислены при открытии экрана, поэтому переходим
    сразу. Раньше здесь стоял setTimeout на 3 секунды: нажатие
    не давало никакой реакции и читалось как зависание. */
 const finish = (goToNextFlow: boolean): void => {
+  trackEvent(goToNextFlow ? 'lesson_continue' : 'lesson_exit', {flow: currentFlow.value});
   storeStatistics.addStudyDay();
   storeWords.resetFlow();
 

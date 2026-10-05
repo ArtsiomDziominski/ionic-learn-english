@@ -5,6 +5,7 @@ import {storeToRefs} from "pinia";
 import {computed, nextTick, onBeforeUnmount, onMounted, Ref, ref, UnwrapRef, watch} from "vue";
 import {settingsStore} from "@/store/settings";
 import {hapticError, hapticSuccess} from "@/composables/useHaptics";
+import {trackAnswer} from "@/utils/analytics";
 
 const storeWords = wordsStore();
 const {cards} = storeToRefs(storeWords);
@@ -50,9 +51,11 @@ const actionsSelectedList = (word: COMMON.Word | undefined, translation: COMMON.
   const selectedLastElements = selected.value.at(-1);
   if (word && word?.translation === value) {
     hapticSuccess();
+    trackAnswer(storeWords.selectedCardView, true);
     selectedLastElements?.push(value);
   } else if (translation && translation?.word === value) {
     hapticSuccess();
+    trackAnswer(storeWords.selectedCardView, true);
     selectedLastElements?.push(value);
   }
   else if (
@@ -63,6 +66,7 @@ const actionsSelectedList = (word: COMMON.Word | undefined, translation: COMMON.
     selected.value.push([value]);
   } else {
     hapticError();
+    trackAnswer(storeWords.selectedCardView, false);
     selectedErrorWord.value = value;
     selectedErrorWordTimeout.value = setTimeout(() => selectedErrorWord.value = '', 3000);
   }
