@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Главная — стили</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Manrope', system-ui, sans-serif; background: #E8E5EF; color: #1E1B2E; transition: background-color .2s; }
+  header { max-width: 1680px; margin: 0 auto; padding: 28px 24px 8px; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  h1 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -.02em; }
+  header p { margin: 6px 0 0; color: #6B6680; max-width: 720px; }
+  .theme { display: flex; gap: 4px; padding: 4px; border-radius: 14px; background: #fff; }
+  .theme button { height: 36px; padding: 0 14px; border: 0; border-radius: 10px; background: transparent; font: 700 14px 'Manrope', sans-serif; color: #6B6680; cursor: pointer; }
+  .theme button.on { background: #1E1B2E; color: #fff; }
+  main { max-width: 1680px; margin: 0 auto; padding: 16px 24px 40px; display: grid; grid-template-columns: repeat(auto-fill, 390px); justify-content: center; gap: 28px 24px; }
+  figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  figcaption { width: 390px; max-width: 100%; min-height: 118px; }
+  figcaption b { display: block; font-size: 20px; font-weight: 800; }
+  figcaption span { display: block; margin-top: 4px; color: #6B6680; font-size: 14px; line-height: 1.45; }
+  figcaption a { display: inline-block; margin-top: 6px; color: #5638E0; font-weight: 800; font-size: 14px; }
+  .phone { width: 390px; height: 844px; max-width: 100%; border: 10px solid #15121F; border-radius: 52px; overflow: hidden; background: #000; box-shadow: 0 30px 60px -30px rgba(30, 20, 80, .5); isolation: isolate; -webkit-mask-image: -webkit-radial-gradient(white, black); }
+  .phone iframe { width: 100%; height: 100%; border: 0; display: block; border-radius: 42px; }
+  body.dark { background: #0B0A10; color: #F2EFF8; }
+  body.dark header p, body.dark figcaption span { color: #A7A1BC; }
+  body.dark figcaption a { color: #B9A8FF; }
+  
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Главная: те же шаги — новые стили</h1>
+    <p>Раскладка как сейчас: змейка уроков, шапки юнитов, сундук, кубок, «Начать», Лекси у пути, цель дня, верхняя панель и вкладки. Меняется только оформление. Узлы кликабельны — открывается карточка урока.</p>
+  </div>
+  <div class="theme" role="radiogroup" aria-label="Тема">
+    <button class="on" data-t="light">Светлая</button>
+    <button data-t="dark">Тёмная</button>
+  </div>
+</header>
+<main>
+  <figure>
+    <figcaption><b>A · Карта</b><span>Путь — туристический маршрут на бумажной карте с изолиниями. Пройденное — проложенная линия, дальше пунктир. Текущий урок — метка «вы здесь», сундук на крестике клада, шапка юнита — билет с корешком.</span><a href="a.html" target="_blank">Открыть отдельно →</a></figcaption>
+    <div class="phone"><iframe src="a.html?theme=light" title="A · Карта"></iframe></div>
+  </figure>
+  <figure>
+    <figcaption><b>B · Сияние</b><span>Стекло и северное сияние. Уроки — светящиеся шары на линии-нити, у текущего вращается градиентное кольцо. Шапка юнита — матовое стекло с градиентным заголовком и полосой прогресса, вкладки — плавающий док.</span><a href="b.html" target="_blank">Открыть отдельно →</a></figcaption>
+    <div class="phone"><iframe src="b.html?theme=light" title="B · Сияние"></iframe></div>
+  </figure>
+  <figure>
+    <figcaption><b>C · Ступени</b><span>Изометрия и «пластилин». Уроки — объёмные блоки-ступени, значки нарисованы прямо на их верхней грани, между ними — камешки тропинки. Текущий блок парит, итог юнита — пьедестал с кубком.</span><a href="c.html" target="_blank">Открыть отдельно →</a></figcaption>
+    <div class="phone"><iframe src="c.html?theme=light" title="C · Ступени"></iframe></div>
+  </figure>
+  <figure>
+    <figcaption><b>D · Острова</b><span>Каждый урок — летающий островок: срезанный пласт земли с дёрном, слоями почвы, камнями и корнями. Острова и камешки между ними покачиваются в небе. Пройденный остров — с флажком, над текущим парит медальон, закрытые — голые скалы. У юнитов свои биомы: луг, осень, снег.</span><a href="d.html" target="_blank">Открыть отдельно →</a></figcaption>
+    <div class="phone"><iframe src="d.html?theme=light" title="D · Острова"></iframe></div>
+  </figure>
+  <figure>
+    <figcaption><b>E · Лес Лекси</b><span>Мир лисёнка: опушка леса с норой Лекси, поле и озеро. Уроки — пеньки на тропинке, а в озере — кувшинки. По пройденной тропе тянутся следы лапок, шапка юнита — деревянная табличка.</span><a href="e.html" target="_blank">Открыть отдельно →</a></figcaption>
+    <div class="phone"><iframe src="e.html?theme=light" title="E · Лес Лекси"></iframe></div>
+  </figure>
+</main>
+<script>
+  const apply = (t) => {
+    document.querySelectorAll('.theme button').forEach((b) => b.classList.toggle('on', b.dataset.t === t));
+    document.querySelectorAll('iframe').forEach((f) => { f.src = f.src.replace(/theme=\w+/, 'theme=' + t); });
+    document.body.classList.toggle('dark', t === 'dark');
+  };
+  document.querySelectorAll('.theme button').forEach((b) => b.addEventListener('click', () => apply(b.dataset.t)));
+  const p = new URLSearchParams(location.search).get('theme');
+  if (p) apply(p);
+</script>
+</body>
+</html>

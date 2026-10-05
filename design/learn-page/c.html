@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Вариант C — Фокус</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;600;700&family=Golos+Text:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  const t = new URLSearchParams(location.search).get('theme');
+  document.documentElement.dataset.theme = t || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+</script>
+<style>
+/* ============================================================
+   Анимации Лекси
+   ------------------------------------------------------------
+   Разметку персонажа рисует src/art/lexi.ts; части тела помечены
+   классами lx-*. Здесь только движение. transform-box: fill-box
+   задаёт точку вращения относительно самой детали (основание
+   хвоста, плечо), а не всего холста.
+
+   Анимации включаются классом .lexi--animated на обёртке и
+   глушатся системной настройкой «меньше движения» (style.css).
+   ============================================================ */
+
+.lexi svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.lexi--animated .lx-root,
+.lexi--animated .lx-head,
+.lexi--animated .lx-tail,
+.lexi--animated .lx-arm,
+.lexi--animated .lx-blink,
+.lexi--animated .lx-mouth,
+.lexi--animated .lx-fx,
+.lexi--animated .lx-leg,
+.lexi--animated .lx-shadow {
+    transform-box: fill-box;
+}
+
+/* ——— Покой: дыхание, лёгкий наклон головы, хвост, моргание ——— */
+
+.lexi--animated .lx-root {
+    transform-origin: 50% 100%;
+    animation: lx-breathe 3.4s ease-in-out infinite;
+}
+
+.lexi--animated .lx-head {
+    transform-origin: 50% 92%;
+    animation: lx-head 4.2s ease-in-out infinite;
+}
+
+.lexi--animated .lx-tail {
+    transform-origin: 12% 88%;
+    animation: lx-wag 2.4s ease-in-out infinite;
+}
+
+.lexi--animated .lx--threeQuarter .lx-tail,
+.lexi--animated .lx--side .lx-tail {
+    transform-origin: 90% 85%;
+    animation-name: lx-wag-left;
+}
+
+.lexi--animated .lx--back .lx-tail {
+    transform-origin: 8% 92%;
+    animation-duration: 1.8s;
+}
+
+.lexi--animated .lx-blink {
+    transform-origin: 50% 50%;
+    animation: lx-blink 4.8s infinite;
+}
+
+/* ——— Жесты ———————————————————————————————————————————————— */
+
+.lexi--animated .lx-arm-wave {
+    transform-origin: 50% 8%;
+    animation: lx-wave 1s ease-in-out infinite;
+}
+
+.lexi--animated .lx-arm-point {
+    transform-origin: 50% 8%;
+    animation: lx-point 2.4s ease-in-out infinite;
+}
+
+.lexi--animated .lx-talk {
+    transform-origin: 50% 30%;
+    animation: lx-talk 0.36s ease-in-out infinite alternate;
+}
+
+/* Радость: прыжок с приседанием и тень, которая сжимается в полёте */
+.lexi--animated .lx--cheer .lx-root {
+    animation: lx-jump 0.9s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+.lexi--animated .lx--cheer .lx-shadow {
+    transform-origin: 50% 50%;
+    animation: lx-shadow 0.9s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+.lexi--animated .lx--cheer .lx-arm-up {
+    transform-origin: 50% 8%;
+    animation: lx-cheer-arm 0.45s ease-in-out infinite alternate;
+}
+
+.lexi--animated .lx--happy .lx-root {
+    animation: lx-hop 1.6s ease-in-out infinite;
+}
+
+.lexi--animated .lx--sad .lx-root {
+    animation: lx-sway 3s ease-in-out infinite;
+}
+
+.lexi--animated .lx--think .lx-head {
+    animation: lx-tilt 3.6s ease-in-out infinite;
+}
+
+.lexi--animated .lx--sleep .lx-root {
+    animation: lx-breathe 4.6s ease-in-out infinite;
+}
+
+/* Бег в профиль */
+.lexi--animated .lx--run .lx-root {
+    animation: lx-run-bob 0.36s ease-in-out infinite alternate;
+}
+.lexi--animated .lx-leg {
+    transform-origin: 50% 0%;
+}
+.lexi--animated .lx-leg-near {
+    animation: lx-leg 0.36s ease-in-out infinite alternate;
+}
+.lexi--animated .lx-leg-far {
+    animation: lx-leg 0.36s ease-in-out infinite alternate-reverse;
+}
+.lexi--animated .lx-arm-swing {
+    transform-origin: 50% 8%;
+    animation: lx-swing 0.36s ease-in-out infinite alternate;
+}
+
+/* ——— Эффекты ———————————————————————————————————————————— */
+
+.lexi--animated .lx-sparkle {
+    transform-origin: 50% 50%;
+    animation: lx-twinkle 1.4s ease-in-out infinite;
+}
+.lexi--animated .lx-sparkle-2 { animation-delay: 0.35s; }
+.lexi--animated .lx-sparkle-3 { animation-delay: 0.7s; }
+.lexi--animated .lx-sparkle-4 { animation-delay: 1.05s; }
+
+.lexi--animated .lx-zzz {
+    animation: lx-zzz 2.8s ease-in-out infinite;
+}
+
+.lexi--animated .lx-tear {
+    animation: lx-tear 2.2s ease-in infinite;
+}
+
+.lexi--animated .lx-question {
+    animation: lx-float 2.2s ease-in-out infinite;
+}
+
+/* ——— Ключевые кадры ——————————————————————————————————————— */
+
+@keyframes lx-breathe {
+    0%, 100% { transform: scale(1, 1); }
+    50% { transform: scale(1.012, 0.988) translateY(1px); }
+}
+
+@keyframes lx-head {
+    0%, 100% { transform: rotate(-1.5deg); }
+    50% { transform: rotate(1.5deg); }
+}
+
+@keyframes lx-tilt {
+    0%, 100% { transform: rotate(-7deg); }
+    50% { transform: rotate(-3deg); }
+}
+
+@keyframes lx-wag {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(7deg); }
+}
+
+@keyframes lx-wag-left {
+    0%, 100% { transform: rotate(5deg); }
+    50% { transform: rotate(-7deg); }
+}
+
+@keyframes lx-blink {
+    0%, 91%, 97%, 100% { transform: scaleY(1); }
+    94% { transform: scaleY(0.08); }
+}
+
+@keyframes lx-wave {
+    0%, 100% { transform: rotate(-14deg); }
+    50% { transform: rotate(16deg); }
+}
+
+@keyframes lx-point {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-8deg); }
+}
+
+@keyframes lx-talk {
+    from { transform: scaleY(1); }
+    to { transform: scaleY(0.35); }
+}
+
+@keyframes lx-jump {
+    0%, 100% { transform: translateY(0) scale(1.06, 0.94); }
+    15% { transform: translateY(0) scale(1, 1); }
+    45% { transform: translateY(-22px) scale(0.97, 1.04); }
+    75% { transform: translateY(0) scale(1, 1); }
+    85% { transform: translateY(0) scale(1.06, 0.94); }
+}
+
+@keyframes lx-shadow {
+    0%, 100%, 75% { transform: scale(1); opacity: 0.14; }
+    45% { transform: scale(0.7); opacity: 0.08; }
+}
+
+@keyframes lx-cheer-arm {
+    from { transform: rotate(-10deg); }
+    to { transform: rotate(12deg); }
+}
+
+@keyframes lx-hop {
+    0%, 60%, 100% { transform: translateY(0); }
+    70% { transform: translateY(-8px); }
+    80% { transform: translateY(0); }
+    88% { transform: translateY(-4px); }
+}
+
+@keyframes lx-sway {
+    0%, 100% { transform: rotate(-1.5deg); }
+    50% { transform: rotate(1.5deg); }
+}
+
+@keyframes lx-run-bob {
+    from { transform: translateY(0); }
+    to { transform: translateY(-5px); }
+}
+
+@keyframes lx-leg {
+    from { transform: rotate(-28deg); }
+    to { transform: rotate(28deg); }
+}
+
+@keyframes lx-swing {
+    from { transform: rotate(-30deg); }
+    to { transform: rotate(30deg); }
+}
+
+@keyframes lx-twinkle {
+    0%, 100% { transform: scale(0.4) rotate(0deg); opacity: 0.3; }
+    50% { transform: scale(1.15) rotate(20deg); opacity: 1; }
+}
+
+@keyframes lx-zzz {
+    0% { transform: translate(0, 6px); opacity: 0; }
+    30% { opacity: 1; }
+    100% { transform: translate(6px, -10px); opacity: 0; }
+}
+
+@keyframes lx-tear {
+    0%, 30% { transform: translateY(0); opacity: 0; }
+    40% { opacity: 1; }
+    100% { transform: translateY(26px); opacity: 0; }
+}
+
+@keyframes lx-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+
+/* ============================================================
+   Вариант C — «Фокус»
+   Один главный урок на экране: цветной блок с Лекси и одной
+   кнопкой, ниже — шторка со шкалой юнита и списком курса.
+   ============================================================ */
+:root {
+  --hero-a: #2B1D72;
+  --hero-b: #5B3EE8;
+  --sheet: #FFFFFF;
+  --bg: #F3F1FA;
+  --ink: #17142A;
+  --muted: #625D7A;
+  --subtle: #9A95B0;
+  --line: #ECE9F4;
+  --mint: #2FD38A;
+  --mint-ink: #0E8F55;
+  --mint-soft: #E1F8EE;
+  --sun: #FFC93D;
+  --track: #E8E5F2;
+}
+[data-theme="dark"] {
+  --hero-a: #1A1147;
+  --hero-b: #3E28B8;
+  --sheet: #17141F;
+  --bg: #0E0C15;
+  --ink: #F4F2FA;
+  --muted: #B0AAC8;
+  --subtle: #7B7594;
+  --line: #2A2639;
+  --mint-ink: #4BE29E;
+  --mint-soft: rgba(47, 211, 138, .14);
+  --track: #2A2639;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+html { background: var(--bg); }
+body {
+  font-family: 'Golos Text', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+.display { font-family: 'Unbounded', 'Golos Text', sans-serif; }
+
+.app { max-width: 480px; margin: 0 auto; min-height: 100vh; background: var(--bg); }
+
+/* ——— Цветной блок с главным уроком ——— */
+.hero {
+  position: relative;
+  padding: 16px 20px 64px;
+  background:
+    radial-gradient(90% 60% at 85% 20%, rgba(255, 255, 255, .14), transparent 60%),
+    linear-gradient(160deg, var(--hero-a), var(--hero-b));
+  color: #fff;
+  overflow: hidden;
+}
+.hero::after {
+  /* мягкие «орбиты» на фоне */
+  content: ''; position: absolute; right: -80px; top: 60px;
+  width: 300px; height: 300px; border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .12);
+  box-shadow: 0 0 0 40px rgba(255, 255, 255, .03), 0 0 0 80px rgba(255, 255, 255, .02);
+}
+.bar { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; }
+.course {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 36px; padding: 0 12px 0 6px;
+  border: 1px solid rgba(255, 255, 255, .22); border-radius: 999px;
+  background: rgba(255, 255, 255, .1); color: #fff;
+  font-weight: 600; font-size: 14px;
+}
+.course b { display: grid; place-items: center; height: 26px; padding: 0 8px; border-radius: 999px; background: #fff; color: var(--hero-b); font-size: 12px; font-weight: 700; }
+.counters { display: flex; gap: 14px; font-weight: 700; font-size: 15px; }
+.counters span { display: inline-flex; align-items: center; gap: 4px; }
+.counters .gi { width: 20px; height: 20px; }
+
+.stage { position: relative; z-index: 1; display: flex; align-items: flex-end; gap: 6px; margin-top: 18px; }
+.stage .lexi { flex-shrink: 0; margin-left: -12px; }
+.say {
+  position: relative; margin-bottom: 92px;
+  padding: 12px 14px; border-radius: 18px 18px 18px 4px;
+  background: #fff; color: #17142A;
+  font-size: 14px; font-weight: 600; line-height: 1.35;
+  box-shadow: 0 10px 30px -12px rgba(0, 0, 0, .45);
+}
+.say b { color: var(--hero-b); }
+
+.focus { position: relative; z-index: 1; margin-top: -6px; }
+.focus__eyebrow { color: rgba(255, 255, 255, .7); font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.focus h1 { margin: 6px 0 16px; font-size: 34px; font-weight: 700; letter-spacing: -.02em; line-height: 1.05; }
+.go {
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+  height: 58px; padding: 0 8px 0 22px;
+  border: 0; border-radius: 999px;
+  background: #fff; color: var(--hero-b);
+  font-weight: 700; font-size: 17px;
+  box-shadow: 0 14px 30px -14px rgba(0, 0, 0, .6);
+}
+.go i { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--hero-b); color: #fff; }
+.go i svg { width: 20px; height: 20px; }
+.go small { margin-left: 8px; color: var(--subtle); font-weight: 600; font-size: 14px; }
+
+/* ——— Шторка ——— */
+.sheet {
+  position: relative; z-index: 2;
+  margin-top: -36px;
+  padding: 22px 20px 120px;
+  border-radius: 32px 32px 0 0;
+  background: var(--sheet);
+}
+.sheet__grip { width: 40px; height: 4px; margin: -8px auto 18px; border-radius: 99px; background: var(--line); }
+.h { display: flex; align-items: baseline; justify-content: space-between; margin: 0 0 12px; }
+.h h2 { margin: 0; font-size: 15px; font-weight: 600; }
+.h span { color: var(--subtle); font-size: 13px; font-weight: 600; }
+
+/* Шкала юнита: сегменты уроков, сундук и кубок в одну строку */
+.track { display: flex; align-items: center; gap: 6px; }
+.seg { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.seg i { display: block; width: 100%; height: 10px; border-radius: 99px; background: var(--track); }
+.seg small { color: var(--subtle); font-size: 12px; font-weight: 700; }
+.seg--done i { background: var(--mint); }
+.seg--done small { color: var(--mint-ink); }
+.seg--now i { background: linear-gradient(90deg, var(--mint) 0 30%, var(--track) 30%); box-shadow: 0 0 0 3px var(--mint-soft); }
+.seg--now small { color: var(--ink); }
+.pin { display: grid; place-items: center; width: 30px; flex-shrink: 0; }
+.pin .gi { width: 26px; height: 26px; }
+.pin small { margin-top: 8px; color: var(--subtle); font-size: 11px; font-weight: 700; }
+
+.chips { display: flex; gap: 8px; margin: 22px 0 26px; overflow-x: auto; scrollbar-width: none; }
+.chip {
+  flex-shrink: 0; display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px 10px 10px;
+  border: 1px solid var(--line); border-radius: 18px;
+  background: var(--sheet);
+}
+.chip .gi { width: 28px; height: 28px; }
+.chip b { display: block; font-size: 14px; }
+.chip span { display: block; color: var(--subtle); font-size: 12px; font-weight: 600; }
+.mini { width: 70px; height: 5px; margin-top: 5px; border-radius: 99px; background: var(--track); overflow: hidden; }
+.mini i { display: block; height: 100%; width: 6%; background: var(--sun); }
+
+.units { list-style: none; margin: 0; padding: 0; }
+.u { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); }
+.u__n {
+  display: grid; place-items: center; width: 46px; height: 46px; flex-shrink: 0;
+  border-radius: 14px; background: var(--track); color: var(--subtle);
+  font-size: 15px; font-weight: 700;
+}
+.u__body { flex: 1; min-width: 0; }
+.u__body b { display: block; font-size: 15px; font-weight: 700; }
+.u__body span { color: var(--muted); font-size: 13px; }
+.u__state { color: var(--subtle); font-size: 13px; font-weight: 600; }
+.u--now .u__n { background: var(--mint-soft); color: var(--mint-ink); }
+.u--now .u__state { color: var(--mint-ink); }
+.u--lock .u__body b, .u--lock .u__body span { color: var(--subtle); }
+
+/* ——— Док: иконки, активная — с точкой ——— */
+.dock {
+  position: fixed; left: 50%; bottom: 14px; z-index: 10;
+  display: flex; gap: 6px; padding: 8px 10px;
+  border-radius: 24px;
+  background: var(--ink); color: var(--sheet);
+  box-shadow: 0 16px 34px -14px rgba(0, 0, 0, .6);
+  transform: translateX(-50%);
+}
+.dock a { position: relative; display: grid; place-items: center; width: 54px; height: 44px; color: inherit; opacity: .55; }
+.dock a svg { width: 24px; height: 24px; }
+.dock a.on { opacity: 1; }
+.dock a.on::after { content: ''; position: absolute; bottom: 2px; width: 5px; height: 5px; border-radius: 50%; background: var(--mint); }
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="hero">
+    <div class="bar">
+      <button class="course"><b>A1</b> Начальный ▾</button>
+      <div class="counters">
+        <span><svg class="gi" viewBox="0 0 32 32" width="20" height="20" style="filter:grayscale(1);opacity:.45" aria-hidden="true"><path d="M16 2.5c.9 3.6 3.3 5.9 5.6 8.4 2.4 2.6 4.4 5.4 4.4 9.3 0 5.4-4.4 9.3-10 9.3S6 25.6 6 20.2c0-3.6 1.8-6.4 3.9-8.2.3 2.4 1.4 4 3 4.8C12.6 11.1 14 6.4 16 2.5z" fill="#FF9600"/><path d="M16 14.5c3.2 2.6 5.2 5 5.2 8.2 0 3.3-2.3 5.8-5.2 5.8s-5.2-2.5-5.2-5.8c0-2.2 1.1-3.8 2.4-4.9.2 1.4.9 2.4 1.9 2.8-.3-2.3.1-4.3.9-6.1z" fill="#FFC800"/><path d="M16 21.5c1.4 1.1 2.3 2.2 2.3 3.6 0 1.4-1 2.5-2.3 2.5s-2.3-1.1-2.3-2.5c0-1.4.9-2.5 2.3-3.6z" fill="#FFF3B0"/></svg> 1</span>
+        <span><svg class="gi" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true"><path d="M9 5h14l6 8-13 15L3 13z" fill="#1CB0F6"/><path d="M3 13h9l4 15z" fill="#1590CC"/><path d="M29 13h-9l-4 15z" fill="#36BEFF"/><path d="M12 13h8l-4 15z" fill="#5CCBFF"/><path d="M9 5h14l-3 8h-8z" fill="#8FDEFF"/><path d="M9 5l3 8H3zM23 5l-3 8h9z" fill="#4FC8FF"/><path d="M11 7.5l1.2 3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".8"/></svg> 115</span>
+        <span><svg class="gi" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true"><path d="M16 28.5S2.5 20.6 2.5 11.6C2.5 7.3 5.8 4 10 4c2.6 0 4.8 1.4 6 3.5C17.2 5.4 19.4 4 22 4c4.2 0 7.5 3.3 7.5 7.6 0 9-13.5 16.9-13.5 16.9z" fill="#FF4B4B"/><path d="M16 28.5S2.5 20.6 2.5 11.6c0-.4 0-.8.1-1.2C4 18.3 16 25 16 25s12-6.7 13.4-14.6c.1.4.1.8.1 1.2 0 9-13.5 16.9-13.5 16.9z" fill="#E02E2E"/><ellipse cx="9.6" cy="10" rx="3.2" ry="2" transform="rotate(-32 9.6 10)" fill="#fff" opacity=".6"/></svg> 5</span>
+      </div>
+    </div>
+
+    <div class="stage">
+      <span class="lexi lexi--animated" style="display:inline-block;width:178px;height:178px;line-height:0" role="img" aria-label="Лекси"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -10 248 250" class="lx lx--front lx--wave"><defs>
+    <linearGradient id="m4-fur" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFB46A"/>
+      <stop offset="0.5" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#EC6A2B"/>
+    </linearGradient>
+    <linearGradient id="m4-arm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#D95A22"/>
+    </linearGradient>
+    <linearGradient id="m4-tail" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#D95A22"/>
+      <stop offset="0.55" stop-color="#FF8A3D"/>
+      <stop offset="1" stop-color="#FFB46A"/>
+    </linearGradient>
+    <linearGradient id="m4-cream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF8EE"/>
+      <stop offset="1" stop-color="#F7E1C8"/>
+    </linearGradient>
+    <linearGradient id="m4-scarf" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#9B7BFF"/>
+      <stop offset="1" stop-color="#5B3BE0"/>
+    </linearGradient>
+  </defs><ellipse cx="120" cy="229" rx="56" ry="7" fill="#1B0F35" class="lx-shadow" opacity="0.14"/><g class="lx-root"><g class="lx-body-wrap"><g class="lx-tail"><clipPath id="m4-tailclip"><path d="M146 214 C 182 225 222 211 231 180 C 236 164 234 148 224 134 C 222 152 213 166 198 173 C 182 180 164 184 150 190 Z" fill="#000"/></clipPath><path d="M146 214 C 182 225 222 211 231 180 C 236 164 234 148 224 134 C 222 152 213 166 198 173 C 182 180 164 184 150 190 Z" fill="url(#m4-tail)"/><path d="M196 96 L 248 96 L 248 156 L 240 153 L 235 160 L 229 153 L 223 160 L 217 153 L 211 160 L 205 153 L 196 156 Z" fill="url(#m4-cream)" clip-path="url(#m4-tailclip)"/></g><g class="lx-feet"><ellipse cx="100" cy="221" rx="17" ry="9" fill="#3A2219"/><ellipse cx="140" cy="221" rx="17" ry="9" fill="#3A2219"/><ellipse cx="95" cy="218" rx="6" ry="2.4" fill="#fff" opacity="0.16"/><ellipse cx="135" cy="218" rx="6" ry="2.4" fill="#fff" opacity="0.16"/></g><path d="M120 138 C 151 138 167 166 167 192 C 167 212 149 223 120 223 C 91 223 73 212 73 192 C 73 166 89 138 120 138 Z" fill="url(#m4-fur)"/><path d="M120 163 C 138 163 149 178 149 195 C 149 209 137 217 120 217 C 103 217 91 209 91 195 C 91 178 102 163 120 163 Z" fill="url(#m4-cream)"/><g class="lx-scarf"><path d="M79 145 C 98 159 142 159 161 145 C 165 150 167 155 167 160 C 147 176 93 176 73 160 C 73 155 75 150 79 145 Z" fill="url(#m4-scarf)"/><path d="M76 153 C 96 167 144 167 164 153" fill="none" stroke="#FFC83D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><g class="lx-scarf-end"><path d="M132 166 L 146 164 L 155 198 C 150 202 142 204 137 201 Z" fill="#5B3BE0"/><path d="M139 188 L 152 185" fill="none" stroke="#FFC83D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M138 201 L 137 206 M 144 203 L 144 208 M 150 202 L 152 207" fill="none" stroke="#5B3BE0" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g><ellipse cx="139" cy="166" rx="8" ry="7" fill="url(#m4-scarf)"/></g><g transform="translate(86 168) rotate(22)"><g class="lx-arm lx-arm-l"><rect x="-6" y="-2" width="17" height="36" rx="8.5" fill="#B9471A" opacity="0.32"/><rect x="-8.5" y="-6" width="17" height="36" rx="8.5" fill="url(#m4-arm)"/><ellipse cx="0" cy="32" rx="9.8" ry="9.2" fill="#3A2219"/><ellipse cx="-2.6" cy="29.4" rx="2.8" ry="1.7" fill="#fff" opacity="0.2"/></g></g><g class="lx-head"><g class="lx-ear lx-ear-l"><clipPath id="m4-ear-l"><path d="M57 76 C 47 52 45 26 53 6 C 74 11 96 28 107 47 Z" fill="#000"/></clipPath><path d="M57 76 C 47 52 45 26 53 6 C 74 11 96 28 107 47 Z" fill="url(#m4-fur)"/><rect x="36" y="0" width="80" height="24" fill="#3A2219" clip-path="url(#m4-ear-l)"/><path d="M66 64 C 61 46 60 31 62 20 C 76 27 88 38 96 49 Z" fill="#7A3B26"/><path d="M68 63 C 70 54 76 48 84 46 C 80 52 79 57 80 64 Z" fill="#FFF8EE"/></g><g class="lx-ear lx-ear-r"><clipPath id="m4-ear-r"><path d="M 183 76 C 193 52 195 26 187 6 C 166 11 144 28 133 47 Z" fill="#000"/></clipPath><path d="M 183 76 C 193 52 195 26 187 6 C 166 11 144 28 133 47 Z" fill="url(#m4-fur)"/><rect x="124" y="0" width="80" height="24" fill="#3A2219" clip-path="url(#m4-ear-r)"/><path d="M 174 64 C 179 46 180 31 178 20 C 164 27 152 38 144 49 Z" fill="#7A3B26"/><path d="M 172 63 C 170 54 164 48 156 46 C 160 52 161 57 160 64 Z" fill="#FFF8EE"/></g><clipPath id="m4-head"><path d="M120 34 C 153 34 185 50 193 84 C 197 100 201 112 211 122 C 197 124 187 127 179 131 C 167 147 145 157 120 157 C 95 157 73 147 61 131 C 53 127 43 124 29 122 C 39 112 43 100 47 84 C 55 50 87 34 120 34 Z" fill="#000"/></clipPath><path d="M120 34 C 153 34 185 50 193 84 C 197 100 201 112 211 122 C 197 124 187 127 179 131 C 167 147 145 157 120 157 C 95 157 73 147 61 131 C 53 127 43 124 29 122 C 39 112 43 100 47 84 C 55 50 87 34 120 34 Z" fill="url(#m4-fur)"/><path d="M22 120 C 44 108 70 105 92 113 C 104 117 112 118 120 110 C 128 118 136 117 148 113 C 170 105 196 108 218 120 L 218 176 L 22 176 Z" fill="url(#m4-cream)" clip-path="url(#m4-head)"/><ellipse cx="94" cy="52" rx="18" ry="8" fill="#fff" opacity="0.2" transform="rotate(-18 94 52)"/><ellipse cx="75" cy="121" rx="9.5" ry="5.5" fill="#FF6F8E" opacity="0.5"/><ellipse cx="165" cy="121" rx="9.5" ry="5.5" fill="#FF6F8E" opacity="0.5"/><g class="lx-eyes"><path d="M80 103 Q 92 88 104 103" fill="none" stroke="#2A170F" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M136 103 Q 148 88 160 103" fill="none" stroke="#2A170F" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/></g><path d="M112 118 C 112 114 128 114 128 118 C 128 122 122 126 120 126 C 118 126 112 122 112 118 Z" fill="#3A2219"/><ellipse cx="117.5" cy="117.8" rx="2.4" ry="1.3" fill="#fff" opacity="0.45"/><g class="lx-mouth"><path d="M109 130 C 111 146 129 146 131 130 C 124 133 116 133 109 130 Z" fill="#7C2633"/><path d="M114 140 C 117 136 123 136 126 140 C 123 143 117 143 114 140 Z" fill="#FF7F8F"/></g></g><g transform="translate(158 164) rotate(-128)"><g class="lx-arm lx-arm-r lx-arm-wave"><rect x="-6" y="-2" width="17" height="42" rx="8.5" fill="#B9471A" opacity="0.32"/><rect x="-8.5" y="-6" width="17" height="42" rx="8.5" fill="url(#m4-arm)"/><ellipse cx="0" cy="38" rx="9.8" ry="9.2" fill="#3A2219"/><ellipse cx="-2.6" cy="35.4" rx="2.8" ry="1.7" fill="#fff" opacity="0.2"/></g></g></g></g></svg></span>
+      <div class="say">Сегодня — <b>4 новых слова</b>: your, his, our, their. Справимся за 3 минуты!</div>
+    </div>
+
+    <div class="focus">
+      <div class="focus__eyebrow">Юнит 1 · урок 4</div>
+      <h1 class="display">your, his,<br>our, their</h1>
+      <button class="go">Начать урок <small>+10 XP</small>
+        <i><svg viewBox="0 0 24 24"><path d="M5 12h14m-6-6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></i>
+      </button>
+    </div>
+  </section>
+
+  <section class="sheet">
+    <div class="sheet__grip"></div>
+
+    <div class="h"><h2>Юнит 1 · you, he, she…</h2><span>3 из 6</span></div>
+    <div class="track" aria-label="Прогресс юнита">
+      <div class="seg seg--done"><i></i><small>1</small></div>
+      <div class="seg seg--done"><i></i><small>2</small></div>
+      <div class="seg seg--done"><i></i><small>3</small></div>
+      <div class="pin"><svg class="gi" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><path d="M16 1l1.6 3.4L21 6l-3.4 1.6L16 11l-1.6-3.4L11 6l3.4-1.6z" fill="#FFE066"/><path d="M5 9.5 7.5 3h17L27 9.5z" fill="#D9843F"/><path d="M6 9.5h20l-1.3-4H7.3z" fill="#8A4B19" opacity=".35"/><rect x="4" y="15" width="24" height="12.5" rx="2.6" fill="#B5652A"/><path d="M4 12h24v4H4z" fill="#7A3F14"/><circle cx="11" cy="13.5" r="2.4" fill="#1CB0F6"/><circle cx="16.5" cy="12.8" r="2.6" fill="#FFC800"/><circle cx="21.5" cy="13.6" r="2.2" fill="#FF4B4B"/><rect x="4" y="15.5" width="24" height="3" fill="#FFC800"/><path d="M8.5 15.5v12M23.5 15.5v12" stroke="#FFC800" stroke-width="2.2"/></svg></div>
+      <div class="seg seg--now"><i></i><small>4</small></div>
+      <div class="seg"><i></i><small>5</small></div>
+      <div class="seg"><i></i><small>6</small></div>
+      <div class="pin"><svg class="gi" viewBox="0 0 32 32" width="26" height="26" style="filter:grayscale(1);opacity:.45" aria-hidden="true"><path d="M9 7H5.6A2.6 2.6 0 0 0 3 9.6C3 13.3 5.6 16 9.8 16.2M23 7h3.4A2.6 2.6 0 0 1 29 9.6c0 3.7-2.6 6.4-6.8 6.6" fill="none" stroke="#F2A900" stroke-width="2.8" stroke-linecap="round"/><path d="M8.5 3.5h15V12a7.5 7.5 0 0 1-15 0z" fill="#FFC800"/><path d="M13.8 18.8h4.4v4.4h-4.4z" fill="#E5A800"/><rect x="8.5" y="23" width="15" height="5.5" rx="2.2" fill="#E5A800"/><rect x="11.5" y="25" width="9" height="1.8" rx=".9" fill="#FFE066"/><path d="M12.5 6.5v6" stroke="#FFF3B0" stroke-width="2.4" stroke-linecap="round"/></svg></div>
+    </div>
+
+    <div class="chips">
+      <div class="chip"><svg class="gi" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><path d="M18.5 2 6 18.2h9.2L12.6 30 26 13.4h-9.4z" fill="#FFC800"/><path d="M18.5 2 6 18.2h4.6L18 6.6z" fill="#FFE066"/><path d="M26 13.4 12.6 30l2.6-11.8h3.4z" fill="#F2A900"/></svg><div><b>0 / 20 XP</b><span>Цель дня</span><div class="mini"><i></i></div></div></div>
+      <div class="chip"><svg class="gi" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><circle cx="16" cy="16" r="13.5" fill="#FF4B4B"/><circle cx="16" cy="16" r="9.5" fill="#fff"/><circle cx="16" cy="16" r="5.5" fill="#FF4B4B"/><circle cx="16" cy="16" r="2" fill="#fff"/></svg><div><b>0 из 3</b><span>Задания</span></div></div>
+      <div class="chip"><svg class="gi" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect x="4" y="6" width="24" height="22.5" rx="4.5" fill="#fff"/><rect x="4" y="6" width="24" height="22.5" rx="4.5" fill="none" stroke="#E2E1EE" stroke-width="2"/><path d="M4 10.5A4.5 4.5 0 0 1 8.5 6h15A4.5 4.5 0 0 1 28 10.5V13H4z" fill="#FF4B4B"/><rect x="9" y="3.5" width="2.6" height="6" rx="1.3" fill="#9A3B3B"/><rect x="20.4" y="3.5" width="2.6" height="6" rx="1.3" fill="#9A3B3B"/><path d="M10.5 20.5l3.4 3.2 7.6-7.2" fill="none" stroke="#58CC02" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><div><b>13 слов</b><span>Повторить</span></div></div>
+    </div>
+
+    <div class="h"><h2 class="display">Курс A1</h2><span>3 из 49 уроков</span></div>
+    <ul class="units">
+      <li class="u u--now"><span class="u__n">1</span><div class="u__body"><b>Юнит 1</b><span>you, he, she, it…</span></div><span class="u__state">Сейчас</span></li>
+      <li class="u u--lock"><span class="u__n">2</span><div class="u__body"><b>Юнит 2</b><span>all, also, and, animal…</span></div><span class="u__state">6 уроков</span></li>
+      <li class="u u--lock"><span class="u__n">3</span><div class="u__body"><b>Юнит 3</b><span>computer, day, dog…</span></div><span class="u__state">6 уроков</span></li>
+      <li class="u u--lock"><span class="u__n">4</span><div class="u__body"><b>Юнит 4</b><span>9 юнитов в разделе</span></div><span class="u__state">Все →</span></li>
+    </ul>
+  </section>
+</div>
+
+<nav class="dock">
+  <a class="on" href="#" aria-label="Учёба"><svg viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9z" fill="currentColor"/></svg></a>
+  <a href="#" aria-label="Практика"><svg viewBox="0 0 24 24"><path d="M6.5 7v10M17.5 7v10M3 10v4M21 10v4M6.5 12h11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></a>
+  <a href="#" aria-label="Словарь"><svg viewBox="0 0 24 24"><path d="M5 5.5A1.5 1.5 0 0 1 6.5 4H19v14H6.5A1.5 1.5 0 0 0 5 19.5zM5 19.5A1.5 1.5 0 0 0 6.5 21H19v-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></a>
+  <a href="#" aria-label="Профиль"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 20c1.2-3.6 4-5 7-5s5.8 1.4 7 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+</nav>
+</body>
+</html>
