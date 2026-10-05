@@ -6,6 +6,7 @@ import { pickTextFile, saveFile, shareFile, shareText, type ShareOutcome } from 
 import { renderShareCard } from '@/core/shareCard';
 import { getSection } from '@/core/course';
 import { plural } from '@/core/dates';
+import { trackEvent } from '@/utils/analytics';
 
 const APP_VERSION = '2.0.0';
 
@@ -53,7 +54,9 @@ export function useTransfer() {
   /** «Скачать файл прогресса». */
   const download = (): Promise<void> => run(async () => {
     const file = filePayload();
-    report(await saveFile({ ...file, title: 'Прогресс Слова.Day' }), 'Файл прогресса');
+    const outcome = await saveFile({ ...file, title: 'Прогресс Слова.Day' });
+    report(outcome, 'Файл прогресса');
+    if (outcome !== 'cancelled') trackEvent('progress_export', { kind: 'save', outcome });
   });
 
   /** «Отправить файл» — в мессенджер, на почту, в облако. */
@@ -65,6 +68,7 @@ export function useTransfer() {
       text: 'Файл прогресса Слова.Day. Откройте приложение → Профиль → «Загрузить файл».',
     });
     report(outcome, 'Файл прогресса');
+    if (outcome !== 'cancelled') trackEvent('progress_export', { kind: 'send', outcome });
   });
 
   /** «Поделиться успехами» — картинка с серией, XP и словами. */
@@ -82,8 +86,11 @@ export function useTransfer() {
     try {
       const outcome = await shareFile({ name: 'slova-day-progress.png', mime: 'image/png', content: blob, title: 'Мои успехи', text: `${text} ${SITE}` });
       report(outcome, 'Картинка');
+      if (outcome !== 'cancelled') trackEvent('share', { content_type: 'progress_card', method: outcome });
     } catch {
-      report(await shareText('Мои успехи', text, SITE), 'Текст');
+      const outcome = await shareText('Мои успехи', text, SITE);
+      report(outcome, 'Текст');
+      if (outcome !== 'cancelled') trackEvent('share', { content_type: 'progress_card', method: outcome });
     }
   });
 
@@ -103,6 +110,7 @@ export function useTransfer() {
     if (!pending.value) return;
     if (mode === 'replace') progress.replaceWith(pending.value.progress);
     else progress.mergeWith(pending.value.progress);
+    trackEvent('progress_import', { mode });
     pending.value = null;
     toast.show(mode === 'replace' ? 'Прогресс загружен' : 'Прогресс объединён', 'success', 'check');
   };

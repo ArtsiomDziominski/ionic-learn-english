@@ -9,6 +9,7 @@ import {
 } from '@/core/lessonBuilder';
 import { useProgressStore, type LessonAnswer, type LessonRewards, type LessonSource } from './progress';
 import { useSpeech } from '@/composables/useSpeech';
+import { trackEvent } from '@/utils/analytics';
 
 export type LessonPhase = 'answering' | 'correct' | 'wrong' | 'finished';
 
@@ -30,6 +31,12 @@ export const PRACTICE_META: Record<PracticeMode, { title: string; minWords: numb
 };
 
 const words = (ids: string[]): BankWord[] => ids.map((id) => WORD_BANK.get(id)).filter((w): w is BankWord => !!w);
+
+/** Что за урок — для событий аналитики: урок пути или тренировка. */
+const lessonParams = (src: LessonSource) =>
+  src.kind === 'path'
+    ? { lesson_type: 'path', lesson_id: src.lessonId }
+    : { lesson_type: 'practice', mode: src.mode };
 
 export const useLessonStore = defineStore('lesson', () => {
   const progress = useProgressStore();
@@ -90,6 +97,7 @@ export const useLessonStore = defineStore('lesson', () => {
     total.value = steps.length;
     startedAt.value = Date.now();
     steps.forEach((s) => origin.set(s.key, s.key));
+    trackEvent('lesson_start', lessonParams(src));
     return true;
   }
 
@@ -180,6 +188,7 @@ export const useLessonStore = defineStore('lesson', () => {
 
     const ids = ex.type === 'match' ? ex.pairIds ?? [ex.wordId] : [ex.wordId];
     for (const wordId of ids) answers.value.push({ wordId, correct: check.correct, type: ex.type });
+    trackEvent('answer', { exercise: ex.type, correct: check.correct });
 
     if (check.correct) {
       combo.value += 1;
@@ -231,6 +240,35 @@ export const useLessonStore = defineStore('lesson', () => {
       durationMs: Date.now() - startedAt.value,
     });
     phase.value = 'finished';
+
+    const r = rewards.value;
+    trackEvent('lesson_complete', {
+      ...lessonParams(source.value),
+      xp: r.xp,
+      accuracy: r.accuracy,
+      perfect: r.perfect,
+      first_completion: r.firstCompletion,
+      new_words: r.newWords,
+      duration_s: Math.round(r.durationMs / 1000),
+      streak: r.streak,
+    });
+    if (r.goalReached) trackEvent('daily_goal_reached', { xp_goal: progress.state.dailyGoal });
+    for (const a of r.achievements) trackEvent('unlock_achievement', { achievement_id: a.id, tier: a.tier });
+  }
+
+  /**
+   * Ушли из незаконченного урока. Сразу сбрасывает его, поэтому
+   * повторный вызов (выход из шторки и уход с экрана) событие не дублирует.
+   */
+  function abandon(reason: 'quit' | 'out_of_hearts' | 'left'): void {
+    if (!source.value || phase.value === 'finished') return;
+    trackEvent('lesson_abandon', {
+      ...lessonParams(source.value),
+      progress: Math.round(ratio.value * 100),
+      mistakes: mistakes.value,
+      reason,
+    });
+    reset();
   }
 
   return {
@@ -257,6 +295,7 @@ export const useLessonStore = defineStore('lesson', () => {
     acknowledgeIntro,
     submit,
     proceed,
+    abandon,
     reset,
   };
 });
