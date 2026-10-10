@@ -37,13 +37,13 @@ export function buildProgressFile(progress: Progress, appVersion: string, now: D
 
 export const serializeProgressFile = (file: ProgressFile): string => JSON.stringify(file, null, 2);
 
-export const progressFileName = (now: Date = new Date()): string => `slova-day-progress-${dayKey(now)}.json`;
+export const progressFileName = (now: Date = new Date()): string => `learnenglisheasy-progress-${dayKey(now)}.json`;
 
 export type ImportResult =
   | { ok: true; progress: Progress; summary: ProgressSummary; exportedAt: string | null }
   | { ok: false; error: string };
 
-const NOT_OUR_FILE = 'Это не файл прогресса Слова.Day. Выберите файл, сохранённый в приложении.';
+const NOT_OUR_FILE = 'Это не файл прогресса learnenglisheasy.ru. Выберите файл, сохранённый в приложении.';
 
 export function parseProgressFile(text: string, now: Date = new Date()): ImportResult {
   if (text.length > MAX_FILE_CHARS) return { ok: false, error: 'Файл слишком большой для файла прогресса.' };

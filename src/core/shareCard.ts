@@ -45,7 +45,7 @@ async function ensureFonts(): Promise<void> {
   if (!document.fonts?.load) return;
   try {
     await Promise.all([
-      document.fonts.load(`900 64px ${FONT}`, 'Слова.Day 123'),
+      document.fonts.load(`900 64px ${FONT}`, 'learnenglisheasy.ru 123'),
       document.fonts.load(`700 32px ${FONT}`, 'дней подряд'),
     ]);
   } catch {
@@ -78,7 +78,7 @@ export async function renderShareCard(data: ShareCardData): Promise<Blob> {
   ctx.fillStyle = '#FFFFFF';
   ctx.font = `900 60px ${FONT}`;
   ctx.textAlign = 'left';
-  ctx.fillText('Слова.Day', 72, 120);
+  ctx.fillText('learnenglisheasy.ru', 72, 120);
   ctx.font = `700 34px ${FONT}`;
   ctx.fillStyle = 'rgba(255,255,255,0.85)';
   ctx.fillText('Учу английский каждый день', 72, 172);

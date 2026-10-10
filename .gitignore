@@ -37,3 +37,6 @@ npm-debug.log*
 
 # Local dev-server launch configs for Claude Code
 /.claude/launch.json
+
+# Local temp folders
+/.*tmp/

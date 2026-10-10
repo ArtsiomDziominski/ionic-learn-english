@@ -1,6 +1,6 @@
 {
-  "name": "Слова.Day - Изучение английских слов",
-  "short_name": "Слова.Day",
+  "name": "LearnEnglishEasy - Изучение английских слов",
+  "short_name": "LearnEnglishEasy",
   "description": "Учите английские слова каждый день вместе с лисёнком Лекси: короткие уроки, серии, задания и награды.",
   "start_url": "/",
   "display": "standalone",

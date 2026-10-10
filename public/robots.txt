@@ -1,4 +1,4 @@
-# robots.txt — Слова.Day
+# robots.txt — learnenglisheasy.ru
 # https://www.learnenglisheasy.ru
 
 User-agent: *

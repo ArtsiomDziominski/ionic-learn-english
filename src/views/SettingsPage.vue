@@ -172,7 +172,7 @@ const reset = (): void => {
         <section class="about card">
           <LexiMascot view="threeQuarter" mood="talk" :size="96" />
           <div>
-            <p class="about__title">Слова.Day · версия 2.0</p>
+            <p class="about__title">learnenglisheasy.ru · версия 2.0</p>
             <p class="muted">Лекси и команда учат английские слова вместе с вами. Без регистрации и рекламы.</p>
           </div>
         </section>

@@ -173,7 +173,7 @@ import { useOrganizationSchema } from '@/composables/useStructuredData';
 
 onMounted(() => {
   useOrganizationSchema({
-    name: 'Слова.Day',
+    name: 'learnenglisheasy.ru',
     url: 'https://www.learnenglisheasy.ru',
     logo: 'https://www.learnenglisheasy.ru/favicon.png',
     description: 'Платформа для изучения английского языка',
@@ -211,7 +211,7 @@ onMounted(() => {
   useCourseSchema({
     name: 'Курс английского языка',
     description: 'Интенсивный курс для начинающих',
-    provider: 'Слова.Day',
+    provider: 'learnenglisheasy.ru',
     courseMode: 'online',
     courseWorkload: 'PT1H' // 1 час (ISO 8601 duration)
   });
@@ -316,7 +316,7 @@ import { useWebApplicationSchema } from '@/composables/useStructuredData';
 
 onMounted(() => {
   useSEO({
-    title: 'Изучение английских слов онлайн | Слова.Day',
+    title: 'Изучение английских слов онлайн | learnenglisheasy.ru',
     description: 'Изучайте английские слова легко и эффективно с помощью интерактивных упражнений и карточек.',
     keywords: 'английские слова, учить английский, тренажер слов, карточки',
     url: 'https://www.learnenglisheasy.ru/'

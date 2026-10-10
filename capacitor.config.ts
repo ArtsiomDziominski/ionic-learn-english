@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'io.learn.english',
-  appName: 'Слова.Day',
+  appName: 'LearnEnglishEasy',
   webDir: 'dist',
   ios: {
     // Отключаем нативный iOS swipe back gesture чтобы избежать конфликта с Ionic навигацией

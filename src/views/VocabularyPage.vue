@@ -81,7 +81,7 @@ const toggleFavorite = (id: string): void => {
 let observer: IntersectionObserver | null = null;
 onMounted(() => {
   useSEO({
-    title: 'Мой словарь английских слов | Слова.Day',
+    title: 'Мой словарь английских слов | learnenglisheasy.ru',
     description: 'Ваш персональный словарь для изучения английского языка. Отслеживайте прогресс, повторяйте слова и расширяйте свой словарный запас эффективно.',
     keywords: 'словарь английского, мой словарь, изученные слова, английский словарь, vocabulary list',
     url: 'https://www.learnenglisheasy.ru/vocabulary',

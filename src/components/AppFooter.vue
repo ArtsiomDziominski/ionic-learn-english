@@ -38,7 +38,7 @@ const openLink = async (url: string): Promise<void> => {
       <span aria-hidden="true">·</span>
       <a href="/terms-of-service.html" @click.prevent="openLink('/terms-of-service.html')">Условия использования</a>
     </nav>
-    <p class="footer__copy">© {{ year }} Слова.Day</p>
+    <p class="footer__copy">© {{ year }} learnenglisheasy.ru</p>
   </footer>
 </template>
 

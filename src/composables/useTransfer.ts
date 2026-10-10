@@ -54,7 +54,7 @@ export function useTransfer() {
   /** «Скачать файл прогресса». */
   const download = (): Promise<void> => run(async () => {
     const file = filePayload();
-    const outcome = await saveFile({ ...file, title: 'Прогресс Слова.Day' });
+    const outcome = await saveFile({ ...file, title: 'Прогресс learnenglisheasy.ru' });
     report(outcome, 'Файл прогресса');
     if (outcome !== 'cancelled') trackEvent('progress_export', { kind: 'save', outcome });
   });
@@ -64,8 +64,8 @@ export function useTransfer() {
     const file = filePayload();
     const outcome = await shareFile({
       ...file,
-      title: 'Мой прогресс в Слова.Day',
-      text: 'Файл прогресса Слова.Day. Откройте приложение → Профиль → «Загрузить файл».',
+      title: 'Мой прогресс на learnenglisheasy.ru',
+      text: 'Файл прогресса learnenglisheasy.ru. Откройте приложение → Профиль → «Загрузить файл».',
     });
     report(outcome, 'Файл прогресса');
     if (outcome !== 'cancelled') trackEvent('progress_export', { kind: 'send', outcome });
@@ -82,9 +82,9 @@ export function useTransfer() {
       words,
       level: getSection(s.sectionId).badge,
     });
-    const text = `Учу английский в Слова.Day: ${progress.streak} ${plural(progress.streak, 'день', 'дня', 'дней')} подряд, ${words} ${plural(words, 'слово', 'слова', 'слов')} и ${s.xpTotal} XP!`;
+    const text = `Учу английский на learnenglisheasy.ru: ${progress.streak} ${plural(progress.streak, 'день', 'дня', 'дней')} подряд, ${words} ${plural(words, 'слово', 'слова', 'слов')} и ${s.xpTotal} XP!`;
     try {
-      const outcome = await shareFile({ name: 'slova-day-progress.png', mime: 'image/png', content: blob, title: 'Мои успехи', text: `${text} ${SITE}` });
+      const outcome = await shareFile({ name: 'learnenglisheasy-progress.png', mime: 'image/png', content: blob, title: 'Мои успехи', text: `${text} ${SITE}` });
       report(outcome, 'Картинка');
       if (outcome !== 'cancelled') trackEvent('share', { content_type: 'progress_card', method: outcome });
     } catch {

@@ -63,7 +63,7 @@ export function useOrganizationSchema(data?: Partial<OrganizationSchema>) {
   const schema: OrganizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: data?.name || 'Слова.Day',
+    name: data?.name || 'learnenglisheasy.ru',
     url: data?.url || 'https://www.learnenglisheasy.ru',
     logo: data?.logo || 'https://www.learnenglisheasy.ru/favicon.png',
     description: data?.description || 'Онлайн платформа для изучения английского языка',
@@ -98,11 +98,11 @@ export function useArticleSchema(article: {
     dateModified: article.dateModified || new Date().toISOString(),
     author: {
       '@type': 'Person',
-      name: article.author || 'Слова.Day'
+      name: article.author || 'learnenglisheasy.ru'
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Слова.Day',
+      name: 'learnenglisheasy.ru',
       logo: {
         '@type': 'ImageObject',
         url: 'https://www.learnenglisheasy.ru/favicon.png'
@@ -156,7 +156,7 @@ export function useCourseSchema(course: {
     description: course.description,
     provider: {
       '@type': 'Organization',
-      name: course.provider || 'Слова.Day'
+      name: course.provider || 'learnenglisheasy.ru'
     }
   };
 
@@ -183,7 +183,7 @@ export function useWebApplicationSchema() {
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
-    name: 'Слова.Day',
+    name: 'learnenglisheasy.ru',
     alternateName: 'Изучение английских слов онлайн',
     url: 'https://www.learnenglisheasy.ru/',
     description: 'Онлайн платформа для изучения английского языка. Интерактивные уроки, тренажеры для изучения слов, статьи и полезные материалы.',

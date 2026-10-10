@@ -129,10 +129,10 @@ function aboutJsonLd(about) {
         name: about.heading,
         description: about.description,
         inLanguage: 'ru',
-        isPartOf: { '@type': 'WebSite', name: 'Слова.Day', url: `${ORIGIN}/` },
+        isPartOf: { '@type': 'WebSite', name: 'learnenglisheasy.ru', url: `${ORIGIN}/` },
         about: {
           '@type': 'WebApplication',
-          name: 'Слова.Day',
+          name: 'learnenglisheasy.ru',
           url: `${ORIGIN}/`,
           applicationCategory: 'EducationalApplication',
           operatingSystem: 'Any',
@@ -175,7 +175,7 @@ const renderSiteNav = (current) =>
 function renderHomeBody(about) {
   return [
     '<main class="page">',
-    '<h1>Слова.Day — бесплатный тренажёр английских слов</h1>',
+    '<h1>learnenglisheasy.ru — бесплатный тренажёр английских слов</h1>',
     `<p>${escapeAttr(about.lead)}</p>`,
     renderSiteNav('/'),
     '</main>',
@@ -334,14 +334,14 @@ function main() {
     },
     {
       path: '/vocabulary',
-      title: 'Мой словарь английских слов | Слова.Day',
+      title: 'Мой словарь английских слов | learnenglisheasy.ru',
       description: 'Ваш персональный словарь для изучения английского языка. Отслеживайте прогресс, повторяйте слова и расширяйте свой словарный запас эффективно.',
       keywords: 'словарь английского, мой словарь, изученные слова, английский словарь, vocabulary list',
       bodyHtml: renderVocabularyBody(),
     },
     {
       path: '/article',
-      title: 'Статьи для изучения английского языка | Слова.Day',
+      title: 'Статьи для изучения английского языка | learnenglisheasy.ru',
       description: 'Узнайте лучшие статьи и ресурсы для изучения английского языка. Полезные советы, методы и рекомендации для всех уровней. Эффективные способы запоминания слов, грамматика и практические упражнения.',
       keywords: 'английский язык, изучение английского, статьи, ресурсы, советы по изучению английского, методы изучения, как учить английский',
       bodyHtml: renderArticlesBody(articles),
@@ -370,7 +370,7 @@ function main() {
     const canonical = toUrl(path);
 
     const html = renderPage(template, {
-      title: `${article.title} | Слова.Day`,
+      title: `${article.title} | learnenglisheasy.ru`,
       description: article.description,
       image: article.img,
       type: 'article',
@@ -384,10 +384,10 @@ function main() {
         image: article.img,
         inLanguage: 'ru',
         mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
-        author: { '@type': 'Organization', name: 'Слова.Day' },
+        author: { '@type': 'Organization', name: 'learnenglisheasy.ru' },
         publisher: {
           '@type': 'Organization',
-          name: 'Слова.Day',
+          name: 'learnenglisheasy.ru',
           logo: { '@type': 'ImageObject', url: `${ORIGIN}/favicon.png` },
         },
       },

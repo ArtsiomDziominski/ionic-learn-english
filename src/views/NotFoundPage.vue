@@ -40,7 +40,7 @@ const router = useIonRouter();
 
 onMounted(() => {
   useSEO({
-    title: 'Страница не найдена | Слова.Day',
+    title: 'Страница не найдена | learnenglisheasy.ru',
     description: 'Запрошенная страница не найдена. Вернитесь на главную или откройте словарь английских слов.',
   });
 });
