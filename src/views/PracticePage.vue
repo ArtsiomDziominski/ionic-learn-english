@@ -5,6 +5,7 @@ import { storeToRefs } from 'pinia';
 import { useProgressStore } from '@/store/progress';
 import { useLessonStore, PRACTICE_META } from '@/store/lesson';
 import { useSpeech } from '@/composables/useSpeech';
+import { useSettingsStore } from '@/store/settings';
 import { plural } from '@/core/dates';
 import type { PracticeMode } from '@/core/lessonBuilder';
 import type { GameIconName } from '@/art/icons';
@@ -16,7 +17,8 @@ import StatPill from '@/components/ui/StatPill.vue';
 const progress = useProgressStore();
 const lesson = useLessonStore();
 const router = useIonRouter();
-const { canListen } = useSpeech();
+const { canListen, available: speechAvailable } = useSpeech();
+const settingsStore = useSettingsStore();
 const { learnedCount, dueIds, weakIds, state, hearts, heartsEnabled } = storeToRefs(progress);
 
 interface Card {
@@ -33,10 +35,17 @@ const words = (n: number): string => `${n} ${plural(n, 'слово', 'слова
 const cards = computed<Card[]>(() => {
   const enough = (mode: PracticeMode): boolean => lesson.practiceWords(mode) !== null;
   const learnFirst = 'Выучите хотя бы 4 слова на пути';
+  const listenReason = !speechAvailable.value
+    ? 'Озвучка недоступна на этом устройстве'
+    : !settingsStore.settings.listening
+      ? 'Задания на слух выключены в настройках'
+      : settingsStore.listeningPaused
+        ? `Задания на слух на паузе до ${settingsStore.listeningPausedLabel}`
+        : learnFirst;
   return [
     { mode: 'mistakes', icon: 'target', color: 'var(--red)', text: weakIds.value.length ? `${words(weakIds.value.length)} с ошибками` : 'Ошибок пока нет', available: enough('mistakes'), reason: 'Здесь появятся слова, в которых вы ошибались' },
     { mode: 'review', icon: 'calendar', color: 'var(--orange)', text: dueIds.value.length ? `${words(dueIds.value.length)} пора повторить` : 'Освежите выученное', available: enough('review'), reason: learnFirst },
-    { mode: 'listening', icon: 'headphones', color: 'var(--violet)', text: 'Узнавайте слова на слух', available: canListen.value && enough('listening'), reason: canListen.value ? learnFirst : 'Озвучка недоступна на этом устройстве' },
+    { mode: 'listening', icon: 'headphones', color: 'var(--violet)', text: 'Узнавайте слова на слух', available: canListen.value && enough('listening'), reason: listenReason },
     { mode: 'spelling', icon: 'keyboard', color: 'var(--blue)', text: 'Пишите слова без ошибок', available: enough('spelling'), reason: learnFirst },
     { mode: 'favorites', icon: 'heart', color: 'var(--pink)', text: state.value.favorites.length ? words(state.value.favorites.length) : 'Добавляйте слова в словаре', available: enough('favorites'), reason: 'Отметьте сердечком 4 слова в словаре' },
     { mode: 'quick', icon: 'bolt', color: 'var(--gold)', text: '8 случайных слов', available: enough('quick'), reason: learnFirst },

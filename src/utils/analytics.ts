@@ -17,6 +17,7 @@
  *                       first_completion, new_words, duration_s, streak
  *   lesson_abandon      lesson_type, lesson_id | mode, progress (%), mistakes,
  *                       reason (quit | out_of_hearts | left)
+ *   listening_skip      lesson_type, lesson_id | mode — «Не могу слушать»
  *   out_of_hearts       place (path — не дали начать, lesson — кончились в уроке)
  *
  *   Награды и цели

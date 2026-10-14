@@ -92,7 +92,7 @@ const reset = (): void => {
             <label class="row">
               <span class="grow">
                 <span class="row__label">Задания на слух</span>
-                <span class="row__hint">{{ available ? 'Узнавать слова по произношению' : 'Озвучка недоступна на этом устройстве' }}</span>
+                <span class="row__hint">{{ !available ? 'Озвучка недоступна на этом устройстве' : settings.listening && store.listeningPaused ? `На паузе до ${store.listeningPausedLabel}` : 'Узнавать слова по произношению' }}</span>
               </span>
               <ion-toggle :checked="settings.listening && available" :disabled="!available" aria-label="Задания на слух" @ion-change="store.update('listening', $event.detail.checked)" />
             </label>

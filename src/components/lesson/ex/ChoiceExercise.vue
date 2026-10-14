@@ -4,6 +4,7 @@ import { getWord } from '@/core/course';
 import type { ChoiceOption, Exercise } from '@/core/lessonBuilder';
 import type { CheckResult } from '@/store/lesson';
 import { useSpeech } from '@/composables/useSpeech';
+import { useLessonStore } from '@/store/lesson';
 import { useSound } from '@/composables/useSound';
 import { hapticTap } from '@/composables/useHaptics';
 import LexiMascot from '@/components/ui/LexiMascot.vue';
@@ -16,6 +17,7 @@ const emit = defineEmits<{ ready: [value: boolean] }>();
 
 const { speak, available } = useSpeech();
 const { play } = useSound();
+const lesson = useLessonStore();
 
 const word = computed(() => getWord(props.exercise.wordId));
 const options = computed<ChoiceOption[]>(() => props.exercise.options ?? []);
@@ -106,6 +108,10 @@ defineExpose({
         <span class="opt__label" :lang="toRussian ? 'ru' : 'en'">{{ o.label }}</span>
       </button>
     </div>
+
+    <button v-if="isListen && !locked" type="button" class="cant-listen" @click="lesson.skipListening()">
+      Не могу слушать
+    </button>
   </div>
 </template>
 
@@ -231,6 +237,19 @@ defineExpose({
 .opt--wrong .opt__num { border-color: var(--red); color: var(--red-ink); }
 
 .opt--dim { opacity: 0.55; }
+
+.cant-listen {
+  align-self: center;
+  padding: 10px 16px;
+  border: 0;
+  background: none;
+  color: var(--text-subtle);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
 
 @media (hover: none) {
   .opt__num { display: none; }

@@ -14,11 +14,15 @@ export interface AppSettings {
   hearts: boolean;
   /** Задания на слух. */
   listening: boolean;
+  /** «Не могу слушать»: до этого момента (мс) задания на слух не выдаются. */
+  listeningPausedUntil: number | null;
   voiceURI: string | null;
   speechRate: number;
 }
 
 const STORAGE_KEY = 'slovaday.settings.v1';
+/** На сколько «Не могу слушать» отключает задания на слух. */
+export const LISTENING_PAUSE_MS = 60 * 60_000;
 
 const defaults = (): AppSettings => ({
   theme: 'system',
@@ -26,6 +30,7 @@ const defaults = (): AppSettings => ({
   haptics: true,
   hearts: true,
   listening: true,
+  listeningPausedUntil: null,
   voiceURI: null,
   speechRate: 0.9,
 });
@@ -50,6 +55,7 @@ function load(): AppSettings {
     haptics: typeof raw.haptics === 'boolean' ? raw.haptics : base.haptics,
     hearts: typeof raw.hearts === 'boolean' ? raw.hearts : base.hearts,
     listening: typeof raw.listening === 'boolean' ? raw.listening : base.listening,
+    listeningPausedUntil: typeof raw.listeningPausedUntil === 'number' && raw.listeningPausedUntil > Date.now() ? raw.listeningPausedUntil : null,
     voiceURI: typeof raw.voiceURI === 'string' ? raw.voiceURI : null,
     speechRate: typeof raw.speechRate === 'number' && raw.speechRate >= 0.5 && raw.speechRate <= 1.5 ? raw.speechRate : base.speechRate,
   };
@@ -88,13 +94,41 @@ export const useSettingsStore = defineStore('settings', () => {
     setStorageJSON(STORAGE_KEY, settings.value);
   };
 
+  /* Пауза аудио кончается сама: таймер снимает флаг в нужный момент,
+     чтобы canListen пересчитался без перезапуска приложения. */
+  const listeningPaused = ref(false);
+  let resumeTimer: ReturnType<typeof setTimeout> | undefined;
+  const syncPause = (): void => {
+    clearTimeout(resumeTimer);
+    const left = (settings.value.listeningPausedUntil ?? 0) - Date.now();
+    listeningPaused.value = left > 0;
+    if (left > 0) resumeTimer = setTimeout(syncPause, Math.min(left, 2 ** 31 - 1));
+  };
+  syncPause();
+
+  /** «Не могу слушать» — отключить задания на слух на время. */
+  const pauseListening = (ms = LISTENING_PAUSE_MS): void => {
+    settings.value = { ...settings.value, listeningPausedUntil: Date.now() + ms };
+    syncPause();
+  };
+
   const update = <K extends keyof AppSettings>(key: K, value: AppSettings[K]): void => {
     const changed = settings.value[key] !== value;
     settings.value = { ...settings.value, [key]: value };
+    // Переключатель в настройках важнее временной паузы
+    if (key === 'listening' && settings.value.listeningPausedUntil) {
+      settings.value = { ...settings.value, listeningPausedUntil: null };
+      syncPause();
+    }
     if (!changed) return;
     // Название голоса не отправляем: оно длинное и ничего не говорит о поведении
     trackEvent('setting_change', { setting: key, setting_value: key === 'voiceURI' ? (value ? 'custom' : 'auto') : String(value) });
   };
 
-  return { settings, isDark, init, update };
+  /** До скольких пауза аудио, «14:30»; пусто — паузы нет. */
+  const listeningPausedLabel = computed(() => (listeningPaused.value && settings.value.listeningPausedUntil
+    ? new Date(settings.value.listeningPausedUntil).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+    : ''));
+
+  return { settings, isDark, listeningPaused, listeningPausedLabel, init, update, pauseListening };
 });

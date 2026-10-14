@@ -43,7 +43,7 @@ export function useSpeech() {
   const store = useSettingsStore();
 
   const englishVoices = computed(() => voices.value);
-  const canListen = computed(() => speechAvailable.value && store.settings.listening);
+  const canListen = computed(() => speechAvailable.value && store.settings.listening && !store.listeningPaused);
 
   const speak = async (text: string, slow = false): Promise<void> => {
     if (!text || !speechAvailable.value) return;

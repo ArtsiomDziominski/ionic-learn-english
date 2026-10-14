@@ -4,11 +4,12 @@ import {
   LESSON_BY_ID, UNIT_BY_ID, SECTION_BY_ID, WORD_BANK, getWord, type BankWord,
 } from '@/core/course';
 import {
-  buildLearnLesson, buildPractice, buildReviewLesson, retryOf, shuffle,
+  buildLearnLesson, buildPractice, buildReviewLesson, retryOf, shuffle, withoutListening,
   type BuildOptions, type Exercise, type PracticeMode,
 } from '@/core/lessonBuilder';
 import { useProgressStore, type LessonAnswer, type LessonRewards, type LessonSource } from './progress';
 import { useSpeech } from '@/composables/useSpeech';
+import { useSettingsStore } from './settings';
 import { trackEvent } from '@/utils/analytics';
 
 export type LessonPhase = 'answering' | 'correct' | 'wrong' | 'finished';
@@ -40,6 +41,7 @@ const lessonParams = (src: LessonSource) =>
 
 export const useLessonStore = defineStore('lesson', () => {
   const progress = useProgressStore();
+  const settingsStore = useSettingsStore();
   const { canListen } = useSpeech();
 
   const source = ref<LessonSource | null>(null);
@@ -208,6 +210,24 @@ export const useLessonStore = defineStore('lesson', () => {
     if (!isPractice.value) progress.spendHeart();
   }
 
+  /**
+   * «Не могу слушать»: задания на слух выключаются на час, а текущее
+   * и оставшиеся в уроке меняются на обычный выбор — без потери жизни.
+   */
+  function skipListening(): void {
+    const ex = current.value;
+    if (!ex || ex.type !== 'listen' || phase.value !== 'answering') return;
+    settingsStore.pauseListening();
+    buildOptions = { ...buildOptions, listening: false };
+    queue.value = queue.value.map((step, i) => {
+      if (i < position.value || step.type !== 'listen') return step;
+      const swapped = withoutListening(step, getWord(step.wordId), buildOptions);
+      origin.set(swapped.key, origin.get(step.key) ?? step.key);
+      return swapped;
+    });
+    trackEvent('listening_skip', lessonParams(source.value!));
+  }
+
   /** Жизни кончились — урок нельзя продолжить без пополнения. */
   const outOfHearts = computed(() => !isPractice.value && progress.heartsEnabled && progress.hearts <= 0);
 
@@ -294,6 +314,7 @@ export const useLessonStore = defineStore('lesson', () => {
     startPractice,
     acknowledgeIntro,
     submit,
+    skipListening,
     proceed,
     abandon,
     reset,

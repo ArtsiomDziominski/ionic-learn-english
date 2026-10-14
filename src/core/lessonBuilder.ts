@@ -203,6 +203,12 @@ export function buildPractice(mode: PracticeMode, words: BankWord[], opts: Build
   }
 }
 
+/** «Не могу слушать»: задание на слух меняется на выбор английского слова по переводу. */
+export function withoutListening(ex: Exercise, word: BankWord | undefined, opts: BuildOptions): Exercise {
+  if (ex.type !== 'listen' || !word) return ex;
+  return { ...choice(word, 'ru-en', opts), isNew: ex.isNew, isRetry: ex.isRetry };
+}
+
 /** Повтор ошибочного задания в конце урока: те же слова, свежие варианты. */
 export function retryOf(ex: Exercise, word: BankWord | undefined, opts: BuildOptions): Exercise {
   if (word && (ex.type === 'choice' || ex.type === 'listen')) {
