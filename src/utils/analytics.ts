@@ -40,6 +40,12 @@
  *   setting_change      setting, setting_value
  *   article_view        article_id, article_title
  *
+ *   Мои слова
+ *   mywords_group_create
+ *   mywords_word_add
+ *   mywords_group_share  words, outcome
+ *   mywords_group_import words
+ *
  *   Перенос прогресса
  *   progress_export     kind (save | send), outcome
  *   progress_import     mode (merge | replace)

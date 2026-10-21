@@ -28,6 +28,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/SettingsPage.vue'),
   },
   {
+    path: '/my-words',
+    component: () => import('@/views/MyWordsPage.vue'),
+  },
+  {
     path: '/about',
     component: () => import('@/views/AboutPage.vue'),
   },

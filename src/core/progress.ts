@@ -9,6 +9,7 @@
  */
 import { addDays, dayKey, daysBetween, isDayKey } from './dates';
 import { CHEST_IDS, DEFAULT_SECTION_ID, LESSON_BY_ID, SECTION_BY_ID, WORD_BANK } from './course';
+import { groupWordIds, isMyWordId, mergeGroups, sanitizeGroups, type WordGroup } from './myWords';
 
 export const PROGRESS_SCHEMA = 'slova-day.progress';
 export const PROGRESS_VERSION = 1;
@@ -98,6 +99,8 @@ export interface Progress {
   /** id достижения → сколько уровней уже выдано. */
   achievements: Record<string, number>;
   stats: ProgressStats;
+  /** «Мои слова» — группы слов, добавленных учеником. */
+  groups: WordGroup[];
 }
 
 export const emptyStats = (): ProgressStats => ({
@@ -137,6 +140,7 @@ export function createProgress(now: Date = new Date()): Progress {
     quests: { day: '', list: [] },
     achievements: {},
     stats: emptyStats(),
+    groups: [],
   };
 }
 
@@ -279,6 +283,11 @@ export function sanitizeProgress(input: unknown, now: Date = new Date()): Progre
   const stats = isObj(input.stats) ? input.stats : {};
   const quests = isObj(input.quests) ? input.quests : {};
 
+  // Свои слова известны только из групп этого же файла
+  const groups = sanitizeGroups(input.groups, base.createdAt);
+  const myIds = groupWordIds(groups);
+  const knownWord = (id: string): boolean => (isMyWordId(id) ? myIds.has(id) : WORD_BANK.has(id));
+
   const xpByDay: Record<string, number> = {};
   if (isObj(input.xpByDay)) {
     for (const [k, v] of Object.entries(input.xpByDay)) {
@@ -293,7 +302,7 @@ export function sanitizeProgress(input: unknown, now: Date = new Date()): Progre
   const words: Record<string, WordProgress> = {};
   if (isObj(input.words)) {
     for (const [id, w] of Object.entries(input.words)) {
-      if (!WORD_BANK.has(id) || !isObj(w)) continue;
+      if (!knownWord(id) || !isObj(w)) continue;
       const learnedAt = day(w.learnedAt, today);
       words[id] = {
         learnedAt,
@@ -323,7 +332,7 @@ export function sanitizeProgress(input: unknown, now: Date = new Date()): Progre
     ? [...new Set(input.chests.filter((c): c is string => typeof c === 'string' && CHEST_IDS.has(c)))]
     : [];
   const favorites = Array.isArray(input.favorites)
-    ? [...new Set(input.favorites.filter((f): f is string => typeof f === 'string' && WORD_BANK.has(f)))]
+    ? [...new Set(input.favorites.filter((f): f is string => typeof f === 'string' && knownWord(f)))]
     : [];
 
   const questList: QuestState[] = Array.isArray(quests.list)
@@ -386,6 +395,7 @@ export function sanitizeProgress(input: unknown, now: Date = new Date()): Progre
     quests: { day: day(quests.day, ''), list: questList },
     achievements,
     stats: statsOut,
+    groups,
   };
 }
 
@@ -479,6 +489,7 @@ export function mergeProgress(current: Progress, incoming: Progress, now: Date =
     quests: current.quests.day >= incoming.quests.day ? current.quests : incoming.quests,
     achievements: maxRecord(current.achievements, incoming.achievements),
     stats,
+    groups: mergeGroups(current.groups, incoming.groups),
   };
 }
 

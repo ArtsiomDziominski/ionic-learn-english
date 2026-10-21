@@ -10,6 +10,7 @@ import {
 import { useProgressStore, type LessonAnswer, type LessonRewards, type LessonSource } from './progress';
 import { useSpeech } from '@/composables/useSpeech';
 import { useSettingsStore } from './settings';
+import { isMyWordId, myWordId } from '@/core/myWords';
 import { trackEvent } from '@/utils/analytics';
 
 export type LessonPhase = 'answering' | 'correct' | 'wrong' | 'finished';
@@ -29,7 +30,11 @@ export const PRACTICE_META: Record<PracticeMode, { title: string; minWords: numb
   spelling: { title: 'Правописание', minWords: 4 },
   favorites: { title: 'Избранное', minWords: 4 },
   quick: { title: 'Быстрая тренировка', minWords: 4 },
+  mywords: { title: 'Мои слова', minWords: 1 },
 };
+
+/** Новых слов в уроке по своей группе — как в уроке на пути. */
+const LESSON_WORDS = 4;
 
 const words = (ids: string[]): BankWord[] => ids.map((id) => WORD_BANK.get(id)).filter((w): w is BankWord => !!w);
 
@@ -131,6 +136,27 @@ export const useLessonStore = defineStore('lesson', () => {
     return begin({ kind: 'path', lessonId }, name, steps);
   }
 
+  /**
+   * Урок по своей группе: до 4 новых слов со знакомством плюс
+   * повтор уже выученных из группы. Всё выучено — тренировка
+   * по словам группы, которые пора повторить.
+   */
+  function startGroup(groupId: string): boolean {
+    const group = progress.findGroup(groupId);
+    if (!group?.words.length) return false;
+    const ids = [...new Set(group.words.map((w) => myWordId(w.word)))];
+    const known = (id: string): boolean => !!progress.state.words[id];
+    const byDue = (a: string, b: string): number => progress.state.words[a].due.localeCompare(progress.state.words[b].due);
+    const fresh = ids.filter((id) => !known(id)).slice(0, LESSON_WORDS);
+    const learned = ids.filter(known).sort(byDue);
+    buildOptions = { listening: canListen.value, pool: poolFor([...ids, ...progress.currentSection.words]) };
+
+    const steps = fresh.length
+      ? buildLearnLesson(words(fresh), words(shuffle(learned.slice(0, 6)).slice(0, 2)), known, buildOptions)
+      : buildPractice('mywords', words(learned.slice(0, 8)), buildOptions);
+    return begin({ kind: 'practice', mode: 'mywords' }, group.name, steps);
+  }
+
   /** Слова для тренировки; null — их пока недостаточно. */
   function practiceWords(mode: PracticeMode): string[] | null {
     const learned = progress.learnedIds;
@@ -147,6 +173,9 @@ export const useLessonStore = defineStore('lesson', () => {
       }
       case 'favorites':
         ids = shuffle(progress.state.favorites.filter((id) => WORD_BANK.has(id)));
+        break;
+      case 'mywords':
+        ids = shuffle(learned.filter(isMyWordId));
         break;
       default:
         ids = shuffle(learned);
@@ -312,6 +341,7 @@ export const useLessonStore = defineStore('lesson', () => {
     practiceWords,
     startPathLesson,
     startPractice,
+    startGroup,
     acknowledgeIntro,
     submit,
     skipListening,

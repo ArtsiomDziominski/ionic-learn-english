@@ -30,7 +30,7 @@ export interface Exercise {
   isRetry?: boolean;
 }
 
-export type PracticeMode = 'mistakes' | 'review' | 'listening' | 'spelling' | 'favorites' | 'quick';
+export type PracticeMode = 'mistakes' | 'review' | 'listening' | 'spelling' | 'favorites' | 'quick' | 'mywords';
 
 export interface BuildOptions {
   /** Можно ли озвучивать слова — без этого задания на слух не создаются. */
