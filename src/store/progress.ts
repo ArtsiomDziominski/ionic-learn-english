@@ -13,6 +13,10 @@ import { isWeak, learnWord, reviewWord } from '@/core/srs';
 import { applyQuestEvent, generateDailyQuests, isQuestDone, questTitle } from '@/core/quests';
 import { achievementViews, metricsOf, newlyEarned, tierReward, type AchievementIcon } from '@/core/achievements';
 import { migrateLegacy } from '@/core/legacy';
+import {
+  MAX_GROUP_WORDS, MAX_GROUPS, MAX_NAME_LEN, cleanWord, groupWordIds, isMyWordId, myWordId, newGroupId, syncMyWords,
+  type MyWord, type WordGroup,
+} from '@/core/myWords';
 import type { ExerciseType, PracticeMode } from '@/core/lessonBuilder';
 import { getStorageItem, getStorageJSON } from '@/utils/util';
 import { useSettingsStore } from './settings';
@@ -110,6 +114,10 @@ export const useProgressStore = defineStore('progress', () => {
   const touch = (): void => {
     state.value.updatedAt = new Date().toISOString();
   };
+
+  /* Свои слова попадают в общий банк сразу, синхронно: урок,
+     запущенный сразу после добавления слова, уже их видит. */
+  watch(() => state.value.groups, (groups) => syncMyWords(groups), { immediate: true, deep: true, flush: 'sync' });
 
   /* ——— Производные ———————————————————————————————————————— */
 
@@ -406,6 +414,77 @@ export const useProgressStore = defineStore('progress', () => {
     trackEvent('tutorial_complete', { goal: opts.goal, section: state.value.sectionId });
   };
 
+  /* ——— Мои слова ————————————————————————————————————————————— */
+
+  const groups = computed(() => state.value.groups);
+  const findGroup = (id: string): WordGroup | undefined => state.value.groups.find((g) => g.id === id);
+
+  /** Прогресс и избранное слов, которых больше нет ни в одной группе. */
+  const dropOrphans = (): void => {
+    const alive = groupWordIds(state.value.groups);
+    for (const id of Object.keys(state.value.words)) {
+      if (isMyWordId(id) && !alive.has(id)) delete state.value.words[id];
+    }
+    state.value.favorites = state.value.favorites.filter((id) => !isMyWordId(id) || alive.has(id));
+  };
+
+  const uniqueName = (name: string): string => {
+    const base = name.trim().slice(0, MAX_NAME_LEN) || 'Мои слова';
+    const taken = new Set(state.value.groups.map((g) => g.name.toLowerCase()));
+    if (!taken.has(base.toLowerCase())) return base;
+    for (let n = 2; ; n++) {
+      const candidate = `${base.slice(0, MAX_NAME_LEN - 4)} (${n})`;
+      if (!taken.has(candidate.toLowerCase())) return candidate;
+    }
+  };
+
+  const createGroup = (name: string, words: MyWord[] = []): WordGroup | null => {
+    if (state.value.groups.length >= MAX_GROUPS) return null;
+    const group: WordGroup = { id: newGroupId(), name: uniqueName(name), createdAt: new Date().toISOString(), words: words.slice(0, MAX_GROUP_WORDS) };
+    state.value.groups.push(group);
+    touch();
+    return group;
+  };
+
+  const renameGroup = (id: string, name: string): void => {
+    const group = findGroup(id);
+    const clean = name.trim().slice(0, MAX_NAME_LEN);
+    if (!group || !clean || clean === group.name) return;
+    group.name = clean;
+    touch();
+  };
+
+  const deleteGroup = (id: string): void => {
+    state.value.groups = state.value.groups.filter((g) => g.id !== id);
+    dropOrphans();
+    touch();
+  };
+
+  /** Добавляет слово в группу. Возвращает текст ошибки или null. */
+  const addMyWord = (groupId: string, word: string, translation: string): string | null => {
+    const group = findGroup(groupId);
+    if (!group) return 'Группа не найдена';
+    const pair = cleanWord(word, translation);
+    if (!pair) return 'Заполните слово и перевод';
+    if (group.words.some((w) => w.word.toLowerCase() === pair.word.toLowerCase())) return 'Это слово уже есть в группе';
+    if (group.words.length >= MAX_GROUP_WORDS) return `В группе может быть до ${MAX_GROUP_WORDS} слов`;
+    group.words.push(pair);
+    touch();
+    return null;
+  };
+
+  const removeMyWord = (groupId: string, word: string): void => {
+    const group = findGroup(groupId);
+    if (!group) return;
+    group.words = group.words.filter((w) => w.word.toLowerCase() !== word.toLowerCase());
+    dropOrphans();
+    touch();
+  };
+
+  /** Сколько слов группы уже выучено. */
+  const groupLearned = (group: WordGroup): number =>
+    group.words.filter((w) => !!state.value.words[myWordId(w.word)]).length;
+
   /* ——— Перенос ——————————————————————————————————————————————— */
 
   const snapshot = (): Progress => {
@@ -473,6 +552,14 @@ export const useProgressStore = defineStore('progress', () => {
     openChest,
     claimQuest,
     toggleFavorite,
+    groups,
+    findGroup,
+    createGroup,
+    renameGroup,
+    deleteGroup,
+    addMyWord,
+    removeMyWord,
+    groupLearned,
     setName,
     setAvatar,
     setDailyGoal,

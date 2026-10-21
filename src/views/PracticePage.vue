@@ -32,6 +32,12 @@ interface Card {
 
 const words = (n: number): string => `${n} ${plural(n, 'слово', 'слова', 'слов')}`;
 
+const myWordsText = computed(() => {
+  const groups = progress.groups;
+  if (!groups.length) return 'Слова из сериалов, книг и работы';
+  return `${groups.length} ${plural(groups.length, 'группа', 'группы', 'групп')}`;
+});
+
 const cards = computed<Card[]>(() => {
   const enough = (mode: PracticeMode): boolean => lesson.practiceWords(mode) !== null;
   const learnFirst = 'Выучите хотя бы 4 слова на пути';
@@ -49,12 +55,15 @@ const cards = computed<Card[]>(() => {
     { mode: 'spelling', icon: 'keyboard', color: 'var(--blue)', text: 'Пишите слова без ошибок', available: enough('spelling'), reason: learnFirst },
     { mode: 'favorites', icon: 'heart', color: 'var(--pink)', text: state.value.favorites.length ? words(state.value.favorites.length) : 'Добавляйте слова в словаре', available: enough('favorites'), reason: 'Отметьте сердечком 4 слова в словаре' },
     { mode: 'quick', icon: 'bolt', color: 'var(--gold)', text: '8 случайных слов', available: enough('quick'), reason: learnFirst },
+    { mode: 'mywords', icon: 'cards', color: 'var(--green)', text: myWordsText.value, available: true, reason: '' },
   ];
 });
 
 const start = (card: Card): void => {
   if (!card.available) return;
-  router.push(`/lesson/practice-${card.mode}`);
+  // «Мои слова» — отдельный экран с группами, а не тренировка
+  if (card.mode === 'mywords') router.push('/my-words');
+  else router.push(`/lesson/practice-${card.mode}`);
 };
 </script>
 

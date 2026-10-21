@@ -52,7 +52,9 @@ function start(): void {
   const id = String(route.params.id ?? '');
   const ok = id.startsWith('practice-')
     ? lesson.startPractice(id.slice('practice-'.length) as PracticeMode)
-    : lesson.startPathLesson(id);
+    : id.startsWith('group-')
+      ? lesson.startGroup(id.slice('group-'.length))
+      : lesson.startPathLesson(id);
   ready.value = false;
   if (!ok) {
     toast.show('Этот урок пока недоступен', 'error');
