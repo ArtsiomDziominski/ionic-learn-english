@@ -1,4 +1,4 @@
-package io.learn.english;
+package ru.learnenglisheasy.lexi;
 
 import com.getcapacitor.BridgeActivity;
 

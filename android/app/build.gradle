@@ -8,10 +8,10 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "io.learn.english"
+    namespace = "ru.learnenglisheasy.lexi"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "io.learn.english"
+        applicationId "ru.learnenglisheasy.lexi"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 7
