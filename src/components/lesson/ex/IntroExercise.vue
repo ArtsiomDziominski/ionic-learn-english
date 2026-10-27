@@ -31,7 +31,7 @@ defineExpose({ check: () => null });
       <SpeechBubble class="say__bubble">
         <div class="say__row">
           <SpeakButton v-if="available" @play="speak(word.word)" />
-          <span class="word" lang="en">{{ word.word }}</span>
+          <span class="word" :class="{ 'word--long': word.word.length > 6, 'word--xlong': word.word.length > 10 }" lang="en">{{ word.word }}</span>
         </div>
       </SpeechBubble>
     </div>
@@ -72,6 +72,7 @@ defineExpose({ check: () => null });
 .say__row {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
@@ -80,6 +81,10 @@ defineExpose({ check: () => null });
   font-weight: 900;
   word-break: break-word;
 }
+
+/* Длинные слова не помещаются рядом с Лекси на узких экранах. */
+.word--long { font-size: 1.5rem; }
+.word--xlong { font-size: 1.2rem; }
 
 .meaning {
   text-align: center;
