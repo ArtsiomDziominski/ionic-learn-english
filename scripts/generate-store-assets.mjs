@@ -62,7 +62,7 @@ await png(
     '<circle cx="800" cy="250" r="210" fill="#FFFFFF" fill-opacity="0.12"/>' +
     '<circle cx="800" cy="250" r="150" fill="#FFFFFF" fill-opacity="0.10"/>' +
     place(wave, FULL_VIEWBOX, 630, 70, 340, 360) +
-    `<text x="80" y="215" font-family="${font}" font-size="64" font-weight="800" fill="#FFFFFF">LearnEnglishEasy</text>` +
+    `<text x="80" y="215" font-family="${font}" font-size="88" font-weight="800" fill="#FFFFFF">Лекси</text>` +
     `<text x="82" y="280" font-family="${font}" font-size="34" font-weight="600" fill="#FFFFFF" fill-opacity="0.92">Английские слова каждый день</text>` +
     `<text x="82" y="330" font-family="${font}" font-size="28" fill="#FFFFFF" fill-opacity="0.8">Короткие уроки · серии · награды</text>` +
     '</svg>',

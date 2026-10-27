@@ -1,6 +1,6 @@
 {
 	"appId": "io.learn.english",
-	"appName": "LearnEnglishEasy",
+	"appName": "Лекси",
 	"webDir": "dist",
 	"ios": {
 		"contentInset": "never",
