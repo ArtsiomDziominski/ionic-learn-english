@@ -180,4 +180,29 @@ const eyebrow = computed(() => (props.section.kind === 'level'
   width: 22px;
   height: 22px;
 }
+
+/* Низкий экран (телефон лёжа) — табличка компактнее */
+@media (max-height: 500px) {
+  .sign {
+    padding: 8px 12px;
+  }
+
+  .sign__icon,
+  .sign__guide {
+    width: 40px;
+    height: 40px;
+  }
+
+  .sign__title {
+    font-size: 1.1rem;
+  }
+
+  .sign__sub {
+    display: none;
+  }
+
+  .sign__acorns {
+    margin-top: 3px;
+  }
+}
 </style>
