@@ -218,7 +218,21 @@ const onSelect = (node: PathNodeT): void => {
     }
   }
   selected.value = selected.value === node.id ? null : node.id;
+  if (selected.value) void revealPopover();
 };
+
+/** Карточка урока целиком в кадре: на низком экране она уходила под нижнее меню. */
+async function revealPopover(): Promise<void> {
+  await nextTick();
+  const el = content.value?.$el as ScrollHost | undefined;
+  const pop = document.querySelector<HTMLElement>('.path__pop');
+  if (!el?.getScrollElement || !pop) return;
+  const scroller = await el.getScrollElement();
+  const view = scroller.getBoundingClientRect();
+  const box = pop.getBoundingClientRect();
+  const overflow = box.bottom + 12 - view.bottom;
+  if (overflow > 0) await el.scrollToPoint(0, scroller.scrollTop + overflow, 300);
+}
 
 const start = (node: PathNodeT): void => {
   if (node.kind === 'chest') return;
@@ -543,14 +557,12 @@ onIonViewDidEnter(() => {
   height: 104px;
 }
 
-.path__row--open {
-  z-index: 5;
-}
-
 .path__pop {
   position: absolute;
   top: calc(50% + 44px);
   left: 50%;
+  /* Строка урока не создаёт свой слой, поэтому карточка урока встаёт выше
+     табличек юнитов (z-index 6) — и своей, и следующего юнита */
   z-index: 7;
   transform: translateX(-50%);
 }
