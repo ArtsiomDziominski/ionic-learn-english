@@ -9,6 +9,8 @@ import { useToastStore } from '@/store/toast';
 import { useSpeech } from '@/composables/useSpeech';
 import { useTransfer } from '@/composables/useTransfer';
 import { DAILY_GOALS } from '@/core/progress';
+import { requestNotifications } from '@/utils/notifications';
+import { trackEvent } from '@/utils/analytics';
 import PageTopBar from '@/components/PageTopBar.vue';
 import AppSheet from '@/components/ui/AppSheet.vue';
 import LexiMascot from '@/components/ui/LexiMascot.vue';
@@ -37,6 +39,32 @@ const RATES = [
 ];
 
 const GOAL_LABEL: Record<number, string> = { 10: 'Легко', 20: 'Обычно', 30: 'Серьёзно', 50: 'Интенсивно' };
+
+/* ——— Уведомления ——— */
+const toggleReminders = async (on: boolean): Promise<void> => {
+  store.update('reminders', on);
+  if (!on) return;
+  const granted = await requestNotifications(true);
+  if (!granted) toast.show('Разрешите уведомления для приложения в настройках телефона', 'info');
+};
+
+/* ——— Отзыв ——— */
+const PLAY_URL = 'https://play.google.com/store/apps/details?id=ru.learnenglisheasy.lexi';
+const FEEDBACK_EMAIL = 'artsiomdziominski@gmail.com';
+
+const rateApp = (): void => {
+  trackEvent('rate_app_click');
+  /* В приложении ссылку перехватывает Capacitor и открывает Google Play;
+     в браузере — новая вкладка. */
+  if (native) window.location.href = 'market://details?id=ru.learnenglisheasy.lexi';
+  else window.open(PLAY_URL, '_blank', 'noopener');
+};
+
+const writeFeedback = (): void => {
+  trackEvent('feedback_click');
+  const subject = encodeURIComponent('Лекси: отзыв');
+  window.location.href = `mailto:${FEEDBACK_EMAIL}?subject=${subject}`;
+};
 
 const reset = (): void => {
   progress.resetAll();
@@ -95,6 +123,16 @@ const reset = (): void => {
                 <span class="row__hint">{{ !available ? 'Озвучка недоступна на этом устройстве' : settings.listening && store.listeningPaused ? `На паузе до ${store.listeningPausedLabel}` : 'Узнавать слова по произношению' }}</span>
               </span>
               <ion-toggle :checked="settings.listening && available" :disabled="!available" aria-label="Задания на слух" @ion-change="store.update('listening', $event.detail.checked)" />
+            </label>
+          </div>
+        </section>
+
+        <section v-if="native" class="group">
+          <h2 class="group__title">Уведомления</h2>
+          <div class="card list">
+            <label class="row">
+              <span class="grow"><span class="row__label">Напоминания</span><span class="row__hint">Одно напоминание, если пропустили день, и сигнал, когда жизни восстановились</span></span>
+              <ion-toggle :checked="settings.reminders" aria-label="Напоминания" @ion-change="toggleReminders($event.detail.checked)" />
             </label>
           </div>
         </section>
@@ -164,6 +202,19 @@ const reset = (): void => {
               <span><span class="row__label">Сбросить прогресс</span><span class="row__hint">Удалит слова, уроки, серию и кристаллы на этом устройстве</span></span>
               <div class="row__actions">
                 <button type="button" class="btn btn--secondary btn--sm danger" @click="resetOpen = true">Сбросить</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="group">
+          <h2 class="group__title">Отзыв</h2>
+          <div class="card list">
+            <div class="row row--col">
+              <span><span class="row__label">Нравится Лекси?</span><span class="row__hint">Оценка в Google Play очень помогает приложению</span></span>
+              <div class="row__actions">
+                <button type="button" class="btn btn--blue btn--sm" @click="rateApp">Оценить</button>
+                <button type="button" class="btn btn--secondary btn--sm" @click="writeFeedback">Написать нам</button>
               </div>
             </div>
           </div>

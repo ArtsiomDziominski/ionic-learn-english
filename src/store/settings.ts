@@ -14,6 +14,8 @@ export interface AppSettings {
   hearts: boolean;
   /** Задания на слух. */
   listening: boolean;
+  /** Уведомления: напоминание об уроке и о восстановлении жизней. */
+  reminders: boolean;
   /** «Не могу слушать»: до этого момента (мс) задания на слух не выдаются. */
   listeningPausedUntil: number | null;
   voiceURI: string | null;
@@ -30,6 +32,7 @@ const defaults = (): AppSettings => ({
   haptics: true,
   hearts: true,
   listening: true,
+  reminders: true,
   listeningPausedUntil: null,
   voiceURI: null,
   speechRate: 0.9,
@@ -55,6 +58,7 @@ function load(): AppSettings {
     haptics: typeof raw.haptics === 'boolean' ? raw.haptics : base.haptics,
     hearts: typeof raw.hearts === 'boolean' ? raw.hearts : base.hearts,
     listening: typeof raw.listening === 'boolean' ? raw.listening : base.listening,
+    reminders: typeof raw.reminders === 'boolean' ? raw.reminders : base.reminders,
     listeningPausedUntil: typeof raw.listeningPausedUntil === 'number' && raw.listeningPausedUntil > Date.now() ? raw.listeningPausedUntil : null,
     voiceURI: typeof raw.voiceURI === 'string' ? raw.voiceURI : null,
     speechRate: typeof raw.speechRate === 'number' && raw.speechRate >= 0.5 && raw.speechRate <= 1.5 ? raw.speechRate : base.speechRate,
